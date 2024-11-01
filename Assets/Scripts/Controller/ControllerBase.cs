@@ -1,8 +1,6 @@
-using UnityEngine;
-
 namespace Controller
 {
-    public abstract class ControllerBase : MonoBehaviour
+    public abstract class ControllerBase : IController
     {
         public abstract void Initialize();
         public abstract void Dispose();
