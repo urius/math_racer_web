@@ -26,7 +26,7 @@ namespace Controller
 
         public override void Initialize()
         {
-            LoadMenuScene();
+            LoadScene(Constants.MenuSceneName).Forget();
 
             Subscribe();
         }
@@ -49,11 +49,6 @@ namespace Controller
         private void OnRequestLoadSceneEvent(RequestLoadSceneEvent e)
         {
             LoadScene(e.SceneName).Forget();
-        }
-
-        private void LoadMenuScene()
-        {
-            LoadScene(Constants.MenuSceneName).Forget();
         }
 
         private async UniTaskVoid LoadScene(string sceneName)

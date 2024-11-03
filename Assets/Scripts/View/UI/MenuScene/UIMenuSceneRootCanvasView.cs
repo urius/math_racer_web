@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace View.UI
+namespace View.UI.MenuScene
 {
     public class UIMenuSceneRootCanvasView : MonoBehaviour
     {

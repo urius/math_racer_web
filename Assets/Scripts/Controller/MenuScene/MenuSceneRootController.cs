@@ -4,6 +4,7 @@ using Infra.EventBus;
 using Infra.Instance;
 using UnityEngine;
 using View.UI;
+using View.UI.MenuScene;
 
 namespace Controller.MenuScene
 {

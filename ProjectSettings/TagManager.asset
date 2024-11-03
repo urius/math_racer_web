@@ -41,6 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 669636723
+    locked: 0
+  - name: Road
+    uniqueID: 3845873335
+    locked: 0
+  - name: Car
+    uniqueID: 535136467
+    locked: 0
+  - name: UI
+    uniqueID: 569637569
+    locked: 0
   - name: LoadingOverlay
     uniqueID: 173701191
     locked: 0
