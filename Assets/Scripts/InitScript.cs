@@ -1,4 +1,5 @@
 using Controller;
+using Holders;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
@@ -8,6 +9,8 @@ using View.UI;
 public class InitScript : MonoBehaviour
 {
     [SerializeField] private UILoadingOverlayView _loadingOverlayView;
+    [SerializeField] private PrefabsHolderSo _prefabsHolderSo;
+    [SerializeField] private UpdatesProvider _updatesProvider;
 
     private RootController _rootController;
     
@@ -34,7 +37,11 @@ public class InitScript : MonoBehaviour
 
     private void SetupInstances()
     {
+        SetupInstance.From(_prefabsHolderSo).As<IPrefabHolder>();
+        SetupInstance.From(_updatesProvider).As<IUpdatesProvider>();
+        
         SetupNewInstance<EventBus, IEventBus>();
+        SetupNewInstance<ModelsHolder, IModelsHolder>();
     }
     
     private void Map<TEvent, TCommand>()

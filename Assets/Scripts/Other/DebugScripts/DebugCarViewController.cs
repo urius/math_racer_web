@@ -10,14 +10,11 @@ namespace Other.DebugScripts
         [SerializeField] private CarView _carView;
         
         [Space(25)]
-        [SerializeField] private float _accelerationMult;
         [SerializeField] private float _bodyRotationMult;
         [SerializeField] [Range(0, 200)] private float _targetSpeed;
 
         private float _targetSpeedAdjusted;
         private float _speed;
-
-        private float DeltaTime => Time.fixedDeltaTime;
         
         private void FixedUpdate()
         {
@@ -34,15 +31,6 @@ namespace Other.DebugScripts
             _carView.SetBodyRotation(-deltaTargetSpeed * _bodyRotationMult);
             
             _carView.RotateWheels(deltaRotation);
-
-            return;
-            
-            MoveCar(_speed);
-
-            if (_carView.transform.position.x > 15)
-            {
-                MoveCar(-30);
-            }
         }
 
         private void AdjustSpeed()
@@ -50,14 +38,6 @@ namespace Other.DebugScripts
             _targetSpeedAdjusted = SpeedMult * _targetSpeed;
             
             _speed = Mathf.Lerp(_speed, _targetSpeedAdjusted, 0.05f);
-        }
-
-        private void MoveCar(float delta)
-        {
-            var carTransform = _carView.transform;
-            var pos = carTransform.position;
-            pos.x += delta;
-            carTransform.position = pos;
         }
     }
 }

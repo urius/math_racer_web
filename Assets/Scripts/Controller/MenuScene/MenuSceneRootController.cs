@@ -21,7 +21,7 @@ namespace Controller.MenuScene
             Subscribe();
         }
 
-        public override void Dispose()
+        public override void DisposeInternal()
         {
             Unsubscribe();
 

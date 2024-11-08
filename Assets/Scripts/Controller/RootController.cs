@@ -31,7 +31,7 @@ namespace Controller
             Subscribe();
         }
 
-        public override void Dispose()
+        public override void DisposeInternal()
         {
             Unsubscribe();
         }

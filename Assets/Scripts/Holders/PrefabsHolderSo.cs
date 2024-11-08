@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Holders
 {
     [CreateAssetMenu(fileName = "PrefabsHolderSo", menuName = "ScriptableObjects/PrefabsHolderSo")]
-    public class PrefabsHolderSo : ScriptableObject
+    public class PrefabsHolderSo : ScriptableObject, IPrefabHolder
     {
         [LabeledArray(nameof(PrefabHolderItem.Key))] [SerializeField] private PrefabHolderItem[] _items;
 
@@ -54,5 +54,13 @@ namespace Holders
             public PrefabKey Key;
             public GameObject Prefab;
         }
+    }
+        
+    public interface IPrefabHolder
+    {
+        public GameObject GetPrefabByKey(PrefabKey key);
+        
+        public GameObject GetColdPrefab(string coldPrefabPath);
+        public void UnloadColdPrefabs();
     }
 }
