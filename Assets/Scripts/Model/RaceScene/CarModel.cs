@@ -12,24 +12,24 @@ namespace Model.RaceScene
             CarKey = carKey;
         }
 
-        public float CurrentSpeed { get; private set; }
-        public float TargetSpeed { get; private set; }
+        public float CurrentSpeedKmph { get; private set; }
+        public float TargetSpeedKmph { get; private set; }
 
         public void Accelerate()
         {
-            TargetSpeed += 5;
-            if (TargetSpeed > 200)
+            TargetSpeedKmph += 5;
+            if (TargetSpeedKmph > 200)
             {
-                TargetSpeed = 200;
+                TargetSpeedKmph = 200;
             }
         }
 
         public void Decelerate()
         {
-            TargetSpeed -= 2;
-            if (TargetSpeed < 0)
+            TargetSpeedKmph -= 2;
+            if (TargetSpeedKmph < 0)
             {
-                TargetSpeed = 0;
+                TargetSpeedKmph = 0;
             }
         }
 
@@ -40,7 +40,7 @@ namespace Model.RaceScene
 
         private void AdjustSpeed()
         {
-            CurrentSpeed = Mathf.Lerp(CurrentSpeed, TargetSpeed, 0.05f);
+            CurrentSpeedKmph = Mathf.Lerp(CurrentSpeedKmph, TargetSpeedKmph, 0.05f);
         }
     }
 }

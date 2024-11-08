@@ -35,10 +35,10 @@ namespace Controller.RaceScene
         private void InitControllers()
         {
             var raceModel = _modelsHolder.GetRaceModel();
-            InitChildController(
-                new RaceSceneCarController(raceModel.PlayerCar, _contextView.PlayerCarTargetTransform));
-            InitChildController(
-                new RaceSceneQuestionsController(_contextView.RootCanvasView.RightPanelView));
+            
+            InitChildController(new RaceSceneBackgroundController(_contextView.BgContainerView, _contextView.RoadContainerView));
+            InitChildController(new RaceSceneCarController(raceModel.PlayerCar, _contextView.PlayerCarTargetTransform));
+            InitChildController(new RaceSceneQuestionsController(_contextView.RootCanvasView.RightPanelView));
         }
 
         public override void DisposeInternal()

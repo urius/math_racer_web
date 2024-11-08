@@ -1,3 +1,4 @@
+using Data;
 using Extensions;
 using Holders;
 using Infra.Instance;
@@ -74,17 +75,21 @@ namespace Controller.RaceScene
             
             MoveCar();
         }
-
         
         private void MoveCar()
         {
-            var speed = _carModel.CurrentSpeed;
-            var deltaRotation = speed * _carView.WheelRotationMultiplier;
+            var speed = _carModel.CurrentSpeedKmph;
+            var distancePassed = Constants.KmphToMetersPerFrame * speed;
             
-            var deltaTargetSpeed = _carModel.TargetSpeed - speed;
-            _carView.SetBodyRotation(-deltaTargetSpeed * BodyRotationMult);
+            var deltaRotation = distancePassed * _carView.WheelRotationMultiplier;
+            
+            var deltaTargetSpeed = _carModel.TargetSpeedKmph - speed;
+            var bodyRotation = -deltaTargetSpeed * 0.5f;
+            _carView.SetBodyRotation(bodyRotation);
             
             _carView.RotateWheels(deltaRotation);
+            
+            Debug.Log("Delta target speed: " + deltaTargetSpeed);
         }
     }
 }
