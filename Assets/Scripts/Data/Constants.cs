@@ -7,7 +7,8 @@ namespace Data
         public const string RaceSceneName = "RaceScene";
 
         public const int FPS = 50;
-        public const float KmphToMps = 10f / 36f;
+        public const float KmphToMps = 1000f / 3600f;
         public const float KmphToMetersPerFrame = KmphToMps / FPS;
+        public const float MetersInKm = 1000;
     }
 }

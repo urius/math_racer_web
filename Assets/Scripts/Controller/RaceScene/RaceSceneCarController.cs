@@ -78,18 +78,10 @@ namespace Controller.RaceScene
         
         private void MoveCar()
         {
-            var speed = _carModel.CurrentSpeedKmph;
-            var distancePassed = Constants.KmphToMetersPerFrame * speed;
+            var deltaWheelRotation = _carModel.CurrentSpeedMetersPerFrame * _carView.WheelRotationMultiplier;
             
-            var deltaRotation = distancePassed * _carView.WheelRotationMultiplier;
-            
-            var deltaTargetSpeed = _carModel.TargetSpeedKmph - speed;
-            var bodyRotation = -deltaTargetSpeed * 0.5f;
-            _carView.SetBodyRotation(bodyRotation);
-            
-            _carView.RotateWheels(deltaRotation);
-            
-            Debug.Log("Delta target speed: " + deltaTargetSpeed);
+            _carView.SetBodyRotation(_carModel.CurrentBodyRotation);
+            _carView.RotateWheels(deltaWheelRotation);
         }
     }
 }

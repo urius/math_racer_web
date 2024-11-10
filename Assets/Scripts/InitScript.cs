@@ -1,4 +1,5 @@
 using Controller;
+using Data;
 using Holders;
 using Infra.CommandExecutor;
 using Infra.EventBus;
@@ -16,7 +17,7 @@ public class InitScript : MonoBehaviour
     
     private void Awake()
     {
-        Application.targetFrameRate = 50;
+        Application.targetFrameRate = Constants.FPS;
         
         DontDestroyOnLoad(gameObject);
 
