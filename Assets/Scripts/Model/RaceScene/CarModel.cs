@@ -17,10 +17,12 @@ namespace Model.RaceScene
         }
 
         public float CurrentSpeedKmph { get; private set; }
-        public float CurrentSpeedMetersPerFrame => CurrentSpeedKmph * Constants.KmphToMetersPerFrame;
+        public float CurrentSpeedMetersPerSecond => CurrentSpeedKmph * Constants.KmphToMps;
         public float TargetSpeedKmph { get; private set; }
-        public float CurrentBodyRotation { get; private set; }       
+        public float CurrentBodyRotation { get; private set; }
         public float PassedMeters { get; private set; }
+        public float CurrentUpdateMetersPassed { get; private set; }
+        public float XOffset { get; private set; }
 
         public void Accelerate()
         {
@@ -42,21 +44,52 @@ namespace Model.RaceScene
             }
         }
 
-        public void Update()
+        public void Update(float deltaTime)
         {
-            AdjustSpeed();
-            UpdateBodyRotation();
-            UpdatePassedDistance();
+            AdjustSpeed(deltaTime);
+            UpdatePassedDistance(deltaTime);
+            UpdateBodyRotation(deltaTime);
+            UpdateXOffset(deltaTime);
         }
 
-        private void UpdatePassedDistance()
+        private void UpdateXOffset(float deltaTime)
         {
-            PassedMeters += CurrentSpeedMetersPerFrame;
+            const float offsetMax = 1.5f;
+            const float deltaSpeedKmBounds = 2;
+            
+            var deltaSpeedKmh = TargetSpeedKmph - CurrentSpeedKmph;
+            var mult = Mathf.Abs(XOffset) > 0.8f * offsetMax ? 0.2f : 0.5f;
+            var deltaOffset = mult * deltaTime;
+
+            if (deltaSpeedKmh > deltaSpeedKmBounds)
+            {
+                XOffset += deltaOffset;
+            }
+            else if (deltaSpeedKmh < -deltaSpeedKmBounds)
+            {
+                XOffset -= deltaOffset;
+            }
+            else if (XOffset != 0)
+            {
+                XOffset *= 0.995f;
+            }
+
+            XOffset = Mathf.Clamp(XOffset, -offsetMax, offsetMax);
+            if (Mathf.Abs(XOffset) < 0.001f)
+            {
+                XOffset = 0;
+            }
         }
 
-        private void AdjustSpeed()
+        private void UpdatePassedDistance(float deltaTime)
         {
-            CurrentSpeedKmph = Mathf.Lerp(CurrentSpeedKmph, TargetSpeedKmph, 0.032f);
+            CurrentUpdateMetersPassed = CurrentSpeedMetersPerSecond * deltaTime;
+            PassedMeters += CurrentUpdateMetersPassed;
+        }
+
+        private void AdjustSpeed(float deltaTime)
+        {
+            CurrentSpeedKmph = Mathf.Lerp(CurrentSpeedKmph, TargetSpeedKmph, deltaTime);
 
             UpdateTargetBodyRotation();
         }
@@ -71,9 +104,9 @@ namespace Model.RaceScene
             _targetBodyRotation = -0.5f * (TargetSpeedKmph - CurrentSpeedKmph);
         }
 
-        private void UpdateBodyRotation()
+        private void UpdateBodyRotation(float deltaTime)
         {
-            const float addRotationValue = 0.25f;
+            var addRotationValue = 20 * deltaTime;
             var deltaRotation = _targetBodyRotation - CurrentBodyRotation;
             
             switch (deltaRotation)

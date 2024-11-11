@@ -15,12 +15,13 @@ namespace View
         private Vector3 _wheelSize;
         private float _wheelRadius;
         private float _wheelRotationMultiplier;
+        private Transform _transform;
 
-        public float WheelRadius => _wheelRadius;
         public float WheelRotationMultiplier => _wheelRotationMultiplier;
 
         private void Awake()
         {
+            _transform = transform;
             _wheelSize = _wheelBack.GetComponent<SpriteRenderer>().bounds.size;
 
             _wheelRadius = _wheelSize.x * 0.5f;
@@ -41,6 +42,13 @@ namespace View
             var eulerAngles = bodyTransform.eulerAngles;
             eulerAngles.z = -Math.Clamp(bodyRotation, _bodyRotationMin, _bodyRotationMax);
             bodyTransform.eulerAngles = eulerAngles;
+        }
+
+        public void SetXOffset(float xOffset)
+        {
+            var pos = _transform.localPosition;
+            pos.x = xOffset;
+            _transform.localPosition = pos;
         }
     }
 }

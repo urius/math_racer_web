@@ -6,7 +6,7 @@ namespace Holders
 {
     public class UpdatesProvider : MonoBehaviour, IUpdatesProvider
     {
-        public event Action RealtimeUpdate;
+        public event Action GameplayUpdate;
         public event Action GameplayFixedUpdate;
         public event Action RealtimeSecondPassed;
         public event Action GameplaySecondPassed;
@@ -29,7 +29,7 @@ namespace Holders
 
         private void Update()
         {
-            RealtimeUpdate?.Invoke();
+            GameplayUpdate?.Invoke();
         }
 
         private void FixedUpdate()
@@ -69,7 +69,7 @@ namespace Holders
 
     public interface IUpdatesProvider
     {
-        public event Action RealtimeUpdate;
+        public event Action GameplayUpdate;
         public event Action GameplayFixedUpdate;
         public event Action RealtimeSecondPassed;
         public event Action GameplaySecondPassed;

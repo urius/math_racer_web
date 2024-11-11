@@ -1,4 +1,3 @@
-using Data;
 using Extensions;
 using Holders;
 using Infra.Instance;
@@ -8,10 +7,8 @@ using View;
 
 namespace Controller.RaceScene
 {
-    public class RaceSceneCarController : ControllerBase
+    public class RaceScenePlayerCarController : ControllerBase
     {
-        private const float BodyRotationMult = 50;
-
         private readonly IPrefabHolder _prefabHolder = Instance.Get<IPrefabHolder>();
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
@@ -23,7 +20,7 @@ namespace Controller.RaceScene
         private CarView _carView;
         private RaceModel _raceModel;
 
-        public RaceSceneCarController(CarModel carModel, Transform targetTransform)
+        public RaceScenePlayerCarController(CarModel carModel, Transform targetTransform)
         {
             _carModel = carModel;
             _targetTransform = targetTransform;
@@ -45,7 +42,7 @@ namespace Controller.RaceScene
 
         private void Subscribe()
         {
-            _updatesProvider.GameplayFixedUpdate += OnGameplayFixedUpdate;
+            _updatesProvider.GameplayUpdate += OnGameplayUpdate;
             
             _raceModel.QuestionsModel.RightAnswerGiven += OnRightAnswerGiven;
             _raceModel.QuestionsModel.WrongAnswerGiven += OnWrongAnswerGiven;
@@ -53,7 +50,7 @@ namespace Controller.RaceScene
 
         private void Unsubscribe()
         {
-            _updatesProvider.GameplayFixedUpdate -= OnGameplayFixedUpdate;
+            _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
             
             _raceModel.QuestionsModel.RightAnswerGiven -= OnRightAnswerGiven;
             _raceModel.QuestionsModel.WrongAnswerGiven -= OnWrongAnswerGiven;
@@ -69,18 +66,21 @@ namespace Controller.RaceScene
             _carModel.Decelerate();
         }
 
-        private void OnGameplayFixedUpdate()
+        private void OnGameplayUpdate()
         {
-            _carModel.Update();
+            //Time.timeScale = 0.2f;
             
-            MoveCar();
+            _carModel.Update(Time.deltaTime);
+            
+            MoveCar(Time.deltaTime);
         }
         
-        private void MoveCar()
+        private void MoveCar(float deltaTime)
         {
-            var deltaWheelRotation = _carModel.CurrentSpeedMetersPerFrame * _carView.WheelRotationMultiplier;
+            var deltaWheelRotation = deltaTime * _carModel.CurrentSpeedMetersPerSecond * _carView.WheelRotationMultiplier;
             
             _carView.SetBodyRotation(_carModel.CurrentBodyRotation);
+            _carView.SetXOffset(_carModel.XOffset);
             _carView.RotateWheels(deltaWheelRotation);
         }
     }

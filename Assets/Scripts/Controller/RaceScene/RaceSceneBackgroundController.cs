@@ -2,6 +2,7 @@ using Data;
 using Holders;
 using Infra.Instance;
 using Model.RaceScene;
+using UnityEngine;
 using View.Gameplay.Race;
 
 namespace Controller.RaceScene
@@ -36,17 +37,17 @@ namespace Controller.RaceScene
 
         private void Subscribe()
         {
-            _updatesProvider.GameplayFixedUpdate += OnGameplayFixedUpdate;
+            _updatesProvider.GameplayUpdate += OnGameplayUpdate;
         }
 
         private void Unsubscribe()
         {
-            _updatesProvider.GameplayFixedUpdate -= OnGameplayFixedUpdate;
+            _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
         }
 
-        private void OnGameplayFixedUpdate()
+        private void OnGameplayUpdate()
         {
-            var distancePassed = _playerCarModel.CurrentSpeedKmph * Constants.KmphToMetersPerFrame;
+            var distancePassed = _playerCarModel.CurrentSpeedMetersPerSecond * Time.deltaTime;
             
             _bgContainerView.Move(distancePassed * 0.2f);
             _roadContainerView.Move(distancePassed);
