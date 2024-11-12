@@ -1,22 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Text;
+using Data;
 using Holders;
 using Infra.Instance;
 using Model.RaceScene;
 using UnityEngine;
+using Utils;
 using View.UI.RaceScene;
-using Random = System.Random;
 
 namespace Controller.RaceScene
 {
     public class RaceSceneQuestionsController : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
-        
+        private readonly IComplexityDataProvider _complexityDataProvider = Instance.Get<IComplexityDataProvider>();
+
         private readonly UIRightPanelView _rightPanelView;
-        
+
         private QuestionsModel _questionsModel;
 
         public RaceSceneQuestionsController(UIRightPanelView rightPanelView)
@@ -28,21 +27,23 @@ namespace Controller.RaceScene
         {
             _questionsModel = _modelsHolder.GetRaceModel().QuestionsModel;
 
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 TestGenerateExpressionMethod();
             }
 
             Subscribe();
+
+            GenerateExpression();
+            DisplayExpression();
         }
 
         private void TestGenerateExpressionMethod()
         {
-            var expression = GenerateExpression(
-                new Random().Next(2, 7), 
-                new[] { "+", "-", "*" },
-                10);
-            var rightAnswer = Evaluate(expression);
+            var complexityData = GetComplexityData();
+
+            var expression = ExpressionsHelper.GenerateExpression(complexityData);
+            var rightAnswer = ExpressionsHelper.EvaluateExpression(expression);
 
             Debug.Log("expression: " + expression + " = " + rightAnswer);
         }
@@ -74,53 +75,62 @@ namespace Controller.RaceScene
             }
         }
 
-        private static string GenerateExpression(int numbersCount, IReadOnlyList<string> availableOperators, int maxNumberValue)
+        private ComplexityData GetComplexityData()
         {
-            if (numbersCount < 2 || availableOperators == null || availableOperators.Count == 0)
-            {
-                throw new ArgumentException("Invalid input parameters.");
-            }
-
-            var random = new Random();
-            var expression = new StringBuilder();
-            var openBracesCounter = 0;
-
-            for (var i = 0; i < numbersCount; i++)
-            {
-                expression.Append(random.Next(1, maxNumberValue));
-                if (openBracesCounter > 0)
-                {
-                    openBracesCounter--;
-                    if (openBracesCounter <= 0)
-                    {
-                        expression.Append(")");
-                    }
-                }
-
-                if (i < numbersCount - 1)
-                {
-                    var randomOperator = availableOperators[random.Next(availableOperators.Count)];
-                    expression.Append(randomOperator);
-
-                    if (randomOperator == "*"
-                        && numbersCount - i > 2
-                        && openBracesCounter <= 0
-                        && random.NextDouble() < 0.9f)
-                    {
-                        openBracesCounter = random.Next(2, numbersCount - i);
-                        expression.Append("(");
-                    }
-                }
-            }
-
-            return expression.ToString();
+            return _complexityDataProvider.GetComplexityData(15, 10);
         }
 
-        private static double Evaluate(string expression)
+        private void GenerateExpression()
         {
-            var dataTable = new DataTable();
-            var result = dataTable.Compute(expression, string.Empty);
-            return Convert.ToDouble(result);
+            var complexity = GetComplexityData();
+            _questionsModel.GenerateExpression(complexity);
+        }
+
+        private void DisplayExpression()
+        {
+            _rightPanelView.SetQuestionText(FormatExpression(_questionsModel.Expression));
+
+            _rightPanelView.AnswersPanel.SetAnswersAmount(_questionsModel.Answers.Length);
+
+            for (var i = 0; i < _questionsModel.Answers.Length; i++)
+            {
+                _rightPanelView.AnswersPanel.SetAnswerValue(i, _questionsModel.Answers[i]);
+            }
+        }
+
+        private static string FormatExpression(string expression)
+        {
+            if (string.IsNullOrEmpty(expression))
+            {
+                return expression;
+            }
+
+            var sb = new StringBuilder(expression.Length);
+
+            foreach (var c in expression)
+            {
+                switch (c)
+                {
+                    case Constants.OperatorMultiplyChar:
+                        sb.Append(" x ");
+                        break;
+                    case Constants.OperatorDivideChar:
+                        sb.Append(" : ");
+                        break;
+                    case Constants.OperatorPlusChar:
+                        sb.Append(" + ");
+                        break;
+                    case Constants.OperatorMinusChar:
+                        sb.Append(" - ");
+                        break;
+                    default:
+                        sb.Append(c);
+                        break;
+                }
+            }
+
+            // Trim any leading or trailing spaces
+            return sb.ToString().Trim();
         }
     }
 }

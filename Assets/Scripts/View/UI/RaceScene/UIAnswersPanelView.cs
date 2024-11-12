@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using UnityEngine;
 
 namespace View.UI.RaceScene
@@ -25,9 +26,9 @@ namespace View.UI.RaceScene
             }
         }
 
-        public void SetAnswerValue(int index, float value)
+        public void SetAnswerValue(int index, double value)
         {
-            _answerButtonViews[index].SetText(value.ToString());
+            _answerButtonViews[index].SetText(value.ToString(CultureInfo.CurrentCulture));
         }
 
         public void SetAnswersAmount(int amount)
@@ -46,7 +47,11 @@ namespace View.UI.RaceScene
         public void SetAnswerButtonVisibility(int index, bool isVisible)
         {
             _answerButtonViews[index].gameObject.SetActive(isVisible);
-            _answerButtonViews[index].SetInteractable(true);
+            
+            if (isVisible)
+            {
+                SetAnswerInteractable(index, true);
+            }
         }
 
         private void OnAnswerClicked(UIAnswerButtonView view)

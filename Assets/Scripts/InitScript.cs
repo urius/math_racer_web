@@ -43,6 +43,7 @@ public class InitScript : MonoBehaviour
         
         SetupNewInstance<EventBus, IEventBus>();
         SetupNewInstance<ModelsHolder, IModelsHolder>();
+        SetupNewInstance<ComplexityDataProvider, IComplexityDataProvider>();
     }
     
     private void Map<TEvent, TCommand>()
