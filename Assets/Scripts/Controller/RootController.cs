@@ -1,9 +1,11 @@
 using System;
+using Controller.Commands;
 using Controller.MenuScene;
 using Controller.RaceScene;
 using Cysharp.Threading.Tasks;
 using Data;
 using Events;
+using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
 using UnityEngine.SceneManagement;
@@ -14,6 +16,7 @@ namespace Controller
     public class RootController : ControllerBase
     {
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        private readonly ICommandExecutor _commandExecutor = Instance.Get<ICommandExecutor>();
         
         private readonly UILoadingOverlayView _loadingOverlayView;
         
@@ -24,8 +27,10 @@ namespace Controller
             _loadingOverlayView = loadingOverlayView;
         }
 
-        public override void Initialize()
+        public override async void Initialize()
         {
+            await InitPlayerModel();
+            
             LoadScene(Constants.MenuSceneName).Forget();
 
             Subscribe();
@@ -34,6 +39,11 @@ namespace Controller
         public override void DisposeInternal()
         {
             Unsubscribe();
+        }
+
+        private UniTask InitPlayerModel()
+        {
+            return _commandExecutor.ExecuteAsync<InitPlayerModelCommand>();
         }
 
         private void Subscribe()

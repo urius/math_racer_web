@@ -25,7 +25,7 @@ namespace Holders
             if (complexityLevel > 15) maxNumbersCount++;
             if (complexityLevel > 19) maxNumbersCount++;
 
-            var maxNumberValueForEasyOperations = 5 * playerLevel + 10 * Math.Max(0, complexityLevel - 5);
+            var maxNumberValueForEasyOperations = 5 + 5 * playerLevel + 10 * Math.Max(0, complexityLevel - 5);
             var maxNumberValueForHardOperations = 2 + (int)(0.5f * playerLevel) + Math.Max(0, complexityLevel - 10);
 
             return new ComplexityData(

@@ -1,6 +1,7 @@
 using Data;
 using Holders;
 using Infra.Instance;
+using Model;
 using Model.RaceScene;
 using UnityEngine;
 using View.Gameplay.Race;
@@ -13,9 +14,12 @@ namespace Controller.RaceScene
         private readonly IComplexityDataProvider _complexityDataProvider = Instance.Get<IComplexityDataProvider>();
         
         private RaceContextView _contextView;
+        private PlayerModel _playerModel;
 
         public override void Initialize()
         {
+            _playerModel = _modelsHolder.GetPlayerModel();
+            
             InitModel();
             InitView();
             InitControllers();
@@ -23,9 +27,7 @@ namespace Controller.RaceScene
 
         private void InitModel()
         {
-            var complexityData = _complexityDataProvider.GetComplexityData(15, 10);
-            //todo: use real data
-
+            var complexityData = _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
             var raceModel = new RaceModel(CarKey.Bug, complexityData);
             _modelsHolder.SetRaceModel(raceModel);
         }

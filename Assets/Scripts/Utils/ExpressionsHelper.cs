@@ -4,6 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using Data;
+using UnityEngine;
+using Random = System.Random;
 
 namespace Utils
 {
@@ -32,7 +34,8 @@ namespace Utils
             }
 
             var random = new Random();
-            var numbersCount = random.Next(2, maxNumbersCount + 1);
+            var numbersCount = random.Next(2, maxNumbersCount);
+            Debug.Log("maxNumbersCount: " + maxNumbersCount + " numbersCount: " + numbersCount);
             var expression = new StringBuilder();
             var openBracesCounter = 0;
             var operatorBuffer = string.Empty;

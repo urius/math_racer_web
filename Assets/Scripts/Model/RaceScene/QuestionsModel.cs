@@ -14,6 +14,7 @@ namespace Model.RaceScene
         private readonly ComplexityData _complexityData;
 
         private int _rightAnswerIndex = -1;
+        private string _prevExpression = null;
 
         public QuestionsModel(ComplexityData complexityData)
         {
@@ -27,9 +28,14 @@ namespace Model.RaceScene
 
         public void GenerateQuestion()
         {
-            ResetAnswersData();
+            _prevExpression = Expression;
             
-            Expression = ExpressionsHelper.GenerateExpression(_complexityData);
+            ResetAnswersData();
+
+            while (Expression == null || Expression == _prevExpression)
+            {
+                Expression = ExpressionsHelper.GenerateExpression(_complexityData);
+            }
             
             var rightAnswer = ExpressionsHelper.EvaluateExpression(Expression);
 
@@ -58,6 +64,7 @@ namespace Model.RaceScene
         {
             _rightAnswerIndex = -1;
             IsRightAnswerGiven = false;
+            Expression = null;
         }
 
         public bool GiveAnswer(int answerIndex)

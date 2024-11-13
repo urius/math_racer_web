@@ -41,6 +41,7 @@ public class InitScript : MonoBehaviour
         SetupInstance.From(_prefabsHolderSo).As<IPrefabHolder>();
         SetupInstance.From(_updatesProvider).As<IUpdatesProvider>();
         
+        SetupNewInstance<CommandExecutor, ICommandExecutor>();
         SetupNewInstance<EventBus, IEventBus>();
         SetupNewInstance<ModelsHolder, IModelsHolder>();
         SetupNewInstance<ComplexityDataProvider, IComplexityDataProvider>();
