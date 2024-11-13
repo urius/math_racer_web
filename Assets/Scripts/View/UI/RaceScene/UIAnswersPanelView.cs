@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
@@ -10,6 +11,8 @@ namespace View.UI.RaceScene
             
         [SerializeField] private UIAnswerButtonView[] _answerButtonViews;
 
+        public IReadOnlyList<UIAnswerButtonView> AnswerViews => _answerButtonViews;
+        
         private void Awake()
         {
             foreach (var answerButtonView in _answerButtonViews)
@@ -35,6 +38,7 @@ namespace View.UI.RaceScene
         {
             for (var i = 0; i < _answerButtonViews.Length; i++)
             {
+                _answerButtonViews[i].ToDefaultState();
                 SetAnswerButtonVisibility(i, i < amount);
             }
         }

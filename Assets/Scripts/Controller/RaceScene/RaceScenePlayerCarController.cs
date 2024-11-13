@@ -44,26 +44,26 @@ namespace Controller.RaceScene
         {
             _updatesProvider.GameplayUpdate += OnGameplayUpdate;
             
-            _raceModel.QuestionsModel.RightAnswerGiven += OnRightAnswerGiven;
-            _raceModel.QuestionsModel.WrongAnswerGiven += OnWrongAnswerGiven;
+            _raceModel.QuestionsModel.AnswerGiven += OnAnswerGiven;
         }
 
         private void Unsubscribe()
         {
             _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
             
-            _raceModel.QuestionsModel.RightAnswerGiven -= OnRightAnswerGiven;
-            _raceModel.QuestionsModel.WrongAnswerGiven -= OnWrongAnswerGiven;
+            _raceModel.QuestionsModel.AnswerGiven -= OnAnswerGiven;
         }
 
-        private void OnRightAnswerGiven()
+        private void OnAnswerGiven(bool isRightAnswer)
         {
-            _carModel.Accelerate();
-        }
-
-        private void OnWrongAnswerGiven()
-        {
-            _carModel.Decelerate();
+            if (isRightAnswer)
+            {
+                _carModel.Accelerate();
+            }
+            else
+            {
+                _carModel.Decelerate();
+            }
         }
 
         private void OnGameplayUpdate()

@@ -1,4 +1,5 @@
 using System.Text;
+using Cysharp.Threading.Tasks;
 using Data;
 using Holders;
 using Infra.Instance;
@@ -15,12 +16,14 @@ namespace Controller.RaceScene
         private readonly IComplexityDataProvider _complexityDataProvider = Instance.Get<IComplexityDataProvider>();
 
         private readonly UIRightPanelView _rightPanelView;
+        private readonly UIAnswersPanelView _answersPanel;
 
         private QuestionsModel _questionsModel;
 
         public RaceSceneQuestionsController(UIRightPanelView rightPanelView)
         {
             _rightPanelView = rightPanelView;
+            _answersPanel = _rightPanelView.AnswersPanel;
         }
 
         public override void Initialize()
@@ -34,8 +37,7 @@ namespace Controller.RaceScene
 
             Subscribe();
 
-            GenerateExpression();
-            DisplayExpression();
+            RefreshQuestion();
         }
 
         private void TestGenerateExpressionMethod()
@@ -55,24 +57,44 @@ namespace Controller.RaceScene
 
         private void Subscribe()
         {
-            _rightPanelView.AnswersPanel.AnswerClicked += OnAnswerClicked;
+            _answersPanel.AnswerClicked += OnAnswerClicked;
         }
 
         private void Unsubscribe()
         {
-            _rightPanelView.AnswersPanel.AnswerClicked -= OnAnswerClicked;
+            _answersPanel.AnswerClicked -= OnAnswerClicked;
         }
 
         private void OnAnswerClicked(int answerIndex)
         {
-            if (answerIndex == 0)
+            var isCorrectAnswer = _questionsModel.GiveAnswer(answerIndex);
+            
+            _answersPanel.SetAnswerInteractable(answerIndex, false);
+
+            var answerView = _answersPanel.AnswerViews[answerIndex];
+
+            if (isCorrectAnswer)
             {
-                _questionsModel.DispatchRightAnswerGiven();
+                answerView.ToRightAnswerState();
+
+                ProcessNextQuestion().Forget();
             }
             else
             {
-                _questionsModel.DispatchWrongAnswerGiven();
+                answerView.ToWrongAnswerState();
             }
+        }
+
+        private async UniTaskVoid ProcessNextQuestion()
+        {
+            foreach (var answerView in _answersPanel.AnswerViews)
+            {
+                answerView.SetInteractable(false);
+            }
+
+            await UniTask.Delay(1000);
+            
+            RefreshQuestion();
         }
 
         private ComplexityData GetComplexityData()
@@ -80,22 +102,27 @@ namespace Controller.RaceScene
             return _complexityDataProvider.GetComplexityData(15, 10);
         }
 
-        private void GenerateExpression()
+        private void GenerateQuestion()
         {
-            var complexity = GetComplexityData();
-            _questionsModel.GenerateExpression(complexity);
+            _questionsModel.GenerateQuestion();
         }
 
-        private void DisplayExpression()
+        private void DisplayQuestion()
         {
             _rightPanelView.SetQuestionText(FormatExpression(_questionsModel.Expression));
 
-            _rightPanelView.AnswersPanel.SetAnswersAmount(_questionsModel.Answers.Length);
+            _answersPanel.SetAnswersAmount(_questionsModel.Answers.Length);
 
             for (var i = 0; i < _questionsModel.Answers.Length; i++)
             {
-                _rightPanelView.AnswersPanel.SetAnswerValue(i, _questionsModel.Answers[i]);
+                _answersPanel.SetAnswerValue(i, _questionsModel.Answers[i]);
             }
+        }
+
+        private void RefreshQuestion()
+        {
+            GenerateQuestion();
+            DisplayQuestion();
         }
 
         private static string FormatExpression(string expression)

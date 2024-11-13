@@ -4,9 +4,9 @@ namespace Model.RaceScene
 {
     public class RaceModel
     {
-        public RaceModel(CarKey playerCarKey)
+        public RaceModel(CarKey playerCarKey, ComplexityData complexityData)
         {
-            QuestionsModel = new QuestionsModel();
+            QuestionsModel = new QuestionsModel(complexityData);
             PlayerCar = new CarModel(playerCarKey);
         }
 

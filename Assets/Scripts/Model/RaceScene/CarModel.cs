@@ -89,7 +89,7 @@ namespace Model.RaceScene
 
         private void AdjustSpeed(float deltaTime)
         {
-            CurrentSpeedKmph = Mathf.Lerp(CurrentSpeedKmph, TargetSpeedKmph, deltaTime);
+            CurrentSpeedKmph = Mathf.Lerp(CurrentSpeedKmph, TargetSpeedKmph, 1.2f * deltaTime);
 
             UpdateTargetBodyRotation();
         }

@@ -6,35 +6,30 @@ namespace Model.RaceScene
 {
     public class QuestionsModel
     {
-        public event Action RightAnswerGiven;
-        public event Action WrongAnswerGiven;
+        public event Action<bool> AnswerGiven;
 
         public readonly double[] Answers = new double[4];
-        
+
         private readonly Random _random;
+        private readonly ComplexityData _complexityData;
 
         private int _rightAnswerIndex = -1;
 
-        public QuestionsModel()
+        public QuestionsModel(ComplexityData complexityData)
         {
             _random = new Random();
+            
+            _complexityData = complexityData;
         }
 
         public string Expression { get; private set; }
+        public bool IsRightAnswerGiven { get; private set; }
 
-        public virtual void DispatchRightAnswerGiven()
+        public void GenerateQuestion()
         {
-            RightAnswerGiven?.Invoke();
-        }
-
-        public virtual void DispatchWrongAnswerGiven()
-        {
-            WrongAnswerGiven?.Invoke();
-        }
-
-        public void GenerateExpression(ComplexityData complexityData)
-        {
-            Expression = ExpressionsHelper.GenerateExpression(complexityData);
+            ResetAnswersData();
+            
+            Expression = ExpressionsHelper.GenerateExpression(_complexityData);
             
             var rightAnswer = ExpressionsHelper.EvaluateExpression(Expression);
 
@@ -57,6 +52,21 @@ namespace Model.RaceScene
                     Answers[i] = ToFixed(wrongAnswer);
                 }
             }
+        }
+
+        private void ResetAnswersData()
+        {
+            _rightAnswerIndex = -1;
+            IsRightAnswerGiven = false;
+        }
+
+        public bool GiveAnswer(int answerIndex)
+        {
+            IsRightAnswerGiven = answerIndex == _rightAnswerIndex;
+            
+            AnswerGiven?.Invoke(IsRightAnswerGiven);
+            
+            return IsRightAnswerGiven;
         }
 
         private static double ToFixed(double number)

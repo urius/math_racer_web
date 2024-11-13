@@ -10,6 +10,7 @@ namespace Controller.RaceScene
     public class RaceSceneRootController : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
+        private readonly IComplexityDataProvider _complexityDataProvider = Instance.Get<IComplexityDataProvider>();
         
         private RaceContextView _contextView;
 
@@ -17,13 +18,15 @@ namespace Controller.RaceScene
         {
             InitModel();
             InitView();
-
             InitControllers();
         }
 
         private void InitModel()
         {
-            var raceModel = new RaceModel(CarKey.Bug);
+            var complexityData = _complexityDataProvider.GetComplexityData(15, 10);
+            //todo: use real data
+
+            var raceModel = new RaceModel(CarKey.Bug, complexityData);
             _modelsHolder.SetRaceModel(raceModel);
         }
 
