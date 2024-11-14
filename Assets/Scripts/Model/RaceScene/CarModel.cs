@@ -24,9 +24,9 @@ namespace Model.RaceScene
         public float CurrentUpdateMetersPassed { get; private set; }
         public float XOffset { get; private set; }
 
-        public void Accelerate()
+        public void Accelerate(int turboLevel)
         {
-            TargetSpeedKmph += GetAcceleration();
+            TargetSpeedKmph += GetAcceleration(turboLevel);
             if (TargetSpeedKmph > MaxSpeed)
             {
                 TargetSpeedKmph = MaxSpeed;
@@ -94,9 +94,9 @@ namespace Model.RaceScene
             UpdateTargetBodyRotation();
         }
 
-        private int GetAcceleration()
+        private int GetAcceleration(int turboLevel)
         {
-            return TargetSpeedKmph <= 0 ? 20 : 15;
+            return (TargetSpeedKmph <= 0 ? 20 : 15) + turboLevel;
         }
 
         private void UpdateTargetBodyRotation()

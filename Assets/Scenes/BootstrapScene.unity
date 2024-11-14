@@ -342,6 +342,7 @@ MonoBehaviour:
   _loadingOverlayView: {fileID: 124295407}
   _prefabsHolderSo: {fileID: 11400000, guid: 66d560ec8130846e38faf78bd4e55cb6, type: 2}
   _updatesProvider: {fileID: 1299844812}
+  _localizationHolderSo: {fileID: 11400000, guid: 24b987a5894e5428591bdf8701a5bd88, type: 2}
 --- !u!114 &1299844812
 MonoBehaviour:
   m_ObjectHideFlags: 0

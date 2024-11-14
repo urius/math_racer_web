@@ -1,6 +1,7 @@
 using Controller;
 using Data;
 using Holders;
+using Holders.LocalizationProvider;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
@@ -12,6 +13,7 @@ public class InitScript : MonoBehaviour
     [SerializeField] private UILoadingOverlayView _loadingOverlayView;
     [SerializeField] private PrefabsHolderSo _prefabsHolderSo;
     [SerializeField] private UpdatesProvider _updatesProvider;
+    [SerializeField] private LocalizationsHolderSo _localizationHolderSo;
 
     private RootController _rootController;
     
@@ -26,6 +28,8 @@ public class InitScript : MonoBehaviour
 
     private void Start()
     {
+        _localizationHolderSo.SetLocaleLang("en");
+        
         InitRootControllers();
     }
 
@@ -40,6 +44,7 @@ public class InitScript : MonoBehaviour
     {
         SetupInstance.From(_prefabsHolderSo).As<IPrefabHolder>();
         SetupInstance.From(_updatesProvider).As<IUpdatesProvider>();
+        SetupInstance.From(_localizationHolderSo).As<ILocalizationProvider>();
         
         SetupNewInstance<CommandExecutor, ICommandExecutor>();
         SetupNewInstance<EventBus, IEventBus>();

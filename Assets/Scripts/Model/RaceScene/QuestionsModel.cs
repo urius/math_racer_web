@@ -6,6 +6,9 @@ namespace Model.RaceScene
 {
     public class QuestionsModel
     {
+        private const int DefaultTurboTime = 10;
+        private const int TurboTimeMin = 1;
+        
         public event Action<bool> AnswerGiven;
 
         public readonly double[] Answers = new double[4];
@@ -15,6 +18,7 @@ namespace Model.RaceScene
 
         private int _rightAnswerIndex = -1;
         private string _prevExpression = null;
+        private int _wrongAnswersCount = 0;
 
         public QuestionsModel(ComplexityData complexityData)
         {
@@ -25,6 +29,9 @@ namespace Model.RaceScene
 
         public string Expression { get; private set; }
         public bool IsRightAnswerGiven { get; private set; }
+        public int TurboLevel { get; private set; } = 0;
+        public float TurboTimeInitial { get; private set; } = 0;
+        public float TurboTimeLeft { get; private set; } = 0;
 
         public void GenerateQuestion()
         {
@@ -58,22 +65,62 @@ namespace Model.RaceScene
                     Answers[i] = ToFixed(wrongAnswer);
                 }
             }
+
+            InitTurboTime();
         }
 
-        private void ResetAnswersData()
+        public void Update(float deltaTime)
         {
-            _rightAnswerIndex = -1;
-            IsRightAnswerGiven = false;
-            Expression = null;
+            UpdateTurboTime(deltaTime);
         }
 
         public bool GiveAnswer(int answerIndex)
         {
             IsRightAnswerGiven = answerIndex == _rightAnswerIndex;
+
+            if (IsRightAnswerGiven == false)
+            {
+                _wrongAnswersCount++;
+                TurboTimeLeft = 0;
+            }
+
+            if (IsRightAnswerGiven && TurboTimeLeft > 0 && _wrongAnswersCount <= 0)
+            {
+                TurboLevel++;
+            }
+            else
+            {
+                TurboLevel = 0;
+            }
             
             AnswerGiven?.Invoke(IsRightAnswerGiven);
             
             return IsRightAnswerGiven;
+        }
+
+        private void InitTurboTime()
+        {
+            TurboTimeInitial = TurboTimeLeft = Math.Max(TurboTimeMin, DefaultTurboTime - Math.Max(0, TurboLevel));
+        }
+
+        private void UpdateTurboTime(float deltaTime)
+        {
+            if (IsRightAnswerGiven) return;
+            
+            TurboTimeLeft -= deltaTime;
+            if (TurboTimeLeft <= 0)
+            {
+                TurboTimeLeft = 0;
+                TurboLevel = 0;
+            }
+        }
+
+        private void ResetAnswersData()
+        {
+            _rightAnswerIndex = -1;
+            _wrongAnswersCount = 0;
+            IsRightAnswerGiven = false;
+            Expression = null;
         }
 
         private static double ToFixed(double number)

@@ -1,0 +1,14 @@
+{
+	"localizations": [
+		{
+			"key": "test_key",
+			"en": "Test key",
+			"ru": "Тестовый ключ"
+		},
+		{
+			"key": "turbo",
+			"en": "TURBO",
+			"ru": "ТУРБО"
+		}
+	]
+}

@@ -58,7 +58,7 @@ namespace Controller.RaceScene
         {
             if (isRightAnswer)
             {
-                _carModel.Accelerate();
+                _carModel.Accelerate(_raceModel.QuestionsModel.TurboLevel);
             }
             else
             {
