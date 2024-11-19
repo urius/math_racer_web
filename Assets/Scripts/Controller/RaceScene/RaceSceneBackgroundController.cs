@@ -1,4 +1,3 @@
-using Data;
 using Holders;
 using Infra.Instance;
 using Model.RaceScene;

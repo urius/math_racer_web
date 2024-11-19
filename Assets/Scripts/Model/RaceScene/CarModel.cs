@@ -96,7 +96,7 @@ namespace Model.RaceScene
 
         private int GetAcceleration(int turboLevel)
         {
-            return (TargetSpeedKmph <= 0 ? 20 : 15) + turboLevel;
+            return (TargetSpeedKmph <= 0 ? 15 : 10) + turboLevel;
         }
 
         private void UpdateTargetBodyRotation()

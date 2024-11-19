@@ -1,4 +1,9 @@
 using System.Collections.Generic;
+using Data;
+using Extensions;
+using Holders;
+using Infra.Instance;
+using UnityEngine;
 
 namespace Controller
 {
@@ -8,6 +13,8 @@ namespace Controller
         public abstract void DisposeInternal();
 
         private LinkedList<ControllerBase> _children;
+        
+        private static IPrefabHolder PrefabHolder => Instance.Get<IPrefabHolder>();
 
         private void Awake()
         {
@@ -18,6 +25,17 @@ namespace Controller
         {
             DisposeChildren();
             DisposeInternal();
+        }
+
+        protected TView Instantiate<TView>(PrefabKey prefabKey, Transform targetTransform)
+            where TView : MonoBehaviour
+        {
+            return PrefabHolder.Instantiate<TView>(prefabKey, targetTransform);
+        }
+
+        protected void Destroy(MonoBehaviour view)
+        {
+            Object.Destroy(view.gameObject);
         }
         
         protected void InitChildController(ControllerBase child)

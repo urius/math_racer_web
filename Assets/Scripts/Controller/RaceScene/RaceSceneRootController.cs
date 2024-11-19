@@ -28,7 +28,7 @@ namespace Controller.RaceScene
         private void InitModel()
         {
             var complexityData = _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
-            var raceModel = new RaceModel(CarKey.Bug, complexityData);
+            var raceModel = new RaceModel(CarKey.Bug, CarKey.Bug, complexityData);
             _modelsHolder.SetRaceModel(raceModel);
         }
 
@@ -43,6 +43,7 @@ namespace Controller.RaceScene
             
             InitChildController(new RaceSceneBackgroundController(_contextView.BgContainerView, _contextView.RoadContainerView));
             InitChildController(new RaceScenePlayerCarController(raceModel.PlayerCar, _contextView.PlayerCarTargetTransform));
+            InitChildController(new RaceSceneBotCarController(raceModel.BotCar, _contextView.BotCarTargetTransform));
             
             InitChildController(new RaceSceneTopPanelController(_contextView.RootCanvasView.TopPanelCanvasView));
             InitChildController(new RaceSceneQuestionsController(_contextView.RootCanvasView.RightPanelView));

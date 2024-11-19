@@ -9,7 +9,6 @@ namespace Controller.RaceScene
 {
     public class RaceScenePlayerCarController : ControllerBase
     {
-        private readonly IPrefabHolder _prefabHolder = Instance.Get<IPrefabHolder>();
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
         
@@ -30,7 +29,7 @@ namespace Controller.RaceScene
         {
             _raceModel = _modelsHolder.GetRaceModel();
             
-            _carView = _prefabHolder.Instantiate<CarView>(_carModel.CarKey.ToPrefabKey(), _targetTransform);
+            _carView = Instantiate<CarView>(_carModel.CarKey.ToPrefabKey(), _targetTransform);
 
             Subscribe();
         }
@@ -38,6 +37,9 @@ namespace Controller.RaceScene
         public override void DisposeInternal()
         {
             Unsubscribe();
+            
+            Destroy(_carView);
+            _carView = null;
         }
 
         private void Subscribe()
@@ -72,10 +74,10 @@ namespace Controller.RaceScene
             
             _carModel.Update(Time.deltaTime);
             
-            MoveCar(Time.deltaTime);
+            UpdateCarView(Time.deltaTime);
         }
         
-        private void MoveCar(float deltaTime)
+        private void UpdateCarView(float deltaTime)
         {
             var deltaWheelRotation = deltaTime * _carModel.CurrentSpeedMetersPerSecond * _carView.WheelRotationMultiplier;
             
