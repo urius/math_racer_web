@@ -141,15 +141,8 @@ namespace Controller.RaceScene
 
         private void UpdateTurboText()
         {
-            var turboText = _localizationProvider.GetLocale(LocalizationKeys.Turbo);
-            if (_questionsModel.TurboLevel <= 1)
-            {
-                _rightPanelView.TurboTextView.SetText(turboText);
-            }
-            else
-            {
-                _rightPanelView.TurboTextView.SetText(turboText + $" (x{_questionsModel.TurboLevel})");
-            }
+            var accelerationText = _localizationProvider.GetLocale(LocalizationKeys.Acceleration);
+            _rightPanelView.TurboTextView.SetText(accelerationText + $" +{_questionsModel.TurboLevel}");
         }
 
         private void UpdateTurboTextVisibility()

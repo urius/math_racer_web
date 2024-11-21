@@ -2,6 +2,6 @@ namespace Data
 {
     public static class LocalizationKeys
     {
-        public const string Turbo = "turbo";
+        public const string Acceleration = "acceleration";
     }
 }

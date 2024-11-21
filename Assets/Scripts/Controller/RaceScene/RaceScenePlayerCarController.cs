@@ -70,7 +70,10 @@ namespace Controller.RaceScene
 
         private void OnGameplayUpdate()
         {
-            //Time.timeScale = 0.2f;
+            if (_carModel.PassedMeters > 400)
+            {
+                //Time.timeScale = Math.Min(1, Math.Max(0, 500 - _carModel.PassedMeters) / 30);
+            }
             
             _carModel.Update(Time.deltaTime);
             
