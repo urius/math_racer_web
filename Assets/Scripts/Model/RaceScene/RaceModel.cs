@@ -4,6 +4,8 @@ namespace Model.RaceScene
 {
     public class RaceModel
     {
+        public readonly int DistanceMeters = 500;
+        
         public RaceModel(CarKey playerCarKey, CarKey botCarKey, ComplexityData complexityData)
         {
             QuestionsModel = new QuestionsModel(complexityData);

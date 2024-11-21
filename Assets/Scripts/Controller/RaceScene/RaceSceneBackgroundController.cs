@@ -1,7 +1,6 @@
 using Holders;
 using Infra.Instance;
 using Model.RaceScene;
-using UnityEngine;
 using View.Gameplay.Race;
 
 namespace Controller.RaceScene
@@ -13,8 +12,9 @@ namespace Controller.RaceScene
         
         private readonly BgContainerView _bgContainerView;
         private readonly RoadContainerView _roadContainerView;
-        
+
         private CarModel _playerCarModel;
+        private RaceModel _raceModel;
 
         public RaceSceneBackgroundController(BgContainerView bgContainerView, RoadContainerView roadContainerView)
         {
@@ -24,7 +24,8 @@ namespace Controller.RaceScene
 
         public override void Initialize()
         {
-            _playerCarModel = _modelsHolder.GetRaceModel().PlayerCar;
+            _raceModel = _modelsHolder.GetRaceModel();
+            _playerCarModel = _raceModel.PlayerCar;
             
             Subscribe();
         }
@@ -46,7 +47,7 @@ namespace Controller.RaceScene
 
         private void OnGameplayUpdate()
         {
-            var distancePassed = _playerCarModel.CurrentSpeedMetersPerSecond * Time.deltaTime;
+            var distancePassed = _playerCarModel.CurrentUpdateMetersPassed;
             
             _bgContainerView.Move(distancePassed * 0.2f);
             _roadContainerView.Move(distancePassed);

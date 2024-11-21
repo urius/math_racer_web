@@ -116,7 +116,7 @@ namespace Controller.RaceScene
 
         private void UpdateCarView(float deltaTime)
         {
-            var deltaWheelRotation = deltaTime * _carModel.CurrentSpeedMetersPerSecond * _carView.WheelRotationMultiplier;
+            var deltaWheelRotation = _carModel.CurrentUpdateMetersPassed * _carView.WheelRotationMultiplier;
             
             _carView.SetBodyRotation(_carModel.CurrentBodyRotation);
             _carView.RotateWheels(deltaWheelRotation);

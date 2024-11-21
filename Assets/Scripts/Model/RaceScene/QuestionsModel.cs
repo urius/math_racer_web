@@ -29,6 +29,7 @@ namespace Model.RaceScene
 
         public string Expression { get; private set; }
         public bool IsRightAnswerGiven { get; private set; }
+        public int QuestionsCount { get; private set; } = 0;
         public int TurboLevel { get; private set; } = 0;
         public float TurboTimeInitial { get; private set; } = 0;
         public float TurboTimeLeft { get; private set; } = 0;
@@ -67,6 +68,8 @@ namespace Model.RaceScene
             }
 
             InitTurboTime();
+
+            QuestionsCount++;
         }
 
         public void Update(float deltaTime)

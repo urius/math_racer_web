@@ -40,10 +40,16 @@ namespace Controller.RaceScene
         private void InitControllers()
         {
             var raceModel = _modelsHolder.GetRaceModel();
-            
-            InitChildController(new RaceSceneBackgroundController(_contextView.BgContainerView, _contextView.RoadContainerView));
+
             InitChildController(new RaceScenePlayerCarController(raceModel.PlayerCar, _contextView.PlayerCarTargetTransform));
             InitChildController(new RaceSceneBotCarController(raceModel.BotCar, _contextView.BotCarTargetTransform));
+            InitChildController(new RaceSceneStartLineController(_contextView.StartLineTransform, _contextView.TrafficLightView));
+            InitChildController(new RaceSceneBackgroundController(
+                _contextView.BgContainerView,
+                _contextView.RoadContainerView));
+            InitChildController(new RaceFinishController(
+                _contextView.FinishLineTransform,
+                _contextView.PlayerCarTargetTransform));
             
             InitChildController(new RaceSceneTopPanelController(_contextView.RootCanvasView.TopPanelCanvasView));
             InitChildController(new RaceSceneQuestionsController(_contextView.RootCanvasView.RightPanelView));

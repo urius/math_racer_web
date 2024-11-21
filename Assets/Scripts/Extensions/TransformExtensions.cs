@@ -11,5 +11,21 @@ namespace Extensions
             
             transform.position = pos;
         }
+        
+        public static void MoveX(this Transform transform, float x)
+        {
+            var pos = transform.position;
+            pos.x += x;
+            
+            transform.position = pos;
+        }
+        
+        public static void SetXPosition(this Transform transform, float xPosition)
+        {
+            var pos = transform.position;
+            pos.x = xPosition;
+            
+            transform.position = pos;
+        }
     }
 }

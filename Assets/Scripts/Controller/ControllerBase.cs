@@ -1,14 +1,18 @@
+using System;
 using System.Collections.Generic;
 using Data;
 using Extensions;
 using Holders;
 using Infra.Instance;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Controller
 {
     public abstract class ControllerBase : IController
     {
+        public Action<ControllerBase> DisposeRequested;
+        
         public abstract void Initialize();
         public abstract void DisposeInternal();
 
@@ -25,6 +29,11 @@ namespace Controller
         {
             DisposeChildren();
             DisposeInternal();
+        }
+
+        protected void RequestDispose()
+        {
+            DisposeRequested?.Invoke(this);
         }
 
         protected TView Instantiate<TView>(PrefabKey prefabKey, Transform targetTransform)
@@ -49,6 +58,25 @@ namespace Controller
             _children ??= new LinkedList<ControllerBase>();
 
             _children.AddLast(child);
+            SubscribeOnChild(child);
+        }
+
+        private void SubscribeOnChild(ControllerBase child)
+        {
+            child.DisposeRequested += OnChildDisposeRequested;
+        }
+        
+        private void UnsubscribeFromChild(ControllerBase child)
+        {
+            child.DisposeRequested -= OnChildDisposeRequested;
+        }
+
+        private void OnChildDisposeRequested(ControllerBase child)
+        {
+            UnsubscribeFromChild(child);
+
+            _children.Remove(child);
+            child.Dispose();
         }
 
         private void DisposeChildren()
@@ -57,6 +85,7 @@ namespace Controller
             {
                 foreach (var child in _children)
                 {
+                    UnsubscribeFromChild(child);
                     child.Dispose();
                 }
 
