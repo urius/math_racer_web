@@ -18,7 +18,6 @@ namespace Model.RaceScene
 
         private int _rightAnswerIndex = -1;
         private string _prevExpression = null;
-        private int _wrongAnswersCount = 0;
 
         public QuestionsModel(ComplexityData complexityData)
         {
@@ -30,6 +29,8 @@ namespace Model.RaceScene
         public string Expression { get; private set; }
         public bool IsRightAnswerGiven { get; private set; }
         public int QuestionsCount { get; private set; } = 0;
+        public int RightAnswersCount { get; private set; } = 0;
+        public int WrongAnswersCount { get; private set; } = 0;
         public int TurboLevel { get; private set; } = 0;
         public float TurboTimeInitial { get; private set; } = 0;
         public float TurboTimeLeft { get; private set; } = 0;
@@ -39,6 +40,8 @@ namespace Model.RaceScene
             _prevExpression = Expression;
             
             ResetAnswersData();
+            
+            QuestionsCount++;
 
             while (Expression == null || Expression == _prevExpression)
             {
@@ -68,8 +71,6 @@ namespace Model.RaceScene
             }
 
             InitTurboTime();
-
-            QuestionsCount++;
         }
 
         public void Update(float deltaTime)
@@ -83,11 +84,15 @@ namespace Model.RaceScene
 
             if (IsRightAnswerGiven == false)
             {
-                _wrongAnswersCount++;
+                WrongAnswersCount++;
                 TurboTimeLeft = 0;
             }
+            else
+            {
+                RightAnswersCount++;
+            }
 
-            if (IsRightAnswerGiven && TurboTimeLeft > 0 && _wrongAnswersCount <= 0)
+            if (IsRightAnswerGiven && TurboTimeLeft > 0 && WrongAnswersCount <= 0)
             {
                 TurboLevel++;
             }
@@ -103,6 +108,12 @@ namespace Model.RaceScene
 
         private void InitTurboTime()
         {
+            if (QuestionsCount <= 1)
+            {
+                TurboTimeInitial = TurboTimeLeft = 0;
+                return;
+            }
+
             TurboTimeInitial = TurboTimeLeft = Math.Max(TurboTimeMin, DefaultTurboTime - Math.Max(0, TurboLevel));
         }
 
@@ -121,7 +132,7 @@ namespace Model.RaceScene
         private void ResetAnswersData()
         {
             _rightAnswerIndex = -1;
-            _wrongAnswersCount = 0;
+            RightAnswersCount = WrongAnswersCount = 0;
             IsRightAnswerGiven = false;
             Expression = null;
         }

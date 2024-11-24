@@ -12,24 +12,46 @@ namespace Controller.RaceScene
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IComplexityDataProvider _complexityDataProvider = Instance.Get<IComplexityDataProvider>();
+        private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
         
         private RaceContextView _contextView;
         private PlayerModel _playerModel;
+        private RaceModel _raceModel;
 
         public override void Initialize()
         {
-            _playerModel = _modelsHolder.GetPlayerModel();
-            
             InitModel();
             InitView();
             InitControllers();
+
+            Subscribe();
+        }
+
+        public override void DisposeInternal()
+        {
+            Unsubscribe();
+            
+            _contextView = null;
+        }
+
+        private void Subscribe()
+        {
+            _updatesProvider.GameplayUpdate += OnGameplayUpdate;
+        }
+
+        private void Unsubscribe()
+        {
+            _updatesProvider.GameplayUpdate += OnGameplayUpdate;
         }
 
         private void InitModel()
         {
+            _playerModel = _modelsHolder.GetPlayerModel();
+            
             var complexityData = _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
-            var raceModel = new RaceModel(CarKey.Bug, CarKey.Bug, complexityData);
-            _modelsHolder.SetRaceModel(raceModel);
+            _raceModel = new RaceModel(CarKey.Bug, CarKey.Bug, complexityData);
+            
+            _modelsHolder.SetRaceModel(_raceModel);
         }
 
         private void InitView()
@@ -39,10 +61,8 @@ namespace Controller.RaceScene
 
         private void InitControllers()
         {
-            var raceModel = _modelsHolder.GetRaceModel();
-
-            InitChildController(new RaceScenePlayerCarController(raceModel.PlayerCar, _contextView.PlayerCarTargetTransform));
-            InitChildController(new RaceSceneBotCarController(raceModel.BotCar, _contextView.BotCarTargetTransform));
+            InitChildController(new RaceScenePlayerCarController(_raceModel.PlayerCar, _contextView.PlayerCarTargetTransform));
+            InitChildController(new RaceSceneBotCarController(_raceModel.BotCar, _contextView.BotCarTargetTransform));
             InitChildController(new RaceSceneStartLineController(_contextView.StartLineTransform, _contextView.TrafficLightView));
             InitChildController(new RaceSceneBackgroundController(
                 _contextView.BgContainerView,
@@ -55,9 +75,9 @@ namespace Controller.RaceScene
             InitChildController(new RaceSceneQuestionsController(_contextView.RootCanvasView.RightPanelView));
         }
 
-        public override void DisposeInternal()
+        private void OnGameplayUpdate()
         {
-            _contextView = null;
+            _raceModel.Update(Time.deltaTime);
         }
     }
 }

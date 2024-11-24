@@ -15,7 +15,6 @@ namespace Controller.RaceScene
         private readonly float _playerCarContainerXPosition;
         
         private RaceModel _raceModel;
-        private CarModel _playerCarModel;
 
         public RaceFinishController(Transform finishLineTransform, Transform playerCarTargetTransform)
         {
@@ -27,7 +26,6 @@ namespace Controller.RaceScene
         public override void Initialize()
         {
             _raceModel = _modelsHolder.GetRaceModel();
-            _playerCarModel = _raceModel.PlayerCar;
             
             Subscribe();
         }
@@ -40,19 +38,30 @@ namespace Controller.RaceScene
         private void Subscribe()
         {
             _updatesProvider.GameplayUpdate += OnGameplayUpdate;
+
+            _raceModel.IsFinishingFlagChanged += OnIsFinishingFlagChanged;
         }
 
         private void Unsubscribe()
         {
             _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
+            
+            _raceModel.IsFinishingFlagChanged -= OnIsFinishingFlagChanged;
         }
-        
+
         private void OnGameplayUpdate()
         {
-            var distanceToFinish = _raceModel.DistanceMeters - _playerCarModel.PassedMeters;
-            _finishLineTransform.SetXPosition(_playerCarContainerXPosition + distanceToFinish);
+            _finishLineTransform.SetXPosition(_playerCarContainerXPosition + _raceModel.PlayerCarDistanceToFinish);
 
-            if (distanceToFinish < 10)
+            if (_raceModel.PlayerCarDistanceToFinish < -3)
+            {
+                Time.timeScale = 1f;
+            }
+        }
+
+        private void OnIsFinishingFlagChanged(bool isFinishing)
+        {
+            if (isFinishing)
             {
                 Time.timeScale = 0.1f;
             }

@@ -27,5 +27,13 @@ namespace Extensions
             
             transform.position = pos;
         }
+        
+        public static void SetAnchoredXPosition(this RectTransform transform, float xPosition)
+        {
+            var pos = transform.anchoredPosition;
+            pos.x = xPosition;
+            
+            transform.anchoredPosition = pos;
+        }
     }
 }

@@ -61,8 +61,6 @@ namespace Controller.RaceScene
 
         private void OnGameplayUpdate()
         {
-            _carModel.Update(Time.deltaTime);
-
             UpdateCarView(Time.deltaTime);
         }
 

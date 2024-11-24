@@ -23,6 +23,7 @@ namespace Controller.RaceScene
         private readonly UITurboTextView _turboTextView;
 
         private QuestionsModel _questionsModel;
+        private RaceModel _raceModel;
 
         public RaceSceneQuestionsController(UIRightPanelView rightPanelView)
         {
@@ -33,6 +34,7 @@ namespace Controller.RaceScene
 
         public override void Initialize()
         {
+            _raceModel = _modelsHolder.GetRaceModel();
             _questionsModel = _modelsHolder.GetRaceModel().QuestionsModel;
 
             for (var i = 0; i < 100; i++)
@@ -44,6 +46,8 @@ namespace Controller.RaceScene
 
             RefreshQuestion();
             UpdateTurboTextVisibility();
+            
+            _rightPanelView.AnimateShow();
         }
 
         private void TestGenerateExpressionMethod()
@@ -65,18 +69,18 @@ namespace Controller.RaceScene
         {
             _answersPanel.AnswerClicked += OnAnswerClicked;
             _updatesProvider.GameplayUpdate += OnGameplayUpdate;
+            _raceModel.IsFinishingFlagChanged += OnIsFinishingFlagChanged;
         }
 
         private void Unsubscribe()
         {
             _answersPanel.AnswerClicked -= OnAnswerClicked;
             _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
+            _raceModel.IsFinishingFlagChanged -= OnIsFinishingFlagChanged;
         }
 
         private void OnGameplayUpdate()
         {
-            _questionsModel.Update(Time.deltaTime);
-
             UpdateTurboLineView();
             UpdateTurboTextAlpha(Time.deltaTime);
         }
@@ -100,7 +104,14 @@ namespace Controller.RaceScene
 
         private void UpdateTurboLineView()
         {
-            _rightPanelView.SetTurboTimerLineXScale(_questionsModel.TurboTimeLeft / _questionsModel.TurboTimeInitial);
+            if (_questionsModel.TurboTimeInitial <= 0)
+            {
+                _rightPanelView.SetTurboTimerLineXScale(0);
+            }
+            else
+            {
+                _rightPanelView.SetTurboTimerLineXScale(_questionsModel.TurboTimeLeft / _questionsModel.TurboTimeInitial);
+            }
         }
 
         private void OnAnswerClicked(int answerIndex)
@@ -225,6 +236,11 @@ namespace Controller.RaceScene
 
             // Trim any leading or trailing spaces
             return sb.ToString().Trim();
+        }
+
+        private void OnIsFinishingFlagChanged(bool isFinishing)
+        {
+            _rightPanelView.AnimateHide();
         }
     }
 }
