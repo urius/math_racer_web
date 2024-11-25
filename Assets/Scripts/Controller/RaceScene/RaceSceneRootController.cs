@@ -69,7 +69,8 @@ namespace Controller.RaceScene
                 _contextView.RoadContainerView));
             InitChildController(new RaceFinishController(
                 _contextView.FinishLineTransform,
-                _contextView.PlayerCarTargetTransform));
+                _contextView.PlayerCarTargetTransform,
+                _contextView.RootCanvasView));
             
             InitChildController(new RaceSceneTopPanelController(_contextView.RootCanvasView.TopPanelCanvasView));
             InitChildController(new RaceSceneQuestionsController(_contextView.RootCanvasView.RightPanelView));

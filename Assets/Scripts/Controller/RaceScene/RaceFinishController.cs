@@ -3,6 +3,7 @@ using Holders;
 using Infra.Instance;
 using Model.RaceScene;
 using UnityEngine;
+using View.UI.RaceScene;
 
 namespace Controller.RaceScene
 {
@@ -12,14 +13,19 @@ namespace Controller.RaceScene
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
 
         private readonly Transform _finishLineTransform;
+        private readonly UIRaceSceneRootCanvasView _rootCanvasView;
         private readonly float _playerCarContainerXPosition;
         
         private RaceModel _raceModel;
 
-        public RaceFinishController(Transform finishLineTransform, Transform playerCarTargetTransform)
+        public RaceFinishController(
+            Transform finishLineTransform,
+            Transform playerCarTargetTransform,
+            UIRaceSceneRootCanvasView rootCanvasView)
         {
             _finishLineTransform = finishLineTransform;
-            
+            _rootCanvasView = rootCanvasView;
+
             _playerCarContainerXPosition = playerCarTargetTransform.position.x;
         }
 
@@ -40,13 +46,24 @@ namespace Controller.RaceScene
             _updatesProvider.GameplayUpdate += OnGameplayUpdate;
 
             _raceModel.IsFinishingFlagChanged += OnIsFinishingFlagChanged;
+            _raceModel.IsFinishedFlagChanged += OnIsFinishedFlagChanged;
         }
 
         private void Unsubscribe()
         {
             _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
             
-            _raceModel.IsFinishingFlagChanged -= OnIsFinishingFlagChanged;
+            _raceModel.IsFinishingFlagChanged -= OnIsFinishingFlagChanged;            
+            _raceModel.IsFinishedFlagChanged -= OnIsFinishedFlagChanged;
+
+        }
+
+        private void OnIsFinishedFlagChanged(bool isFinished)
+        {
+            if (isFinished)
+            {
+                InitChildController(new RaceFinishOverlayViewController(_rootCanvasView.transform));
+            }
         }
 
         private void OnGameplayUpdate()
