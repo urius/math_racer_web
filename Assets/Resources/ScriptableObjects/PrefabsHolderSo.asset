@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: PrefabsHolderSo
   m_EditorClassIdentifier: 
   _items:
+  - Key: 1
+    Prefab: {fileID: 3385088698410052161, guid: 9ea5ac3a60b184be18d32c58ad166245, type: 3}
   - Key: 1001
     Prefab: {fileID: 2833295192266632595, guid: 5e6ed6c60d4f04065bc9d87733543dc9, type: 3}

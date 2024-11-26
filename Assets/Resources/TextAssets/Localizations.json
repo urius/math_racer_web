@@ -9,6 +9,66 @@
 			"key": "acceleration",
 			"en": "ACCELERATION",
 			"ru": "УСКОРЕНИЕ"
+		},
+		{
+			"key": "finish",
+			"en": "FINISH",
+			"ru": "ФИНИШ"
+		},
+		{
+			"key": "first_place",
+			"en": "First place!",
+			"ru": "Первое место!"
+		},
+		{
+			"key": "complexity",
+			"en": "Complexity",
+			"ru": "Сложность"
+		},
+		{
+			"key": "distance",
+			"en": "Distance",
+			"ru": "Дистанция"
+		},
+		{
+			"key": "meters_short",
+			"en": "m",
+			"ru": "м"
+		},
+		{
+			"key": "accelerations",
+			"en": "Accelerations",
+			"ru": "Ускорения"
+		},
+		{
+			"key": "brakings",
+			"en": "Brakings",
+			"ru": "Торможения"
+		},
+		{
+			"key": "speed",
+			"en": "Speed",
+			"ru": "Скорость"
+		},
+		{
+			"key": "km_h",
+			"en": "km/h",
+			"ru": "км/ч"
+		},
+		{
+			"key": "reward",
+			"en": "Reward",
+			"ru": "Награда"
+		},
+		{
+			"key": "double_reward_button",
+			"en": "DOUBLE REWARD",
+			"ru": "УДВОИТЬ НАГРАДУ"
+		},
+		{
+			"key": "continue_button",
+			"en": "CONTINUE",
+			"ru": "ПРОДОЛЖИТЬ"
 		}
 	]
 }

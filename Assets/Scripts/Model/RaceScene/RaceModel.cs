@@ -8,11 +8,13 @@ namespace Model.RaceScene
         public event Action<bool> IsFinishingFlagChanged; 
         public event Action<bool> IsFinishedFlagChanged; 
         
+        private readonly ComplexityData _complexityData;
         
         public readonly int DistanceMeters = 500;
         
         public RaceModel(CarKey playerCarKey, CarKey botCarKey, ComplexityData complexityData)
         {
+            _complexityData = complexityData;
             QuestionsModel = new QuestionsModel(complexityData);
             PlayerCar = new CarModel(playerCarKey);
             BotCar = new CarModel(botCarKey);
@@ -45,6 +47,22 @@ namespace Model.RaceScene
                 RaceResultsModel.SetResults(PlayerCar, BotCar, QuestionsModel);
                 IsFinishedFlagChanged?.Invoke(IsFinished);
             }
+        }
+
+        public int GetCashReward()
+        {
+            return (DistanceMeters / 10 + RaceResultsModel.PlayerSpeed) * (int)Math.Ceiling(_complexityData.ComplexityLevel / 3f);
+        }
+
+        public int GetGoldReward()
+        {
+            var result = 0;
+            
+            result += RaceResultsModel.IsFirst ? 1 : 0;
+            result += RaceResultsModel.WrongAnswersCount <= 0 ? 1 : 0;
+            result += _complexityData.ComplexityLevel / 5;
+
+            return result;
         }
     }
 }

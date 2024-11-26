@@ -14,6 +14,10 @@ namespace Data
         public const char OperatorMinusChar = '-';
         public const char OperatorMultiplyChar = '*';
         public const char OperatorDivideChar = '/';
+        
+        public const string TextSpriteCash = "<sprite name=\"cash\">";
+        public const string TextSpriteCrystal = "<sprite name=\"crystal\">";
+        public const string TextSpriteAds = "<sprite name=\"ads\">";
 
         public const int FPS = 50;
         public const float KmphToMps = 1000f / 3600f;

@@ -29,8 +29,9 @@ namespace Model.RaceScene
         public string Expression { get; private set; }
         public bool IsRightAnswerGiven { get; private set; }
         public int QuestionsCount { get; private set; } = 0;
-        public int RightAnswersCount { get; private set; } = 0;
-        public int WrongAnswersCount { get; private set; } = 0;
+        public int RightAnswersCountTotal { get; private set; } = 0;
+        public int WrongAnswersCountTotal { get; private set; } = 0;
+        public int WrongAnswersCountForQuestion { get; private set; } = 0;
         public int TurboLevel { get; private set; } = 0;
         public float TurboTimeInitial { get; private set; } = 0;
         public float TurboTimeLeft { get; private set; } = 0;
@@ -84,15 +85,16 @@ namespace Model.RaceScene
 
             if (IsRightAnswerGiven == false)
             {
-                WrongAnswersCount++;
+                WrongAnswersCountTotal++;
+                WrongAnswersCountForQuestion++;
                 TurboTimeLeft = 0;
             }
             else
             {
-                RightAnswersCount++;
+                RightAnswersCountTotal++;
             }
 
-            if (IsRightAnswerGiven && TurboTimeLeft > 0 && WrongAnswersCount <= 0)
+            if (IsRightAnswerGiven && TurboTimeLeft > 0 && WrongAnswersCountForQuestion <= 0)
             {
                 TurboLevel++;
             }
@@ -132,7 +134,7 @@ namespace Model.RaceScene
         private void ResetAnswersData()
         {
             _rightAnswerIndex = -1;
-            RightAnswersCount = WrongAnswersCount = 0;
+            WrongAnswersCountForQuestion = 0;
             IsRightAnswerGiven = false;
             Expression = null;
         }

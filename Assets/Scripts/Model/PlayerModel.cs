@@ -12,5 +12,10 @@ namespace Model
         public int Level { get; private set; }
         public int ComplexityLevel { get; private set; }
         public int MoneyAmount { get; private set; }
+
+        public int GetOverallComplexityPercent()
+        {
+            return ComplexityLevel * 10 + Level;
+        }
     }
 }

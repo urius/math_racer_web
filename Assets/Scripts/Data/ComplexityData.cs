@@ -4,6 +4,7 @@ namespace Data
 {
     public struct ComplexityData
     {
+        public readonly int ComplexityLevel;
         public readonly int MaxNumbersCount;
         public readonly IReadOnlyList<string> AvailableOperators;
         public readonly int MaxNumberValueForEasyOperations;
@@ -11,12 +12,14 @@ namespace Data
         public readonly int MaxDivideOperatorsCount;
 
         public ComplexityData(
+            int complexityLevel,
             int maxNumbersCount,
             IReadOnlyList<string> availableOperators,
             int maxNumberValueForEasyOperations,
-            int maxNumberValueForHardOperations, 
+            int maxNumberValueForHardOperations,
             int maxDivideOperatorsCount)
         {
+            ComplexityLevel = complexityLevel;
             MaxNumbersCount = maxNumbersCount;
             AvailableOperators = availableOperators;
             MaxNumberValueForEasyOperations = maxNumberValueForEasyOperations;

@@ -29,6 +29,7 @@ namespace Holders
             var maxNumberValueForHardOperations = 2 + (int)(0.5f * playerLevel) + Math.Max(0, complexityLevel - 10);
 
             return new ComplexityData(
+                complexityLevel,
                 maxNumbersCount,
                 availableOperators,
                 maxNumberValueForEasyOperations,

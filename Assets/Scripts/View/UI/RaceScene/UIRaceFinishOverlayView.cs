@@ -139,7 +139,7 @@ namespace View.UI.RaceScene
         private void AnimateShowRewardsPhase()
         {
             AnimateTextAlpha(_rewardsText, 1, 0.4f)
-                .setDelay(0.3f)
+                .setDelay(0.8f)
                 .setOnComplete(AnimateShowButtonsPhase);
         }
 
