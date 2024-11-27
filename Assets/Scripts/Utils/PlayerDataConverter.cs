@@ -10,7 +10,8 @@ namespace Utils
             return new PlayerModel(
                 playerDataDto.Level,
                 playerDataDto.ComplexityLevel,
-                playerDataDto.MoneyAmount);
+                playerDataDto.MoneyAmount,
+                playerDataDto.GoldAmount);
         }
     }
 }

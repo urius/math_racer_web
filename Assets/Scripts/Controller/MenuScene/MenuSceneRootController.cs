@@ -1,9 +1,7 @@
-using Data;
 using Events;
 using Infra.EventBus;
 using Infra.Instance;
 using UnityEngine;
-using View.UI;
 using View.UI.MenuScene;
 
 namespace Controller.MenuScene
@@ -40,7 +38,7 @@ namespace Controller.MenuScene
 
         private void OnPlayButtonClicked()
         {
-            _eventBus.Dispatch(new RequestLoadSceneEvent(Constants.RaceSceneName));
+            _eventBus.Dispatch(new RequestNextSceneEvent());
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Model.RaceScene
         private readonly ComplexityData _complexityData;
         
         public readonly int DistanceMeters = 500;
-        
+
         public RaceModel(CarKey playerCarKey, CarKey botCarKey, ComplexityData complexityData)
         {
             _complexityData = complexityData;
@@ -25,6 +25,7 @@ namespace Model.RaceScene
         public CarModel PlayerCar { get; }
         public CarModel BotCar { get; }
         public RaceResultsModel RaceResultsModel { get; }
+        public RaceRewardsModel RaceRewards { get; private set; }
         public bool IsFinishing { get; private set; }
         public bool IsFinished { get; private set; }
         public float PlayerCarDistanceToFinish => DistanceMeters - PlayerCar.PassedMeters;
@@ -45,24 +46,9 @@ namespace Model.RaceScene
             {
                 IsFinished = true;
                 RaceResultsModel.SetResults(PlayerCar, BotCar, QuestionsModel);
+                RaceRewards = new RaceRewardsModel(DistanceMeters, RaceResultsModel, _complexityData);
                 IsFinishedFlagChanged?.Invoke(IsFinished);
             }
-        }
-
-        public int GetCashReward()
-        {
-            return (DistanceMeters / 10 + RaceResultsModel.PlayerSpeed) * (int)Math.Ceiling(_complexityData.ComplexityLevel / 3f);
-        }
-
-        public int GetGoldReward()
-        {
-            var result = 0;
-            
-            result += RaceResultsModel.IsFirst ? 1 : 0;
-            result += RaceResultsModel.WrongAnswersCount <= 0 ? 1 : 0;
-            result += _complexityData.ComplexityLevel / 5;
-
-            return result;
         }
     }
 }

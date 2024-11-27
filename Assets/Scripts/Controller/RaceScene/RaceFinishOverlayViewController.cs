@@ -1,7 +1,9 @@
 using Cysharp.Threading.Tasks;
 using Data;
+using Events;
 using Holders;
 using Holders.LocalizationProvider;
+using Infra.EventBus;
 using Infra.Instance;
 using Model;
 using Model.RaceScene;
@@ -15,12 +17,15 @@ namespace Controller.RaceScene
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
+        private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
         
         private readonly Transform _targetTransform;
+        
         private RaceModel _raceModel;
         private RaceResultsModel _raceResultsModel;
         private UIRaceFinishOverlayView _finishOverlayView;
         private PlayerModel _playerModel;
+        private RaceRewardsModel _raceRewards;
 
         public RaceFinishOverlayViewController(Transform targetTransform)
         {
@@ -32,6 +37,7 @@ namespace Controller.RaceScene
             _playerModel = _modelsHolder.GetPlayerModel();
             _raceModel = _modelsHolder.GetRaceModel();
             _raceResultsModel = _raceModel.RaceResultsModel;
+            _raceRewards = _raceModel.RaceRewards; 
             
             InitView().Forget();
         }
@@ -78,11 +84,11 @@ namespace Controller.RaceScene
 
         private void DisplayRewards()
         {
-            var cashRewardAmountText = FormatGreen($"+{_raceModel.GetCashReward()}");
+            var cashRewardAmountText = FormatGreen($"+{_raceRewards.CashReward}");
             var cashRewardText = $"{cashRewardAmountText} {Constants.TextSpriteCash}";
 
-            var goldRewardAmount = _raceModel.GetGoldReward();
-            var goldRewardAmountText = FormatColor($"+{_raceModel.GetGoldReward()}", "#0169FF");
+            var goldRewardAmount = _raceRewards.GoldReward;
+            var goldRewardAmountText = FormatColor($"+{_raceRewards.GoldReward}", "#0169FF");
             var goldRewardText = goldRewardAmount > 0
                 ? $"{goldRewardAmountText} {Constants.TextSpriteCrystal}"
                 : string.Empty;
@@ -104,7 +110,7 @@ namespace Controller.RaceScene
 
         private void OnContinueClicked()
         {
-            
+            _eventBus.Dispatch(new RequestNextSceneEvent());
         }
 
         private void OnDoubleRewardsClicked()

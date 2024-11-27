@@ -21,6 +21,7 @@ namespace Controller
         private readonly UILoadingOverlayView _loadingOverlayView;
         
         private ControllerBase _currentSceneRootController;
+        private string _currentSceneName;
 
         public RootController(UILoadingOverlayView loadingOverlayView)
         {
@@ -48,17 +49,29 @@ namespace Controller
 
         private void Subscribe()
         {
-            _eventBus.Subscribe<RequestLoadSceneEvent>(OnRequestLoadSceneEvent);
+            _eventBus.Subscribe<RequestNextSceneEvent>(OnRequestNextSceneEvent);
         }
 
         private void Unsubscribe()
         {
-            _eventBus.Unsubscribe<RequestLoadSceneEvent>(OnRequestLoadSceneEvent);
+            _eventBus.Unsubscribe<RequestNextSceneEvent>(OnRequestNextSceneEvent);
         }
 
-        private void OnRequestLoadSceneEvent(RequestLoadSceneEvent e)
+        private void OnRequestNextSceneEvent(RequestNextSceneEvent e)
         {
-            LoadScene(e.SceneName).Forget();
+            var nextSceneName = string.Empty;
+
+            switch (_currentSceneName)
+            {
+                case Constants.MenuSceneName:
+                    nextSceneName = Constants.RaceSceneName;
+                    break;
+                case Constants.RaceSceneName:
+                    nextSceneName = Constants.MenuSceneName;
+                    break;
+            }
+
+            LoadScene(nextSceneName).Forget();
         }
 
         private async UniTaskVoid LoadScene(string sceneName)
@@ -68,6 +81,7 @@ namespace Controller
 
             await SceneManager.LoadSceneAsync(sceneName);
             _currentSceneRootController = RunSceneRootController(sceneName);
+            _currentSceneName = sceneName;
             
             await _loadingOverlayView.HideLoadingOverlay();
         }
