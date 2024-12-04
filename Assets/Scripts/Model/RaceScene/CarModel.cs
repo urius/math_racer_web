@@ -24,15 +24,21 @@ namespace Model.RaceScene
         public float CurrentUpdateMetersPassed { get; private set; }
         public float XOffset { get; private set; }
 
-        public void Accelerate(int turboLevel)
+        public void Accelerate()
         {
-            TargetSpeedKmph += GetAcceleration(turboLevel);
+            TargetSpeedKmph += GetAcceleration();
             if (TargetSpeedKmph > MaxSpeed)
             {
                 TargetSpeedKmph = MaxSpeed;
             }
 
             UpdateTargetBodyRotation();
+        }
+        
+        public void AccelerateTurbo()
+        {
+            Accelerate();
+            Accelerate();
         }
 
         public void Decelerate()
@@ -89,14 +95,31 @@ namespace Model.RaceScene
 
         private void AdjustSpeed(float deltaTime)
         {
-            CurrentSpeedKmph = Mathf.Lerp(CurrentSpeedKmph, TargetSpeedKmph, 1.2f * deltaTime);
+            var deltaSpeed = deltaTime * 6;
+            
+            if (CurrentSpeedKmph < TargetSpeedKmph)
+            {
+                CurrentSpeedKmph += deltaSpeed;
+                if (CurrentSpeedKmph > TargetSpeedKmph)
+                {
+                    CurrentSpeedKmph = TargetSpeedKmph;
+                }
+            }
+            else if (CurrentSpeedKmph > TargetSpeedKmph)
+            {
+                CurrentSpeedKmph -= deltaSpeed;
+                if (CurrentSpeedKmph < TargetSpeedKmph)
+                {
+                    CurrentSpeedKmph = TargetSpeedKmph;
+                }
+            }
 
             UpdateTargetBodyRotation();
         }
 
-        private int GetAcceleration(int turboLevel)
+        private int GetAcceleration()
         {
-            return (TargetSpeedKmph <= 0 ? 15 : 10) + turboLevel;
+            return (TargetSpeedKmph <= 0 ? 15 : 10);
         }
 
         private void UpdateTargetBodyRotation()

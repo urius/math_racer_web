@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using View.Gameplay.Race.VFX;
 
 namespace View
 {
@@ -8,6 +9,8 @@ namespace View
         [SerializeField] private Transform _carBody;
         [SerializeField] private Transform _wheelBack;
         [SerializeField] private Transform _wheelFront;
+        [SerializeField] private Transform _boosterContainer;
+        [SerializeField] private GameObject _boosterPrefab;
 
         [SerializeField] private float _bodyRotationMin = -5;
         [SerializeField] private float _bodyRotationMax = 5;
@@ -16,6 +19,7 @@ namespace View
         private float _wheelRadius;
         private float _wheelRotationMultiplier;
         private Transform _transform;
+        private TurboBoosterVfxView _turboBoosterVfxView;
 
         public float WheelRotationMultiplier => _wheelRotationMultiplier;
 
@@ -49,6 +53,26 @@ namespace View
             var pos = _transform.localPosition;
             pos.x = xOffset;
             _transform.localPosition = pos;
+        }
+
+        public void ShowBoostVFX()
+        {
+            if (_turboBoosterVfxView == null)
+            {
+                var go = Instantiate(_boosterPrefab, _boosterContainer);
+                _turboBoosterVfxView = go.GetComponent<TurboBoosterVfxView>();
+            }
+            
+            _turboBoosterVfxView.gameObject.SetActive(true);
+            
+            _turboBoosterVfxView.Play();
+        }
+
+        public void StopBoostVFX()
+        {
+            if (_turboBoosterVfxView == null) return;
+            
+            _turboBoosterVfxView.Stop();
         }
     }
 }

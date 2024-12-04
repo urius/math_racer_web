@@ -70,7 +70,7 @@ namespace Controller.RaceScene
         {
             _finishLineTransform.SetXPosition(_playerCarContainerXPosition + _raceModel.PlayerCarDistanceToFinish);
 
-            if (_raceModel.PlayerCarDistanceToFinish < -3)
+            if (_raceModel.PlayerCarDistanceToFinish < 0)
             {
                 Time.timeScale = 1f;
             }

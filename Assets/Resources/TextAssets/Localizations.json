@@ -6,9 +6,9 @@
 			"ru": "Тестовый ключ"
 		},
 		{
-			"key": "acceleration",
-			"en": "ACCELERATION",
-			"ru": "УСКОРЕНИЕ"
+			"key": "turbo_boost",
+			"en": "TURBO\nBOOST",
+			"ru": "ТУРБО\nУСКОРЕНИЕ"
 		},
 		{
 			"key": "finish",

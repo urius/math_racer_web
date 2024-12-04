@@ -8,8 +8,12 @@ namespace Model.RaceScene
     {
         private const int DefaultTurboTime = 10;
         private const int TurboTimeMin = 1;
+        private const int TurboIndicatorsMax = 5;
         
         public event Action<bool> AnswerGiven;
+        public event Action TurboActivated;
+        public event Action<int> TurboIndicatorAdded;
+        public event Action<int> TurboIndicatorRemoved;
 
         public readonly double[] Answers = new double[4];
 
@@ -32,9 +36,10 @@ namespace Model.RaceScene
         public int RightAnswersCountTotal { get; private set; } = 0;
         public int WrongAnswersCountTotal { get; private set; } = 0;
         public int WrongAnswersCountForQuestion { get; private set; } = 0;
-        public int TurboLevel { get; private set; } = 0;
+        public int TurboBoostIndicatorsCount { get; private set; } = 0;
         public float TurboTimeInitial { get; private set; } = 0;
         public float TurboTimeLeft { get; private set; } = 0;
+        public bool IsFirstQuestion => QuestionsCount <= 1;
 
         public void GenerateQuestion()
         {
@@ -88,21 +93,20 @@ namespace Model.RaceScene
                 WrongAnswersCountTotal++;
                 WrongAnswersCountForQuestion++;
                 TurboTimeLeft = 0;
+                DecrementTurboIndicators();
             }
             else
             {
                 RightAnswersCountTotal++;
             }
 
-            if (IsRightAnswerGiven && TurboTimeLeft > 0 && WrongAnswersCountForQuestion <= 0)
+            if (IsRightAnswerGiven
+                && (TurboTimeLeft > 0 || IsFirstQuestion)
+                && WrongAnswersCountForQuestion <= 0)
             {
-                TurboLevel++;
+                IncrementTurboIndicators();
             }
-            else
-            {
-                TurboLevel = 0;
-            }
-            
+
             AnswerGiven?.Invoke(IsRightAnswerGiven);
             
             return IsRightAnswerGiven;
@@ -116,18 +120,44 @@ namespace Model.RaceScene
                 return;
             }
 
-            TurboTimeInitial = TurboTimeLeft = Math.Max(TurboTimeMin, DefaultTurboTime - Math.Max(0, TurboLevel));
+            TurboTimeInitial = TurboTimeLeft = Math.Max(TurboTimeMin, DefaultTurboTime - Math.Max(0, TurboBoostIndicatorsCount));
         }
 
         private void UpdateTurboTime(float deltaTime)
         {
-            if (IsRightAnswerGiven) return;
+            if (IsRightAnswerGiven || TurboTimeLeft <= 0) return;
             
             TurboTimeLeft -= deltaTime;
             if (TurboTimeLeft <= 0)
             {
-                TurboTimeLeft = 0;
-                TurboLevel = 0;
+                DecrementTurboIndicators();
+                InitTurboTime();
+            }
+        }
+
+        private void IncrementTurboIndicators()
+        {
+            if (TurboBoostIndicatorsCount < TurboIndicatorsMax)
+            {
+                TurboBoostIndicatorsCount++;
+                var index = TurboBoostIndicatorsCount - 1;
+                TurboIndicatorAdded?.Invoke(index);
+
+                if (TurboBoostIndicatorsCount >= TurboIndicatorsMax)
+                {
+                    TurboActivated?.Invoke();
+                    TurboBoostIndicatorsCount = 0;
+                }
+            }
+        }
+        
+        private void DecrementTurboIndicators()
+        {
+            if (TurboBoostIndicatorsCount > 0)
+            {
+                TurboBoostIndicatorsCount--;
+                var index = TurboBoostIndicatorsCount;
+                TurboIndicatorRemoved?.Invoke(index);
             }
         }
 

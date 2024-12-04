@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Extensions;
 using Holders;
 using Infra.Instance;
@@ -47,6 +48,7 @@ namespace Controller.RaceScene
             _updatesProvider.GameplayUpdate += OnGameplayUpdate;
             
             _raceModel.QuestionsModel.AnswerGiven += OnAnswerGiven;
+            _raceModel.QuestionsModel.TurboActivated += OnTurboActivated;
         }
 
         private void Unsubscribe()
@@ -54,13 +56,30 @@ namespace Controller.RaceScene
             _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
             
             _raceModel.QuestionsModel.AnswerGiven -= OnAnswerGiven;
+            _raceModel.QuestionsModel.TurboActivated -= OnTurboActivated;
+        }
+
+        private void OnTurboActivated()
+        {
+            ProcessTurboLogic().Forget();
+        }
+
+        private async UniTask ProcessTurboLogic()
+        {
+            _carView.ShowBoostVFX();
+            
+            _carModel.AccelerateTurbo();
+
+            await UniTask.Delay(3000);
+            
+            _carView.StopBoostVFX();
         }
 
         private void OnAnswerGiven(bool isRightAnswer)
         {
             if (isRightAnswer)
             {
-                _carModel.Accelerate(_raceModel.QuestionsModel.TurboLevel);
+                _carModel.Accelerate();
             }
             else
             {
@@ -70,10 +89,10 @@ namespace Controller.RaceScene
 
         private void OnGameplayUpdate()
         {
-            UpdateCarView(Time.deltaTime);
+            UpdateCarView();
         }
         
-        private void UpdateCarView(float deltaTime)
+        private void UpdateCarView()
         {
             var deltaWheelRotation = _carModel.CurrentUpdateMetersPassed * _carView.WheelRotationMultiplier;
             

@@ -45,6 +45,7 @@ namespace Controller.RaceScene
             Subscribe();
 
             RefreshQuestion();
+            SetupTurboBoostText();
             UpdateTurboTextVisibility();
             
             _rightPanelView.AnimateShow();
@@ -70,6 +71,9 @@ namespace Controller.RaceScene
             _answersPanel.AnswerClicked += OnAnswerClicked;
             _updatesProvider.GameplayUpdate += OnGameplayUpdate;
             _raceModel.IsFinishingFlagChanged += OnIsFinishingFlagChanged;
+            _questionsModel.TurboIndicatorAdded += OnTurboIndicatorAdded;
+            _questionsModel.TurboIndicatorRemoved += OnTurboIndicatorRemoved;
+            _questionsModel.TurboActivated += OnTurboActivated;
         }
 
         private void Unsubscribe()
@@ -77,29 +81,56 @@ namespace Controller.RaceScene
             _answersPanel.AnswerClicked -= OnAnswerClicked;
             _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
             _raceModel.IsFinishingFlagChanged -= OnIsFinishingFlagChanged;
+            _questionsModel.TurboIndicatorAdded -= OnTurboIndicatorAdded;
+            _questionsModel.TurboIndicatorRemoved -= OnTurboIndicatorRemoved;
+            _questionsModel.TurboActivated -= OnTurboActivated;
+        }
+
+        private void OnTurboIndicatorAdded(int index)
+        {
+            _rightPanelView.ShowGreenIndicator(index);
+        }
+
+        private void OnTurboIndicatorRemoved(int index)
+        {
+            _rightPanelView.HideRedIndicator(index);
+        }
+
+        private void OnTurboActivated()
+        {
+            ProcessTurboLogic().Forget();
+        }
+
+        private async UniTask ProcessTurboLogic()
+        {
+            await UniTask.Delay(Constants.TurboIndicatorShowHideDurationMs);
+            
+            _turboTextView.SetTextVisibility(true);
+            
+            await _rightPanelView.AnimateTurboBoost();
+
+            await UniTask.Delay(2500);
+            
+            _turboTextView.SetTextVisibility(false);
+
+            UpdateIndicatorViews();
+        }
+
+        private void UpdateIndicatorViews()
+        {
+            _rightPanelView.SetEnabledIndicators(_questionsModel.TurboBoostIndicatorsCount);
         }
 
         private void OnGameplayUpdate()
         {
             UpdateTurboLineView();
-            UpdateTurboTextAlpha(Time.deltaTime);
+            UpdateTurboTextAlpha();
         }
 
-        private void UpdateTurboTextAlpha(float deltaTime)
+        private void UpdateTurboTextAlpha()
         {
-            if (_questionsModel.TurboLevel > 0 && _turboTextView.TextAlpha < 1f)
-            {
-                _turboTextView.SetTextVisibility(true);
-                _turboTextView.SetTextAlpha(_turboTextView.TextAlpha + 3 * deltaTime);
-            }
-            else if (_questionsModel.TurboLevel <= 0 && _turboTextView.TextAlpha > 0)
-            {
-                _turboTextView.SetTextAlpha(_turboTextView.TextAlpha - 3 * deltaTime);
-                if (_turboTextView.TextAlpha <= 0)
-                {
-                    _turboTextView.SetTextVisibility(false);
-                }
-            }
+            var alpha = Mathf.PingPong(Time.realtimeSinceStartup, 0.5f) + 0.7f;
+            _turboTextView.SetTextAlpha(alpha);
         }
 
         private void UpdateTurboLineView()
@@ -125,8 +156,6 @@ namespace Controller.RaceScene
             if (isCorrectAnswer)
             {
                 answerView.ToRightAnswerState();
-                
-                UpdateTurboText();
 
                 ProcessNextQuestion().Forget();
             }
@@ -140,25 +169,24 @@ namespace Controller.RaceScene
 
         private void UpdateTurboLineColor()
         {
-            if (_questionsModel.TurboLevel <= 0)
+            if (_questionsModel.TurboBoostIndicatorsCount <= 0)
             {
                 _rightPanelView.SetTurboLineDefaultColor();
             }
             else
             {
-                _rightPanelView.SetTurboLineTurboColor(_questionsModel.TurboLevel / 10f);
+                _rightPanelView.SetTurboLineTurboColor(_questionsModel.TurboBoostIndicatorsCount / 10f);
             }
         }
 
-        private void UpdateTurboText()
+        private void SetupTurboBoostText()
         {
-            var accelerationText = _localizationProvider.GetLocale(LocalizationKeys.Acceleration);
-            _rightPanelView.TurboTextView.SetText(accelerationText + $" +{_questionsModel.TurboLevel}");
+            _rightPanelView.TurboTextView.SetText(_localizationProvider.GetLocale(LocalizationKeys.TurboBoost));
         }
 
         private void UpdateTurboTextVisibility()
         {
-            _rightPanelView.TurboTextView.SetTextVisibility(_questionsModel.TurboLevel > 0);
+            _rightPanelView.TurboTextView.SetTextVisibility(_questionsModel.TurboBoostIndicatorsCount > 0);
         }
 
         private async UniTaskVoid ProcessNextQuestion()

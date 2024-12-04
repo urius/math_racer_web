@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Extensions;
 using TMPro;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace View.UI.RaceScene
         [SerializeField] private UITurboLineView _turboLine;
         [SerializeField] private UITurboTextView _turboTextView;
         [SerializeField] private UIAnswersPanelView _answersPanel;
+        [SerializeField] private UIBoostIndicatorView[] _boostIndicators;
         
         private RectTransform _rectTransform;
 
@@ -61,6 +63,42 @@ namespace View.UI.RaceScene
                 .setIgnoreTimeScale(true)
                 .setEaseInQuad()
                 .setOnComplete(() => gameObject.SetActive(false));
+        }
+
+        public void ShowGreenIndicator(int index)
+        {
+            _boostIndicators[index].ToGreenColor();
+            _boostIndicators[index].FadeIn().Forget();
+        }
+        
+        public void HideRedIndicator(int index)
+        {
+            _boostIndicators[index].ToRedColor();
+            _boostIndicators[index].FadeOut().Forget();
+        }
+
+        public void SetEnabledIndicators(int turboBoostIndicatorsCount)
+        {
+            for (var i = 0; i < turboBoostIndicatorsCount; i++)
+            {
+                _boostIndicators[i].ToGreenColor();
+                _boostIndicators[i].SetAlpha(i < turboBoostIndicatorsCount ? 1 : 0);
+            }
+        }
+
+        public UniTask AnimateTurboBoost()
+        {
+            var result = UniTask.CompletedTask;
+
+            for (var i = 0; i < _boostIndicators.Length; i++)
+            {
+                var indicatorView = _boostIndicators[_boostIndicators.Length - 1 - i];
+                indicatorView.ToYellowColor();
+
+                result = indicatorView.FadeOut(0.5f + 0.1f * i);
+            }
+
+            return result;
         }
 
         private void SetHiddenPosition()

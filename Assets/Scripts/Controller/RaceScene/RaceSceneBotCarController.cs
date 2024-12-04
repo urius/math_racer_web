@@ -61,7 +61,7 @@ namespace Controller.RaceScene
 
         private void OnGameplayUpdate()
         {
-            UpdateCarView(Time.deltaTime);
+            UpdateCarView();
         }
 
         private void OnGameplayHalfSecondPassed()
@@ -104,7 +104,7 @@ namespace Controller.RaceScene
 
         private void Accelerate()
         {
-            _carModel.Accelerate(0);
+            _carModel.Accelerate();
         }
 
         private void Decelerate()
@@ -112,7 +112,7 @@ namespace Controller.RaceScene
             _carModel.Decelerate();
         }
 
-        private void UpdateCarView(float deltaTime)
+        private void UpdateCarView()
         {
             var deltaWheelRotation = _carModel.CurrentUpdateMetersPassed * _carView.WheelRotationMultiplier;
             

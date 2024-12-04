@@ -2,7 +2,7 @@ namespace Data
 {
     public static class LocalizationKeys
     {
-        public const string Acceleration = "acceleration";
+        public const string TurboBoost = "turbo_boost";
         public const string Finish = "finish";
         public const string FirstPlace = "first_place";
         public const string Complexity = "complexity";
