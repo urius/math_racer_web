@@ -109,7 +109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 20}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 400, y: 80}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &7792360393296815817
@@ -409,7 +409,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "<color=green>1</color>\n<color=green>10</color>\n\n<color=green>8</color>\n<color=red>4</color>\n<color=green>155
+  m_text: "<color=green>1</color>\n<color=green>10</color>\n\n<color=green>8</color>\n<color=green>1</color>\n<color=red>4</color>\n<color=green>155
     \u043A\u043C/\u0447</color>"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1043,7 +1043,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u0421\u043B\u043E\u0436\u043D\u043E\u0441\u0442\u044C:\n\u0412\u043E\u043F\u0440\u043E\u0441\u044B:\n\n\u0423\u0441\u043A\u043E\u0440\u0435\u043D\u0438\u044F:\n\u0422\u043E\u0440\u043C\u043E\u0436\u0435\u043D\u0438\u044F:\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C:"
+  m_text: "\u0421\u043B\u043E\u0436\u043D\u043E\u0441\u0442\u044C:\n\u0412\u043E\u043F\u0440\u043E\u0441\u044B:\n\n\u0423\u0441\u043A\u043E\u0440\u0435\u043D\u0438\u044F:\n\u0422\u0443\u0440\u0431\u043E:\n\u0422\u043E\u0440\u043C\u043E\u0436\u0435\u043D\u0438\u044F:\n\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -39,6 +39,7 @@ namespace Model.RaceScene
         public int TurboBoostIndicatorsCount { get; private set; } = 0;
         public float TurboTimeInitial { get; private set; } = 0;
         public float TurboTimeLeft { get; private set; } = 0;
+        public int TurboBoostsCount { get; private set; } = 0;
         public bool IsFirstQuestion => QuestionsCount <= 1;
 
         public void GenerateQuestion()
@@ -145,6 +146,8 @@ namespace Model.RaceScene
 
                 if (TurboBoostIndicatorsCount >= TurboIndicatorsMax)
                 {
+                    TurboBoostsCount++;
+                    
                     TurboActivated?.Invoke();
                     TurboBoostIndicatorsCount = 0;
                 }

@@ -27,7 +27,7 @@ namespace Model.RaceScene
         private static int GetCashRewardDefault(int distanceMeters, RaceResultsModel raceResultsModel,
             ComplexityData complexityData)
         {
-            return (distanceMeters / 10 + raceResultsModel.PlayerSpeed) *
+            return (distanceMeters / 10 + raceResultsModel.PlayerSpeed + raceResultsModel.TurboBoostsCount * 50) *
                    (int)Math.Ceiling(complexityData.ComplexityLevel / 3f);
         }
 

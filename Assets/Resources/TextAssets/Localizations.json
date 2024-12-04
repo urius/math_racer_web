@@ -41,6 +41,11 @@
 			"ru": "Ускорения"
 		},
 		{
+			"key": "turbo_boosts",
+			"en": "Turbo",
+			"ru": "Тубро"
+		},
+		{
 			"key": "brakings",
 			"en": "Brakings",
 			"ru": "Торможения"

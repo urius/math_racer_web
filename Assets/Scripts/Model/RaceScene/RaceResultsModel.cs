@@ -8,6 +8,7 @@ namespace Model.RaceScene
         public int QuestionsCount { get; private set; }
         public int RightAnswersCount { get; private set; }
         public int WrongAnswersCount { get; private set; }
+        public int TurboBoostsCount { get; private set; }
 
 
         public void SetResults(CarModel playerCar, CarModel botCar, QuestionsModel questionsModel)
@@ -18,6 +19,7 @@ namespace Model.RaceScene
             QuestionsCount = questionsModel.QuestionsCount;
             RightAnswersCount = questionsModel.RightAnswersCountTotal;
             WrongAnswersCount = questionsModel.WrongAnswersCountTotal;
+            TurboBoostsCount = questionsModel.TurboBoostsCount;
         }
     }
 }

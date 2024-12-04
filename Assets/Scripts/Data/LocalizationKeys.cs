@@ -9,6 +9,7 @@ namespace Data
         public const string Distance = "distance";
         public const string MetersShort = "meters_short";
         public const string Accelerations = "accelerations";
+        public const string TurboBoosts = "turbo_boosts";
         public const string Brakings = "brakings";
         public const string Speed = "speed";
         public const string KmH = "km_h";

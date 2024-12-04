@@ -64,16 +64,19 @@ namespace Controller.RaceScene
             _finishOverlayView.SetPlaceText(GetLocale(LocalizationKeys.FirstPlace));
             
             var keysText =
-                $"{GetLocale(LocalizationKeys.Complexity)}:\n{GetLocale(LocalizationKeys.Distance)}:\n \n{GetLocale(LocalizationKeys.Accelerations)}:\n{GetLocale(LocalizationKeys.Brakings)}:\n{GetLocale(LocalizationKeys.Speed)}:";
+                $"{GetLocale(LocalizationKeys.Complexity)}:\n{GetLocale(LocalizationKeys.Distance)}:\n \n{GetLocale(LocalizationKeys.Accelerations)}:\n{GetLocale(LocalizationKeys.TurboBoosts)}:\n{GetLocale(LocalizationKeys.Brakings)}:\n{GetLocale(LocalizationKeys.Speed)}:";
             _finishOverlayView.SetStatsKeysText(keysText);
 
             var complexityPercentStr = FormatGreen($"{_playerModel.GetOverallComplexityPercent()} %");
             var distanceStr = FormatGreen($"{_raceModel.DistanceMeters} {GetLocale(LocalizationKeys.MetersShort)}");
+            var turboBoostsText = _raceResultsModel.TurboBoostsCount <= 0
+                ? _raceResultsModel.TurboBoostsCount.ToString()
+                : FormatGreen($"{_raceResultsModel.TurboBoostsCount}");
             var wrongAnswersText = _raceResultsModel.WrongAnswersCount <= 0
                 ? FormatGreen(_raceResultsModel.WrongAnswersCount)
                 : FormatRed(_raceResultsModel.WrongAnswersCount); 
             var valuesText =
-                $"{complexityPercentStr}\n{distanceStr}\n \n{FormatGreen(_raceResultsModel.RightAnswersCount)}\n{wrongAnswersText}\n{FormatGreen(_raceResultsModel.PlayerSpeed)} {FormatGreen(GetLocale(LocalizationKeys.KmH))}";
+                $"{complexityPercentStr}\n{distanceStr}\n \n{FormatGreen(_raceResultsModel.RightAnswersCount)}\n{turboBoostsText}\n{wrongAnswersText}\n{FormatGreen(_raceResultsModel.PlayerSpeed)} {FormatGreen(GetLocale(LocalizationKeys.KmH))}";
             _finishOverlayView.SetStatsValuesText(valuesText);
 
             DisplayRewards();
