@@ -4,6 +4,10 @@ namespace Data
     {
         None = 0,
         UIFinishOverlay,
-        CarBug = 1000 + CarKey.Bug,
+        CarBug = CarKey.Bug + Constants.PrefabCarsOffset,
+        CarCharger = CarKey.Charger + Constants.PrefabCarsOffset,
+        CarCoupe = CarKey.Coupe + Constants.PrefabCarsOffset,
+        CarDeliveryVan = CarKey.DeliveryVan + Constants.PrefabCarsOffset,
+        CarDuneBuggy = CarKey.DuneBuggy + Constants.PrefabCarsOffset,
     }
 }
