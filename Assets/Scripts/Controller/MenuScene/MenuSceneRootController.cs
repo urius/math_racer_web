@@ -29,16 +29,24 @@ namespace Controller.MenuScene
         private void Subscribe()
         {
             _rootCanvasView.PlayButtonClicked += OnPlayButtonClicked;
+            _rootCanvasView.CarsButtonClicked += OnCarsButtonClicked;
         }
 
         private void Unsubscribe()
         {
             _rootCanvasView.PlayButtonClicked -= OnPlayButtonClicked;
+            _rootCanvasView.CarsButtonClicked -= OnCarsButtonClicked;
         }
 
         private void OnPlayButtonClicked()
         {
             _eventBus.Dispatch(new RequestNextSceneEvent());
+        }
+
+        private void OnCarsButtonClicked()
+        {
+            var carsPopupController = new MenuSceneCarsPopupController(_rootCanvasView.PopupsCanvasTransform);
+            InitChildController(carsPopupController);
         }
     }
 }

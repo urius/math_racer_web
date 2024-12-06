@@ -265,29 +265,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1591870599}
     m_Modifications:
-    - target: {fileID: 1395206413794757434, guid: c4940748fff644983b082327bebe5a68, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1395206413794757434, guid: c4940748fff644983b082327bebe5a68, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3630663749051873249, guid: c4940748fff644983b082327bebe5a68, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3630663749051873249, guid: c4940748fff644983b082327bebe5a68, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6701860279966104194, guid: c4940748fff644983b082327bebe5a68, type: 3}
       propertyPath: m_Name
-      value: UITabbedContentPopup
-      objectReference: {fileID: 0}
-    - target: {fileID: 6701860279966104194, guid: c4940748fff644983b082327bebe5a68, type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      value: UIContentPopup
       objectReference: {fileID: 0}
     - target: {fileID: 6701860279966104205, guid: c4940748fff644983b082327bebe5a68, type: 3}
       propertyPath: m_Pivot.x
@@ -1137,6 +1117,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playButton: {fileID: 1524040670}
   _carsButton: {fileID: 1002277211}
+  _popupsCanvasTransform: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

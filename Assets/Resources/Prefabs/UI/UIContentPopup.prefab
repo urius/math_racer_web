@@ -901,7 +901,7 @@ GameObject:
   - component: {fileID: 6701860279966104205}
   - component: {fileID: 2030472426248837632}
   m_Layer: 5
-  m_Name: UITabbedContentPopup
+  m_Name: UIContentPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -6,12 +6,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using View.Extensions;
 
-namespace View.UI.Popups.TabbedContentPopup
+namespace View.UI.Popups.ContentPopup
 {
-    public class UITabbedContentPopup : MonoBehaviour
+    public class UIContentPopup : MonoBehaviour
     {
         public event Action CloseButtonClicked;
-        public event Action<int> TabButtonClicked;
 
         private const float AppearDurationSec = 0.4f;
         private const float DisappearDurationSec = 0.25f;
@@ -20,16 +19,13 @@ namespace View.UI.Popups.TabbedContentPopup
         [SerializeField] private TMP_Text _titleText;
         [SerializeField] private RectTransform _popupTransform;
         [SerializeField] private CanvasGroup _popupBodyCanvasGroup;
-        [SerializeField] private RectTransform _tabsButtonsTransform;
         [SerializeField] private RectTransform _viewportTransform;
         [SerializeField] private RectTransform _contentTransform;
         [SerializeField] private Button _closeButton;
-        [SerializeField] private GameObject _tabButtonPrefab;
 
         private readonly LinkedList<ItemData> _hiddenItemsHead = new();
         private readonly LinkedList<ItemData> _displayedItems = new();
         private readonly LinkedList<ItemData> _hiddenItemsTail = new();
-        private readonly List<IUITabbedContentPopupTabButton> _tabButtons = new();
 
         private int _columnsCount = 3;
         private Vector2 _contentSize;
@@ -37,7 +33,6 @@ namespace View.UI.Popups.TabbedContentPopup
         private Vector2 _contentTransformPosition;
 
         public RectTransform ContentTransform => _contentTransform;
-        public IReadOnlyList<IUITabbedContentPopupTabButton> TabButtons => _tabButtons;
 
         private void Awake()
         {
@@ -65,13 +60,6 @@ namespace View.UI.Popups.TabbedContentPopup
         private void OnDestroy()
         {
             _closeButton.onClick.RemoveAllListeners();
-
-            foreach (var tabButton in _tabButtons)
-            {
-                UnsubscribeFromTabButton(tabButton);
-            }
-
-            _tabButtons.Clear();
         }
 
         public void Setup(int columnsCount, int popupWidth, int popupHeight)
@@ -94,7 +82,6 @@ namespace View.UI.Popups.TabbedContentPopup
                 .setOnComplete(() => tcs.TrySetResult())
                 .setIgnoreTimeScale(true);;
 
-            //AudioManager.Instance.PlaySound(SoundNames.PopupOpen);
             return tcs.Task;
         }
 
@@ -110,7 +97,6 @@ namespace View.UI.Popups.TabbedContentPopup
                 .setOnComplete(() => tcs.TrySetResult())
                 .setIgnoreTimeScale(true);;
 
-            //AudioManager.Instance.PlaySound(SoundNames.PopupClose);
             return tcs.Task;
         }
 
@@ -127,14 +113,11 @@ namespace View.UI.Popups.TabbedContentPopup
                 .setOnComplete(() => tcs.TrySetResult())
                 .setIgnoreTimeScale(true);;
 
-            //AudioManager.Instance.PlaySound(SoundNames.PopupOpen);
             return tcs.Task;
         }
 
         public UniTask Disappear2Async()
         {
-            //AudioManager.Instance.PlaySound(SoundNames.PopupClose);
-
             var tcs = new UniTaskCompletionSource();
             var startSize = _popupTransform.sizeDelta;
             var targetSize = new Vector2(startSize.x, 0);
@@ -149,23 +132,7 @@ namespace View.UI.Popups.TabbedContentPopup
             return tcs.Task;
         }
 
-        public void AddTab(string tabTitle) //AddBab :)
-        {
-            var tabGo = Instantiate(_tabButtonPrefab, _tabsButtonsTransform);
-            var tabButtonView = tabGo.GetComponent<IUITabbedContentPopupTabButton>();
-
-            tabButtonView.SetText(tabTitle);
-
-            var itemPos = tabButtonView.RectTransform.anchoredPosition;
-            itemPos.x = _tabButtons.Count * tabButtonView.RectTransform.rect.width;
-            tabButtonView.RectTransform.anchoredPosition = itemPos;
-
-            _tabButtons.Add(tabButtonView);
-
-            SubscribeOnTabButton(tabButtonView, _tabButtons.Count - 1);
-        }
-
-        public void AddItem(IUITabbedContentPopupItem item)
+        public void AddItem(IUIContentPopupItem item)
         {
             item.RectTransform.SetParent(_contentTransform);
             SetItemActive(item, true);
@@ -207,21 +174,6 @@ namespace View.UI.Popups.TabbedContentPopup
         public void ResetContentPosition()
         {
             _contentTransform.anchoredPosition = Vector2.zero;
-        }
-
-        public void SetSelectedTab(int tabIndex)
-        {
-            foreach (var tabButton in _tabButtons)
-            {
-                tabButton.Button.interactable = true;
-            }
-
-            _tabButtons[tabIndex].Button.interactable = false;
-        }
-
-        public void SetTabNewNotificationVisibility(int tabIndex, bool isVisible)
-        {
-            _tabButtons[tabIndex].SetNewNotificationVisibility(isVisible);
         }
 
         public void SetTitleText(string text)
@@ -346,7 +298,7 @@ namespace View.UI.Popups.TabbedContentPopup
             return -(itemData.EndCoord + _contentTransformPosition.y) < 0;
         }
 
-        private Vector2 SetItemPosition(IUITabbedContentPopupItem item, int itemIndex)
+        private Vector2 SetItemPosition(IUIContentPopupItem item, int itemIndex)
         {
             var position = new Vector2Int(itemIndex % _columnsCount, -itemIndex / _columnsCount) * item.Size;
 
@@ -367,33 +319,18 @@ namespace View.UI.Popups.TabbedContentPopup
             CloseButtonClicked?.Invoke();
         }
 
-        private void SubscribeOnTabButton(IUITabbedContentPopupTabButton tabButtonView, int index)
-        {
-            tabButtonView.Button.onClick.AddListener(() => OnTabButtonClicked(index));
-        }
-
-        private void UnsubscribeFromTabButton(IUITabbedContentPopupTabButton tabButtonView)
-        {
-            tabButtonView.Button.onClick.RemoveAllListeners();
-        }
-
-        private void OnTabButtonClicked(int index)
-        {
-            TabButtonClicked?.Invoke(index);
-        }
-
-        private static void SetItemActive(IUITabbedContentPopupItem item, bool isActive)
+        private static void SetItemActive(IUIContentPopupItem item, bool isActive)
         {
             item.RectTransform.gameObject.SetActive(isActive);
         }
 
         private struct ItemData
         {
-            public readonly IUITabbedContentPopupItem Item;
+            public readonly IUIContentPopupItem Item;
             public readonly float StartCoord;
             public readonly float EndCoord;
 
-            public ItemData(IUITabbedContentPopupItem item)
+            public ItemData(IUIContentPopupItem item)
             {
                 Item = item;
 

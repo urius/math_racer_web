@@ -11,7 +11,10 @@ namespace View.UI.MenuScene
         
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _carsButton;
-
+        [SerializeField] private RectTransform _popupsCanvasTransform;
+        
+        public RectTransform PopupsCanvasTransform => _popupsCanvasTransform;
+        
         private void Awake()
         {
             _playButton.onClick.AddListener(OnPlayButtonClicked);
