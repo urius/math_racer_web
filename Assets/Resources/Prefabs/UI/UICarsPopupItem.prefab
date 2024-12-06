@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 824220060148065639}
   - component: {fileID: 3443122242265404047}
   m_Layer: 5
-  m_Name: cars_popup_item
+  m_Name: UICarsPopupItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,11 +37,11 @@ RectTransform:
   - {fileID: 8330586167454261681}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -1}
-  m_SizeDelta: {x: 0, y: 100}
-  m_Pivot: {x: 0.5, y: 1}
+  m_SizeDelta: {x: 720, y: 100}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &8875003949340684009
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55,10 +55,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _carIcon: {fileID: 7058335472356954750}
-  _accelerationParameterText: {fileID: 5778579075789159664}
-  _accelerationParameterProgressTransform: {fileID: 2963896700979803029}
-  _maxSpeedParameterText: {fileID: 9120684372160113197}
-  _maxSpeedParameterProgressTransform: {fileID: 541396544495019336}
+  _firstParameterText: {fileID: 5778579075789159664}
+  _firstParameterProgressTransform: {fileID: 2963896700979803029}
+  _secondParameterText: {fileID: 9120684372160113197}
+  _secondParameterProgressTransform: {fileID: 541396544495019336}
   _button: {fileID: 5894992748148680367}
 --- !u!222 &824220060148065639
 CanvasRenderer:

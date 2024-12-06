@@ -11,7 +11,8 @@ namespace Utils
                 playerDataDto.Level,
                 playerDataDto.ComplexityLevel,
                 playerDataDto.MoneyAmount,
-                playerDataDto.GoldAmount);
+                playerDataDto.GoldAmount,
+                playerDataDto.BoughtCars);
         }
     }
 }

@@ -25,6 +25,8 @@ namespace Data
         public const float MetersInKm = 1000;
         
         public const int PrefabCarsOffset = 1000;
+        public const int MaxCarSpeedKmph = 500;
+        public const int MaxCarAcceleration = 50;
         
         public const float TurboIndicatorShowHideDurationSec = 0.2f;
         public const int TurboIndicatorShowHideDurationMs = (int)(TurboIndicatorShowHideDurationSec * 1000);

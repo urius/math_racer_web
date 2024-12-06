@@ -41,6 +41,21 @@
 			"ru": "Ускорения"
 		},
 		{
+			"key": "cars_popup_title",
+			"en": "Cars Shop",
+			"ru": "Автомагазин"
+		},
+		{
+			"key": "acceleration",
+			"en": "Acceleration",
+			"ru": "Ускорение"
+		},
+		{
+			"key": "max_speed_short",
+			"en": "Max Speed",
+			"ru": "Макс Скорость"
+		},
+		{
 			"key": "turbo_boosts",
 			"en": "Turbo",
 			"ru": "Тубро"

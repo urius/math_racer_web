@@ -23,6 +23,8 @@ public class InitScript : MonoBehaviour
         
         DontDestroyOnLoad(gameObject);
 
+        _prefabsHolderSo.Init();
+        
         SetupInstances();
     }
 
@@ -42,6 +44,8 @@ public class InitScript : MonoBehaviour
 
     private void SetupInstances()
     {
+        var carDataProvider = new CarDataProvider(_prefabsHolderSo);
+        SetupInstance.From(carDataProvider).As<ICarDataProvider>();
         SetupInstance.From(_prefabsHolderSo).As<IPrefabHolder>();
         SetupInstance.From(_updatesProvider).As<IUpdatesProvider>();
         SetupInstance.From(_localizationHolderSo).As<ILocalizationProvider>();

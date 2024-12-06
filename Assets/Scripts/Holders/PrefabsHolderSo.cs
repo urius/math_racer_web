@@ -12,18 +12,25 @@ namespace Holders
     {
         [LabeledArray(nameof(PrefabHolderItem.Key))] [SerializeField] private PrefabHolderItem[] _items;
 
-        private readonly Dictionary<string, GameObject> _prefabCache = new Dictionary<string, GameObject>();
+        private readonly Dictionary<string, GameObject> _coldPrefabsCache = new Dictionary<string, GameObject>();
+        
+        private Dictionary<PrefabKey, GameObject> _prefabsCache;
         
         public PrefabHolderItem[] Items => _items;
 
+        public void Init()
+        {
+            _prefabsCache = _items.ToDictionary(i => i.Key, i => i.Prefab);
+        }
+
         public GameObject GetPrefabByKey(PrefabKey key)
         {
-            return _items.First(i => i.Key == key).Prefab;
+            return _prefabsCache[key];
         }
         
         public GameObject GetColdPrefab(string coldPrefabPath)
         {
-            if (_prefabCache.TryGetValue(coldPrefabPath, out var coldPrefab))
+            if (_coldPrefabsCache.TryGetValue(coldPrefabPath, out var coldPrefab))
             {
                 return coldPrefab;
             }
@@ -31,21 +38,21 @@ namespace Holders
             var prefab = Resources.Load<GameObject>(coldPrefabPath);
             if (prefab != null)
             {
-                _prefabCache.Add(coldPrefabPath, prefab);
+                _coldPrefabsCache.Add(coldPrefabPath, prefab);
             }
             else
             {
                 UnityEngine.Debug.LogError("Prefab not found at path: " + coldPrefabPath);
             }
 
-            return _prefabCache[coldPrefabPath];
+            return _coldPrefabsCache[coldPrefabPath];
         }
 
         public void UnloadColdPrefabs()
         {
             Resources.UnloadUnusedAssets();
             
-            _prefabCache.Clear();
+            _coldPrefabsCache.Clear();
         }
 
         [Serializable]

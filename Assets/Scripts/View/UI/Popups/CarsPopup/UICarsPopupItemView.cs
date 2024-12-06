@@ -3,10 +3,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using View.UI.Common;
+using View.UI.Popups.ContentPopup;
 
 namespace View.UI.Popups.CarsPopup
 {
-    public class UICarsPopupItemView : MonoBehaviour
+    public class UICarsPopupItemView : MonoBehaviour, IUIContentPopupItem
     {
         public event Action<UICarsPopupItemView> ButtonClicked;
         
@@ -17,8 +18,15 @@ namespace View.UI.Popups.CarsPopup
         [SerializeField] private RectTransform _secondParameterProgressTransform;
         [SerializeField] private UITextButtonView _button;
 
+        private RectTransform _rectTransform;
+
+        public RectTransform RectTransform => _rectTransform ? _rectTransform : transform as RectTransform;
+        public Vector2 Size => RectTransform.sizeDelta;
+        
         private void Awake()
         {
+            _rectTransform = transform as RectTransform;
+            
             _button.ButtonClicked += OnButtonClicked;
         }
 
