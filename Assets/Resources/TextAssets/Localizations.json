@@ -89,6 +89,16 @@
 			"key": "continue_button",
 			"en": "CONTINUE",
 			"ru": "ПРОДОЛЖИТЬ"
+		},
+		{
+			"key": "car_item_locked_text",
+			"en": "Rich next level to unlock",
+			"ru": "Достигните следующего уровня"
+		},
+		{
+			"key": "choose",
+			"en": "Choose",
+			"ru": "Выбрать"
 		}
 	]
 }

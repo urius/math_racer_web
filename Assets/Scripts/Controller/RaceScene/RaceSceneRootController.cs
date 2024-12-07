@@ -49,7 +49,7 @@ namespace Controller.RaceScene
             _playerModel = _modelsHolder.GetPlayerModel();
             
             var complexityData = _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
-            _raceModel = new RaceModel(CarKey.DuneBuggy, CarKey.Bug, complexityData);
+            _raceModel = new RaceModel(_playerModel.CurrentCar, CarKey.Bug, complexityData);
             
             _modelsHolder.SetRaceModel(_raceModel);
         }

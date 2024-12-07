@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using View.Extensions;
 using View.UI.Common;
 using View.UI.Popups.ContentPopup;
 
@@ -12,11 +13,16 @@ namespace View.UI.Popups.CarsPopup
         public event Action<UICarsPopupItemView> ButtonClicked;
         
         [SerializeField] private Image _carIcon;
+        [SerializeField] private Image _bgImage;
+        [SerializeField] private RectTransform _firstParameterContainerTransform;
         [SerializeField] private TMP_Text _firstParameterText;
         [SerializeField] private RectTransform _firstParameterProgressTransform;
+        [SerializeField] private RectTransform _secondParameterContainerTransform;
         [SerializeField] private TMP_Text _secondParameterText;
         [SerializeField] private RectTransform _secondParameterProgressTransform;
         [SerializeField] private UITextButtonView _button;
+        [SerializeField] private TMP_Text _lockedText;
+        [SerializeField] private Color _itemSelectedColor;
 
         private RectTransform _rectTransform;
 
@@ -33,6 +39,22 @@ namespace View.UI.Popups.CarsPopup
         private void OnDestroy()
         {
             _button.ButtonClicked -= OnButtonClicked;
+        }
+
+        public void SetSelectedState(bool isSelected)
+        {
+            _bgImage.color = isSelected ? _itemSelectedColor : Color.white;
+            _button.SetInteractable(!isSelected);
+        }
+
+        public void SetLockedState(bool isLocked)
+        {
+            _lockedText.gameObject.SetActive(isLocked);
+            _firstParameterContainerTransform.gameObject.SetActive(!isLocked);
+            _secondParameterContainerTransform.gameObject.SetActive(!isLocked);
+            _button.gameObject.SetActive(!isLocked);
+
+            _carIcon.color = isLocked ? Color.black.SetAlpha(0.5f) : Color.white;
         }
 
         public void SetCarIconSprite(Sprite sprite)
@@ -54,6 +76,16 @@ namespace View.UI.Popups.CarsPopup
         public void SetSecondParameterPercent(float percent)
         {
             SetXScale(_secondParameterProgressTransform, percent);
+        }
+
+        public void SetButtonPriceText(string priceText)
+        {
+            _button.SetText(priceText);
+        }
+
+        public void SetLockedText(string text)
+        {
+            _lockedText.text = text;
         }
 
         private void SetXScale(RectTransform rectTransform, float value)

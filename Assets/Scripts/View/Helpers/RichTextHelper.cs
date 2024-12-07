@@ -32,6 +32,11 @@ namespace View.Helpers
             return FormatColor(text, "blue");
         }
         
+        public static string FormatColor(int text, string color)
+        {
+            return FormatColor(text.ToString(), color);
+        }
+        
         public static string FormatColor(string text, string color)
         {
             return $"<color={color}>{text}</color>";

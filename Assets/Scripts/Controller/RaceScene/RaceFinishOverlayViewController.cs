@@ -91,7 +91,7 @@ namespace Controller.RaceScene
             var cashRewardText = $"{cashRewardAmountText} {Constants.TextSpriteCash}";
 
             var goldRewardAmount = _raceRewards.GoldReward;
-            var goldRewardAmountText = FormatColor($"+{_raceRewards.GoldReward}", "#0169FF");
+            var goldRewardAmountText = FormatColor($"+{_raceRewards.GoldReward}", Constants.TextCrystalBlueColor);
             var goldRewardText = goldRewardAmount > 0
                 ? $"{goldRewardAmountText} {Constants.TextSpriteCrystal}"
                 : string.Empty;

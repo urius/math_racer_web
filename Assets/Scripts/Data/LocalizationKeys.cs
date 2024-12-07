@@ -18,5 +18,7 @@ namespace Data
         public const string KmH = "km_h";
         public const string DoubleTheRewardButton = "double_reward_button";
         public const string ContinueButton = "continue_button";
+        public const string CarItemLockedText = "car_item_locked_text";
+        public const string Choose = "choose";
     }
 }

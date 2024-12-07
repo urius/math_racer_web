@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
@@ -6,6 +7,7 @@ using Holders.LocalizationProvider;
 using Infra.Instance;
 using Model;
 using UnityEngine;
+using View.Extensions;
 using View.UI.Popups.CarsPopup;
 using View.UI.Popups.ContentPopup;
 
@@ -18,6 +20,7 @@ namespace Controller.MenuScene
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
         
         private readonly RectTransform _targetTransform;
+        private readonly Dictionary<UICarsPopupItemView, CarData> _carDataByItemView = new();
         
         private UIContentPopup _popupView;
         private PlayerModel _playerModel;
@@ -59,20 +62,81 @@ namespace Controller.MenuScene
             foreach (var carData in dataToDisplay)
             {
                 var itemView = Instantiate<UICarsPopupItemView>(PrefabKey.UICarsPopupItem, _popupView.ContentTransform);
+                _carDataByItemView[itemView] = carData;
+                
                 SetupItemView(itemView, carData);
+                SubscribeOnItem(itemView);
+                
                 _popupView.AddItem(itemView);
             }
         }
 
         private void SetupItemView(UICarsPopupItemView itemView, CarData carData)
         {
+            var isLocked = _playerModel.Level < carData.UnlockLevel;
+            
+            itemView.SetLockedState(isLocked);
             itemView.SetCarIconSprite(carData.IconSprite);
-            itemView.SetParameterTexts(
-                _localizationProvider.GetLocale(LocalizationKeys.AccelerationParameter),
-                _localizationProvider.GetLocale(LocalizationKeys.MaxSpeedParameter));
-            itemView.SetFirstParameterPercent(carData.AccelerationPercent);
-            itemView.SetSecondParameterPercent(carData.MaxSpeedPercent);
-            //todo
+
+            if (isLocked == false)
+            {
+                itemView.SetSelectedState(_playerModel.CurrentCar == carData.CarKey);
+                itemView.SetParameterTexts(
+                    _localizationProvider.GetLocale(LocalizationKeys.AccelerationParameter),
+                    _localizationProvider.GetLocale(LocalizationKeys.MaxSpeedParameter));
+                itemView.SetFirstParameterPercent(carData.AccelerationPercent);
+                itemView.SetSecondParameterPercent(carData.MaxSpeedPercent);
+
+                itemView.SetButtonPriceText(
+                    IsCarBought(carData)
+                        ? _localizationProvider.GetLocale(LocalizationKeys.Choose)
+                        : carData.Price.ToPriceView());
+            }
+            else
+            {
+                itemView.SetLockedText(_localizationProvider.GetLocale(LocalizationKeys.CarItemLockedText));
+            }
+        }
+
+        private bool IsCarBought(CarData carData)
+        {
+            return _playerModel.IsCarBought(carData.CarKey);
+        }
+
+        private void SubscribeOnItem(UICarsPopupItemView itemView)
+        {
+            itemView.ButtonClicked -= OnItemButtonClicked;
+            itemView.ButtonClicked += OnItemButtonClicked;
+        }
+
+        private void OnItemButtonClicked(UICarsPopupItemView targetView)
+        {
+            ProcessItemButtonClick(targetView);
+        }
+
+        private void ProcessItemButtonClick(UICarsPopupItemView targetView)
+        {
+            var carData = _carDataByItemView[targetView];
+            
+            if (IsCarBought(carData) == false 
+                && _playerModel.TrySpend(carData.Price))
+            {
+                _playerModel.AddBoughtCar(carData.CarKey);
+            }
+
+            if (IsCarBought(carData))
+            {
+                _playerModel.SetCurrentCar(carData.CarKey);
+                UpdateItemViews();
+            }
+        }
+
+        private void UpdateItemViews()
+        {
+            foreach (var kvp in _carDataByItemView)
+            {
+                SetupItemView(kvp.Key, kvp.Value);
+            }
         }
 
         private void Subscribe()
