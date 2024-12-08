@@ -9,9 +9,9 @@ namespace Model
     public class PlayerModel
     {
         public event Action<CarKey> CurrentCarUpdated;
-        public event Action<int> MoneySpent;
-        public event Action<int> InsufficientMoney;
-        public event Action<int> GoldSpent;
+        public event Action<int> CashAmountChanged;
+        public event Action<int> InsufficientCash;
+        public event Action<int> GoldAmountChanged;
         public event Action<int> InsufficientGold;
         
         private readonly List<CarKey> _boughtCars;
@@ -19,14 +19,14 @@ namespace Model
         public PlayerModel(
             int level,
             int complexityLevel,
-            int moneyAmount,
+            int cashAmount,
             int goldAmount,
             int currentCar,
             IEnumerable<int> boughtCars)
         {
             Level = level;
             ComplexityLevel = complexityLevel;
-            MoneyAmount = moneyAmount;
+            CashAmount = cashAmount;
             GoldAmount = goldAmount;
             CurrentCar = (CarKey)currentCar;
             
@@ -35,7 +35,7 @@ namespace Model
 
         public int Level { get; private set; }
         public int ComplexityLevel { get; private set; }
-        public int MoneyAmount { get; private set; }
+        public int CashAmount { get; private set; }
         public int GoldAmount { get; private set; }
         public CarKey CurrentCar { get; private set; }
         public IReadOnlyList<CarKey> BoughtCars => _boughtCars;
@@ -47,16 +47,16 @@ namespace Model
 
         private bool TrySpendCash(int cashSpentAmount)
         {
-            if (MoneyAmount >= cashSpentAmount)
+            if (CashAmount >= cashSpentAmount)
             {
-                MoneyAmount -= cashSpentAmount;
-                MoneySpent?.Invoke(cashSpentAmount);
+                CashAmount -= cashSpentAmount;
+                CashAmountChanged?.Invoke(-cashSpentAmount);
                 
                 return true;
             }
             else
             {
-                InsufficientMoney?.Invoke(cashSpentAmount - MoneyAmount);
+                InsufficientCash?.Invoke(cashSpentAmount - CashAmount);
 
                 return false;
             }
@@ -67,7 +67,7 @@ namespace Model
             if (GoldAmount >= goldSpentAmount)
             {
                 GoldAmount -= goldSpentAmount;
-                GoldSpent?.Invoke(goldSpentAmount);
+                GoldAmountChanged?.Invoke(-goldSpentAmount);
                 
                 return true;
             }

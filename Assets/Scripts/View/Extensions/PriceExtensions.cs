@@ -10,7 +10,23 @@ namespace View.Extensions
         {
             return priceInt > 0
                 ? $"{RichTextHelper.FormatGreen(priceInt)} {Constants.TextSpriteCash}"
-                : $" {RichTextHelper.FormatColor(Mathf.Abs(priceInt), Constants.TextCrystalLiteBlueColor)} {Constants.TextSpriteCrystal}";
+                : ToGoldView(Mathf.Abs(priceInt));
+        }
+        public static string ToPriceView2(this int priceInt)
+        {
+            return priceInt > 0
+                ? $"{Constants.TextSpriteCash} {priceInt}"
+                : ToGoldView2(Mathf.Abs(priceInt));
+        }
+
+        public static string ToGoldView(this int priceInt)
+        {
+            return $" {RichTextHelper.FormatColor(priceInt, Constants.TextCrystalLiteBlueColor)} {Constants.TextSpriteCrystal}";
+        }
+
+        public static string ToGoldView2(this int priceInt)
+        {
+            return $"{Constants.TextSpriteCrystal} {priceInt}";
         }
     }
 }

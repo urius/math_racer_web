@@ -12,8 +12,10 @@ namespace View.UI.MenuScene
         [SerializeField] private Button _playButton;
         [SerializeField] private Button _carsButton;
         [SerializeField] private RectTransform _popupsCanvasTransform;
+        [SerializeField] private UIMenuSceneMoneyCanvasView _moneyCanvasView;
         
         public RectTransform PopupsCanvasTransform => _popupsCanvasTransform;
+        public UIMenuSceneMoneyCanvasView MoneyCanvasView => _moneyCanvasView;
         
         private void Awake()
         {

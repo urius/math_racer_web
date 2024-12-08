@@ -16,6 +16,8 @@ namespace Controller.MenuScene
         {
             _rootCanvasView = Object.FindObjectOfType<UIMenuSceneRootCanvasView>();
 
+            InitChildControllers();
+            
             Subscribe();
         }
 
@@ -24,6 +26,11 @@ namespace Controller.MenuScene
             Unsubscribe();
 
             _rootCanvasView = null;
+        }
+
+        private void InitChildControllers()
+        {
+            InitChildController(new MenuSceneMoneyViewController(_rootCanvasView.MoneyCanvasView));
         }
 
         private void Subscribe()
