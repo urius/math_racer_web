@@ -1,8 +1,8 @@
 using Data;
-using Holders;
 using Infra.Instance;
 using Model;
 using Model.RaceScene;
+using Providers;
 using UnityEngine;
 using View.Gameplay.Race;
 

@@ -1,10 +1,10 @@
 using Controller;
 using Data;
-using Holders;
-using Holders.LocalizationProvider;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
+using Providers;
+using Providers.LocalizationProvider;
 using UnityEngine;
 using View.UI;
 

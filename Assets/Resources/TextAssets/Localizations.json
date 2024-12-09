@@ -99,6 +99,21 @@
 			"key": "choose",
 			"en": "Choose",
 			"ru": "Выбрать"
+		},
+		{
+			"key": "level",
+			"en": "Level",
+			"ru": "Уровень"
+		},
+		{
+			"key": "new_level_congrats",
+			"en": "Congratulations! \nNew Level Reached!",
+			"ru": "Поздравляем! \nВы достигли нового уровня!"
+		},
+		{
+			"key": "new_cars_available",
+			"en": "New cars available:",
+			"ru": "Доступны новые машины:"
 		}
 	]
 }

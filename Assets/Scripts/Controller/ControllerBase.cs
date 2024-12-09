@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using Data;
 using Extensions;
-using Holders;
 using Infra.Instance;
+using Providers;
 using UnityEngine;
 using Object = UnityEngine.Object;
 

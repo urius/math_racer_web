@@ -8,7 +8,7 @@ namespace Utils
         public static PlayerModel ToPlayerModel(PlayerDataDto playerDataDto)
         {
             return new PlayerModel(
-                playerDataDto.Level,
+                playerDataDto.ExpAmount,
                 playerDataDto.ComplexityLevel,
                 playerDataDto.MoneyAmount,
                 playerDataDto.GoldAmount,

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Data;
 using Data.MonoBehaviourData;
 
-namespace Holders
+namespace Providers
 {
     public class CarDataProvider : ICarDataProvider
     {
-        private readonly Dictionary<CarKey, CarData> _carDataByKey = new Dictionary<CarKey, CarData>();
+        private readonly Dictionary<CarKey, CarData> _carDataByKey = new();
         private readonly List<CarData> _carDataList = new();
 
         public CarDataProvider(IPrefabHolder prefabHolder)
@@ -16,7 +16,6 @@ namespace Holders
         }
 
         public IReadOnlyList<CarData> CarDataList => _carDataList;
-
         
         public CarData GetCarData(CarKey carKey)
         {

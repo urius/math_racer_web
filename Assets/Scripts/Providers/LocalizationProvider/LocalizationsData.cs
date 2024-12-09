@@ -1,6 +1,6 @@
 using System;
 
-namespace Holders.LocalizationProvider
+namespace Providers.LocalizationProvider
 {
     [Serializable]
     public struct LocalizationsData

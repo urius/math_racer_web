@@ -1,6 +1,6 @@
-using Holders;
 using Infra.Instance;
 using Model;
+using Providers;
 using View.UI.MenuScene;
 
 namespace Controller.MenuScene

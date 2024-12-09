@@ -139,7 +139,7 @@ namespace View.UI.RaceScene
         private void AnimateShowRewardsPhase()
         {
             AnimateTextAlpha(_rewardsText, 1, 0.4f)
-                .setDelay(0.8f)
+                .setDelay(0.5f)
                 .setOnComplete(AnimateShowButtonsPhase);
         }
 
@@ -151,23 +151,25 @@ namespace View.UI.RaceScene
             _doubleRewardsButtonView.SetVisibility(true);
             _continueButtonView.SetVisibility(true);
 
-            const float delay = 0.7f;
+            const float delay = 0.2f;
 
             _doubleRewardsButtonView.RectTransform
-                .LeanMove((Vector3)_doubleRewardsButtonTargetPos, 1f)
+                .LeanMove((Vector3)_doubleRewardsButtonTargetPos, 0.6f)
                 .setDelay(delay)
                 .setEaseOutBack();
 
             _continueButtonView.RectTransform
-                .LeanMove((Vector3)_continueButtonTargetPos, 1f)
-                .setDelay(delay + 0.5f)
+                .LeanMove((Vector3)_continueButtonTargetPos, 0.6f)
+                .setDelay(delay + 0.7f)
                 .setEaseOutBack()
                 .setOnComplete(_showAnimationContext.SetCompleted);
         }
 
         private LTDescr AnimateTextAlpha(TMP_Text tmpText, float to, float time)
         {
-            return LeanTween.value(tmpText.gameObject, tmpText.SetAlpha, tmpText.color.a, to, time);
+            tmpText.AnimateAlpha(to, time, out var ltDescr);
+            
+            return ltDescr;
         }
 
         private class ShowAnimationContext

@@ -18,6 +18,7 @@ namespace Model.RaceScene
 
         public int CashReward => _cashRewardDefault * _rewardsMultiplier;
         public int GoldReward => _goldRewardDefault * _rewardsMultiplier;
+        public int ExpReward => CashReward;
 
         public void EnableDoubleRewards()
         {

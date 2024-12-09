@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Holders.LocalizationProvider
+namespace Providers.LocalizationProvider
 {
     [CreateAssetMenu(fileName = "LocalizationsHolderSo", menuName = "ScriptableObjects/LocalizationsHolderSo")]
     public class LocalizationsHolderSo : ScriptableObject, ILocalizationProvider

@@ -1,12 +1,12 @@
 using Cysharp.Threading.Tasks;
 using Data;
 using Events;
-using Holders;
-using Holders.LocalizationProvider;
 using Infra.EventBus;
 using Infra.Instance;
 using Model;
 using Model.RaceScene;
+using Providers;
+using Providers.LocalizationProvider;
 using UnityEngine;
 using View.UI.RaceScene;
 using static View.Helpers.RichTextHelper;
@@ -113,7 +113,26 @@ namespace Controller.RaceScene
 
         private void OnContinueClicked()
         {
-            _eventBus.Dispatch(new RequestNextSceneEvent());
+            var takeRewardsResult = ProcessTakingRewards();
+
+            _eventBus.Dispatch(takeRewardsResult == ProcessTakingRewardsResult.LevelUp
+                ? new RequestNextSceneEvent(Constants.NewLevelSceneName)
+                : new RequestNextSceneEvent());
+        }
+
+        private ProcessTakingRewardsResult ProcessTakingRewards()
+        {
+            var levelBeforeTaking = _playerModel.Level;
+            
+            _playerModel.AddCash(_raceRewards.CashReward);
+            _playerModel.AddGold(_raceRewards.GoldReward);
+            _playerModel.AddExpAmount(_raceRewards.ExpReward);
+
+            var levelAfterTaking = _playerModel.Level;
+
+            //return ProcessTakingRewardsResult.LevelUp; //temp
+            
+            return levelAfterTaking > levelBeforeTaking ? ProcessTakingRewardsResult.LevelUp : ProcessTakingRewardsResult.Default;
         }
 
         private void OnDoubleRewardsClicked()
@@ -124,6 +143,12 @@ namespace Controller.RaceScene
         private string GetLocale(string key)
         {
             return _localizationProvider.GetLocale(key);
+        }
+        
+        private enum ProcessTakingRewardsResult
+        {
+            Default,
+            LevelUp,
         }
     }
 }

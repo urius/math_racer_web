@@ -5,7 +5,7 @@ using Data;
 using Other;
 using UnityEngine;
 
-namespace Holders
+namespace Providers
 {
     [CreateAssetMenu(fileName = "PrefabsHolderSo", menuName = "ScriptableObjects/PrefabsHolderSo")]
     public class PrefabsHolderSo : ScriptableObject, IPrefabHolder

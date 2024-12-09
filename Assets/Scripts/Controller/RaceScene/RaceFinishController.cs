@@ -1,7 +1,7 @@
 using Extensions;
-using Holders;
 using Infra.Instance;
 using Model.RaceScene;
+using Providers;
 using UnityEngine;
 using View.UI.RaceScene;
 

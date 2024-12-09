@@ -1,6 +1,6 @@
-using Holders;
 using Infra.Instance;
 using Model.RaceScene;
+using Providers;
 using View.Gameplay.Race;
 
 namespace Controller.RaceScene

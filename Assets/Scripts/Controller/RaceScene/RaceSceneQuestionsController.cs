@@ -1,10 +1,10 @@
 using System.Text;
 using Cysharp.Threading.Tasks;
 using Data;
-using Holders;
-using Holders.LocalizationProvider;
 using Infra.Instance;
 using Model.RaceScene;
+using Providers;
+using Providers.LocalizationProvider;
 using UnityEngine;
 using Utils;
 using View.UI.RaceScene;

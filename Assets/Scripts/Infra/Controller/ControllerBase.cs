@@ -1,11 +1,8 @@
 using System.Collections.Generic;
-using Data;
-using Holders;
+using Providers;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Utils;
 using Utils.GameObjectsCache;
-using View;
 
 namespace Infra.Controller
 {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Data;
+using Helpers;
 using UnityEngine;
 
 namespace Model
@@ -13,18 +14,19 @@ namespace Model
         public event Action<int> InsufficientCash;
         public event Action<int> GoldAmountChanged;
         public event Action<int> InsufficientGold;
+        public event Action<int> ExpAmountChanged;
         
         private readonly List<CarKey> _boughtCars;
 
         public PlayerModel(
-            int level,
+            int expAmount,
             int complexityLevel,
             int cashAmount,
             int goldAmount,
             int currentCar,
             IEnumerable<int> boughtCars)
         {
-            Level = level;
+            SetExpAmount(expAmount);
             ComplexityLevel = complexityLevel;
             CashAmount = cashAmount;
             GoldAmount = goldAmount;
@@ -33,6 +35,7 @@ namespace Model
             _boughtCars = boughtCars.Select(c => (CarKey)c).ToList();
         }
 
+        public int ExpAmount { get; private set; }
         public int Level { get; private set; }
         public int ComplexityLevel { get; private set; }
         public int CashAmount { get; private set; }
@@ -45,12 +48,33 @@ namespace Model
             return moneyAmount > 0 ? TrySpendCash(moneyAmount) : TrySpendGold(Mathf.Abs(moneyAmount));
         }
 
+        public void AddCash(int cashToAdd)
+        {
+            if (CashAmount + cashToAdd < 0)
+            {
+                cashToAdd = -CashAmount;
+            }
+
+            CashAmount += cashToAdd;
+            CashAmountChanged?.Invoke(cashToAdd);
+        }
+
+        public void AddGold(int goldToAdd)
+        {
+            if (GoldAmount + goldToAdd < 0)
+            {
+                goldToAdd = -GoldAmount;
+            }
+
+            GoldAmount += goldToAdd;
+            GoldAmountChanged?.Invoke(goldToAdd);
+        }
+
         private bool TrySpendCash(int cashSpentAmount)
         {
             if (CashAmount >= cashSpentAmount)
             {
-                CashAmount -= cashSpentAmount;
-                CashAmountChanged?.Invoke(-cashSpentAmount);
+                AddCash(-cashSpentAmount);
                 
                 return true;
             }
@@ -66,8 +90,7 @@ namespace Model
         {
             if (GoldAmount >= goldSpentAmount)
             {
-                GoldAmount -= goldSpentAmount;
-                GoldAmountChanged?.Invoke(-goldSpentAmount);
+                AddGold(-goldSpentAmount);
                 
                 return true;
             }
@@ -100,6 +123,20 @@ namespace Model
         public void AddBoughtCar(CarKey carKey)
         {
             _boughtCars.Add(carKey);
+        }
+        
+        public void AddExpAmount(int amountToAdd)
+        {
+            SetExpAmount(ExpAmount + amountToAdd);
+        }
+
+        public void SetExpAmount(int expAmount)
+        {
+            var delta = expAmount - ExpAmount;
+            ExpAmount = expAmount;
+            Level = LevelPointsHelper.GetLevelByExpPointsAmount(ExpAmount);
+            
+            ExpAmountChanged?.Invoke(delta);
         }
     }
 }

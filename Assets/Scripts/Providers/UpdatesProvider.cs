@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace Holders
+namespace Providers
 {
     public class UpdatesProvider : MonoBehaviour, IUpdatesProvider
     {

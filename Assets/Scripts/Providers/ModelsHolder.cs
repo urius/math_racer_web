@@ -1,7 +1,7 @@
 using Model;
 using Model.RaceScene;
 
-namespace Holders
+namespace Providers
 {
     public class ModelsHolder : IModelsHolder
     {

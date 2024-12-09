@@ -1,6 +1,7 @@
 using System;
 using Controller.Commands;
 using Controller.MenuScene;
+using Controller.NewLevelScene;
 using Controller.RaceScene;
 using Cysharp.Threading.Tasks;
 using Data;
@@ -61,14 +62,23 @@ namespace Controller
         {
             var nextSceneName = string.Empty;
 
-            switch (_currentSceneName)
+            if (e.SceneName == null)
             {
-                case Constants.MenuSceneName:
-                    nextSceneName = Constants.RaceSceneName;
-                    break;
-                case Constants.RaceSceneName:
-                    nextSceneName = Constants.MenuSceneName;
-                    break;
+                //default next scene
+                switch (_currentSceneName)
+                {
+                    case Constants.MenuSceneName:
+                        nextSceneName = Constants.RaceSceneName;
+                        break;
+                    case Constants.RaceSceneName:
+                    case Constants.NewLevelSceneName:
+                        nextSceneName = Constants.MenuSceneName;
+                        break;
+                }
+            }
+            else
+            {
+                nextSceneName = e.SceneName;
             }
 
             LoadScene(nextSceneName).Forget();
@@ -98,6 +108,7 @@ namespace Controller
             {
                 Constants.MenuSceneName => new MenuSceneRootController(),
                 Constants.RaceSceneName => new RaceSceneRootController(),
+                Constants.NewLevelSceneName => new NewLevelSceneRootController(),
                 _ => throw new NotSupportedException($"Root controller for {sceneName} is not supported")
             };
 

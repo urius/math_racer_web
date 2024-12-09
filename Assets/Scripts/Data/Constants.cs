@@ -5,6 +5,7 @@ namespace Data
         public const string BootstrapSceneName = "BootstrapScene";
         public const string MenuSceneName = "MenuScene";
         public const string RaceSceneName = "RaceScene";
+        public const string NewLevelSceneName = "NewLevelScene";
         
         public const string OperatorPlus = "+";
         public const string OperatorMinus = "-";

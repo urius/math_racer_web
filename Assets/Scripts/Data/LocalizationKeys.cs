@@ -20,5 +20,8 @@ namespace Data
         public const string ContinueButton = "continue_button";
         public const string CarItemLockedText = "car_item_locked_text";
         public const string Choose = "choose";
+        public const string Level = "level";
+        public const string NewLevelCongrats = "new_level_congrats";
+        public const string NewCarsAvailable = "new_cars_available";
     }
 }

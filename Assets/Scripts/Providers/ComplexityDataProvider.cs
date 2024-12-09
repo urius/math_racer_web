@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Data;
 
-namespace Holders
+namespace Providers
 {
     public class ComplexityDataProvider : IComplexityDataProvider
     {
