@@ -114,6 +114,16 @@
 			"key": "new_cars_available",
 			"en": "New cars available:",
 			"ru": "Доступны новые машины:"
+		},
+		{
+			"key": "play_button",
+			"en": "Start Race",
+			"ru": "Начать Гонку"
+		},
+		{
+			"key": "cars_button",
+			"en": "Cars Shop",
+			"ru": "Купить Машину"
 		}
 	]
 }

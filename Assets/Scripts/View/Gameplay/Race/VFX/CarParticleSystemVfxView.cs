@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace View.Gameplay.Race.VFX
 {
-    public class TurboBoosterVfxView : MonoBehaviour
+    public class CarParticleSystemVfxView : MonoBehaviour
     {
         [SerializeField] private ParticleSystem _particleSystem;
 

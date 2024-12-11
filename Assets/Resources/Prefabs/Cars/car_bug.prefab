@@ -308,6 +308,7 @@ MonoBehaviour:
   _wheelFront: {fileID: 1904341342118399847}
   _boosterContainer: {fileID: 3995287358069835860}
   _boosterPrefab: {fileID: 4805281740419894079, guid: ed6761a1d76f84277ab80c9cfd2fab65, type: 3}
+  _exhaustPrefab: {fileID: 4805281740419894079, guid: 9b6e95426e9134d9b9989b379d76b417, type: 3}
   _bodyRotationMin: -5
   _bodyRotationMax: 5
 --- !u!114 &7018753438659648363

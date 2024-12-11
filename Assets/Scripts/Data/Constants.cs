@@ -30,6 +30,9 @@ namespace Data
         public const int PrefabCarsOffset = 1000;
         public const int MaxCarSpeedKmph = 500;
         public const int MaxCarAcceleration = 50;
+
+        public const string PrefabPathExhaust = "Prefabs/vfx/PS_Exhaust";
+        public const string PrefabPathTurboBooster = "Prefabs/vfx/PS_TurboBooster";
         
         public const float TurboIndicatorShowHideDurationSec = 0.2f;
         public const int TurboIndicatorShowHideDurationMs = (int)(TurboIndicatorShowHideDurationSec * 1000);

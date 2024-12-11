@@ -1,5 +1,6 @@
 using Controller;
 using Data;
+using Helpers;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
@@ -19,6 +20,10 @@ public class InitScript : MonoBehaviour
     
     private void Awake()
     {
+#if UNITY_EDITOR
+        LevelPointsHelper.TestLevelPointsHelper();
+#endif
+        
         Application.targetFrameRate = Constants.FPS;
         
         DontDestroyOnLoad(gameObject);

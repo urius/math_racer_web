@@ -23,5 +23,7 @@ namespace Data
         public const string Level = "level";
         public const string NewLevelCongrats = "new_level_congrats";
         public const string NewCarsAvailable = "new_cars_available";
+        public const string PlayButton = "play_button";
+        public const string CarsButton = "cars_button";
     }
 }

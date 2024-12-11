@@ -1,36 +1,38 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
+using View.UI.Common;
 
 namespace View.UI.MenuScene
 {
     public class UIMenuSceneRootCanvasView : MonoBehaviour
     {
-        public event Action PlayButtonClicked;
-        public event Action CarsButtonClicked;
+        public event Action PlayButtonClicked
+        {
+            add => _playButton.ButtonClicked += value;
+            remove => _playButton.ButtonClicked -= value;
+        }
+        public event Action CarsButtonClicked
+        {
+            add => _carsButton.ButtonClicked += value;
+            remove => _carsButton.ButtonClicked -= value;
+        }
         
-        [SerializeField] private Button _playButton;
-        [SerializeField] private Button _carsButton;
+        [SerializeField] private UITextButtonView _playButton;
+        [SerializeField] private UITextButtonView _carsButton;
         [SerializeField] private RectTransform _popupsCanvasTransform;
         [SerializeField] private UIMenuSceneMoneyCanvasView _moneyCanvasView;
         
         public RectTransform PopupsCanvasTransform => _popupsCanvasTransform;
         public UIMenuSceneMoneyCanvasView MoneyCanvasView => _moneyCanvasView;
-        
-        private void Awake()
+
+        public void SetPlayButtonText(string text)
         {
-            _playButton.onClick.AddListener(OnPlayButtonClicked);
-            _carsButton.onClick.AddListener(OnCarsButtonClicked);
+            _playButton.SetText(text);
         }
 
-        private void OnPlayButtonClicked()
+        public void SetCarsButtonText(string text)
         {
-            PlayButtonClicked?.Invoke();
-        }
-
-        private void OnCarsButtonClicked()
-        {
-            CarsButtonClicked?.Invoke();
+            _carsButton.SetText(text);
         }
     }
 }

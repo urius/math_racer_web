@@ -1,4 +1,5 @@
 using System;
+using Data;
 using UnityEngine;
 using View.Gameplay.Race.VFX;
 
@@ -10,16 +11,19 @@ namespace View
         [SerializeField] private Transform _wheelBack;
         [SerializeField] private Transform _wheelFront;
         [SerializeField] private Transform _boosterContainer;
-        [SerializeField] private GameObject _boosterPrefab;
 
         [SerializeField] private float _bodyRotationMin = -5;
         [SerializeField] private float _bodyRotationMax = 5;
+        
+        private GameObject _boosterPrefab;
+        private GameObject _exhaustPrefab;
         
         private Vector3 _wheelSize;
         private float _wheelRadius;
         private float _wheelRotationMultiplier;
         private Transform _transform;
-        private TurboBoosterVfxView _turboBoosterVfxView;
+        private CarParticleSystemVfxView _turboBoosterVfxView;
+        private CarParticleSystemVfxView _exhaustVfxView;
 
         public float WheelRotationMultiplier => _wheelRotationMultiplier;
 
@@ -59,13 +63,28 @@ namespace View
         {
             if (_turboBoosterVfxView == null)
             {
+                _boosterPrefab ??= Resources.Load(Constants.PrefabPathTurboBooster) as GameObject;
                 var go = Instantiate(_boosterPrefab, _boosterContainer);
-                _turboBoosterVfxView = go.GetComponent<TurboBoosterVfxView>();
+                _turboBoosterVfxView = go.GetComponent<CarParticleSystemVfxView>();
             }
             
             _turboBoosterVfxView.gameObject.SetActive(true);
             
             _turboBoosterVfxView.Play();
+        }
+
+        public void ShowExhaustVFX()
+        {
+            if (_exhaustVfxView == null)
+            {
+                _exhaustPrefab ??= Resources.Load(Constants.PrefabPathExhaust) as GameObject;
+                var go = Instantiate(_exhaustPrefab, _boosterContainer);
+                _exhaustVfxView = go.GetComponent<CarParticleSystemVfxView>();
+            }
+            
+            _exhaustVfxView.gameObject.SetActive(true);
+            
+            _exhaustVfxView.Play();
         }
 
         public void StopBoostVFX()
