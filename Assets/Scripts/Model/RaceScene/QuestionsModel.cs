@@ -1,6 +1,7 @@
 using System;
 using Data;
 using Utils;
+using Utils.ReactiveValue;
 
 namespace Model.RaceScene
 {
@@ -16,6 +17,7 @@ namespace Model.RaceScene
         public event Action<int> TurboIndicatorRemoved;
 
         public readonly double[] Answers = new double[4];
+        public readonly ReactiveFlag AnswerHintAvailableFlag = new(initialValue: false);
 
         private readonly Random _random;
         private readonly ComplexityData _complexityData;
@@ -89,16 +91,17 @@ namespace Model.RaceScene
         {
             IsRightAnswerGiven = answerIndex == _rightAnswerIndex;
 
-            if (IsRightAnswerGiven == false)
+            if (IsRightAnswerGiven)
+            {
+                AnswerHintAvailableFlag.Value = false;
+                RightAnswersCountTotal++;
+            }
+            else
             {
                 WrongAnswersCountTotal++;
                 WrongAnswersCountForQuestion++;
                 TurboTimeLeft = 0;
                 DecrementTurboIndicators();
-            }
-            else
-            {
-                RightAnswersCountTotal++;
             }
 
             if (IsRightAnswerGiven
@@ -121,7 +124,7 @@ namespace Model.RaceScene
                 return;
             }
 
-            TurboTimeInitial = TurboTimeLeft = Math.Max(TurboTimeMin, DefaultTurboTime - Math.Max(0, TurboBoostIndicatorsCount));
+            TurboTimeInitial = TurboTimeLeft = Math.Max(TurboTimeMin, DefaultTurboTime);// - Math.Max(0, TurboBoostIndicatorsCount));
         }
 
         private void UpdateTurboTime(float deltaTime)
@@ -132,7 +135,15 @@ namespace Model.RaceScene
             if (TurboTimeLeft <= 0)
             {
                 DecrementTurboIndicators();
-                InitTurboTime();
+                if (TurboBoostIndicatorsCount > 0)
+                {
+                    InitTurboTime();
+                }
+            }
+            else if (AnswerHintAvailableFlag.Value == false 
+                     && TurboTimeLeft <= TurboTimeInitial / 2)
+            {
+                AnswerHintAvailableFlag.Value = true;
             }
         }
 

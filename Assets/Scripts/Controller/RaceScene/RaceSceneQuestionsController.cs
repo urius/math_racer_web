@@ -48,17 +48,9 @@ namespace Controller.RaceScene
             SetupTurboBoostText();
             UpdateTurboTextVisibility();
             
+            InitChildControllers();
+            
             _rightPanelView.AnimateShow();
-        }
-
-        private void TestGenerateExpressionMethod()
-        {
-            var complexityData = GetComplexityData();
-
-            var expression = ExpressionsHelper.GenerateExpression(complexityData);
-            var rightAnswer = ExpressionsHelper.EvaluateExpression(expression);
-
-            Debug.Log("expression: " + expression + " = " + rightAnswer);
         }
 
         public override void DisposeInternal()
@@ -84,6 +76,23 @@ namespace Controller.RaceScene
             _questionsModel.TurboIndicatorAdded -= OnTurboIndicatorAdded;
             _questionsModel.TurboIndicatorRemoved -= OnTurboIndicatorRemoved;
             _questionsModel.TurboActivated -= OnTurboActivated;
+        }
+
+        private void InitChildControllers()
+        {
+            InitChildController(new RaceSceneAnswerHintController(_rightPanelView.AnswerHintView));
+        }
+
+        private void TestGenerateExpressionMethod()
+        {
+#if UNITY_EDITOR
+            var complexityData = GetComplexityData();
+
+            var expression = ExpressionsHelper.GenerateExpression(complexityData);
+            var rightAnswer = ExpressionsHelper.EvaluateExpression(expression);
+
+            Debug.Log("expression: " + expression + " = " + rightAnswer);
+#endif
         }
 
         private void OnTurboIndicatorAdded(int index)

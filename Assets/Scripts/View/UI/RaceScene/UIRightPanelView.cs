@@ -13,12 +13,14 @@ namespace View.UI.RaceScene
         [SerializeField] private UITurboLineView _turboLine;
         [SerializeField] private UITurboTextView _turboTextView;
         [SerializeField] private UIAnswersPanelView _answersPanel;
+        [SerializeField] private UIAnswerHintView _answerHintView;
         [SerializeField] private UIBoostIndicatorView[] _boostIndicators;
         
         private RectTransform _rectTransform;
 
         public UIAnswersPanelView AnswersPanel => _answersPanel;
         public UITurboTextView TurboTextView => _turboTextView;
+        public UIAnswerHintView AnswerHintView => _answerHintView;
 
         private void Awake()
         {

@@ -40,6 +40,7 @@ namespace Model
         public int ComplexityLevel { get; private set; }
         public int CashAmount { get; private set; }
         public int GoldAmount { get; private set; }
+        public int CrystalsAmount => GoldAmount;
         public CarKey CurrentCar { get; private set; }
         public IReadOnlyList<CarKey> BoughtCars => _boughtCars;
 
