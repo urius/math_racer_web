@@ -21,9 +21,11 @@ namespace View.UI.MenuScene
         [SerializeField] private UITextButtonView _carsButton;
         [SerializeField] private RectTransform _popupsCanvasTransform;
         [SerializeField] private UIMenuSceneMoneyCanvasView _moneyCanvasView;
+        [SerializeField] private UIMenuSceneLevelCanvasView _levelCanvasView;
         
         public RectTransform PopupsCanvasTransform => _popupsCanvasTransform;
         public UIMenuSceneMoneyCanvasView MoneyCanvasView => _moneyCanvasView;
+        public UIMenuSceneLevelCanvasView LevelCanvasView => _levelCanvasView;
 
         public void SetPlayButtonText(string text)
         {

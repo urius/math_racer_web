@@ -43,8 +43,10 @@ namespace Controller.MenuScene
 
         private void InitChildControllers()
         {
-            InitChildController(new MenuSceneMoneyViewController(_rootCanvasView.MoneyCanvasView));
             InitChildController(new MenuSceneRootViewController(_rootView));
+            //UI
+            InitChildController(new MenuSceneMoneyViewController(_rootCanvasView.MoneyCanvasView));
+            InitChildController(new MenuSceneLevelViewController(_rootCanvasView.LevelCanvasView));
         }
 
         private void Subscribe()
