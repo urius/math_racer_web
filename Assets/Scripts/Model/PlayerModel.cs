@@ -71,7 +71,7 @@ namespace Model
             GoldAmountChanged?.Invoke(goldToAdd);
         }
 
-        private bool TrySpendCash(int cashSpentAmount)
+        public bool TrySpendCash(int cashSpentAmount)
         {
             if (CashAmount >= cashSpentAmount)
             {
@@ -87,7 +87,7 @@ namespace Model
             }
         }
 
-        private bool TrySpendGold(int goldSpentAmount)
+        public bool TrySpendGold(int goldSpentAmount)
         {
             if (GoldAmount >= goldSpentAmount)
             {

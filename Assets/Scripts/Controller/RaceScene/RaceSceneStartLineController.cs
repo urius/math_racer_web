@@ -65,7 +65,7 @@ namespace Controller.RaceScene
             }
         }
 
-        private void OnAnswerGiven(bool isRight)
+        private void OnAnswerGiven(int _, bool isRight)
         {
             if (_questionsModel.QuestionsCount > 1) return;
             if (_currentLightIndex >= _trafficLightView.LightsCount) return;

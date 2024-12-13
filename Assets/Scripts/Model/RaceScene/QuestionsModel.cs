@@ -11,7 +11,7 @@ namespace Model.RaceScene
         private const int TurboTimeMin = 1;
         private const int TurboIndicatorsMax = 5;
         
-        public event Action<bool> AnswerGiven;
+        public event Action<int, bool> AnswerGiven;
         public event Action TurboActivated;
         public event Action<int> TurboIndicatorAdded;
         public event Action<int> TurboIndicatorRemoved;
@@ -34,6 +34,7 @@ namespace Model.RaceScene
 
         public string Expression { get; private set; }
         public bool IsRightAnswerGiven { get; private set; }
+        public bool IsAnswerGiven { get; private set; }
         public int QuestionsCount { get; private set; } = 0;
         public int RightAnswersCountTotal { get; private set; } = 0;
         public int WrongAnswersCountTotal { get; private set; } = 0;
@@ -87,13 +88,18 @@ namespace Model.RaceScene
             UpdateTurboTime(deltaTime);
         }
 
-        public bool GiveAnswer(int answerIndex)
+        public void GiveRightAnswer()
         {
+            GiveAnswer(_rightAnswerIndex);
+        }
+
+        public void GiveAnswer(int answerIndex)
+        {
+            IsAnswerGiven = true;
             IsRightAnswerGiven = answerIndex == _rightAnswerIndex;
 
             if (IsRightAnswerGiven)
             {
-                AnswerHintAvailableFlag.Value = false;
                 RightAnswersCountTotal++;
             }
             else
@@ -111,9 +117,7 @@ namespace Model.RaceScene
                 IncrementTurboIndicators();
             }
 
-            AnswerGiven?.Invoke(IsRightAnswerGiven);
-            
-            return IsRightAnswerGiven;
+            AnswerGiven?.Invoke(answerIndex, IsRightAnswerGiven);
         }
 
         private void InitTurboTime()
@@ -179,8 +183,9 @@ namespace Model.RaceScene
         {
             _rightAnswerIndex = -1;
             WrongAnswersCountForQuestion = 0;
-            IsRightAnswerGiven = false;
+            IsRightAnswerGiven = IsAnswerGiven = false;
             Expression = null;
+            AnswerHintAvailableFlag.Value = false;
         }
 
         private static double ToFixed(double number)

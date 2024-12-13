@@ -49,17 +49,41 @@ namespace Controller.RaceScene
 
         private void UpdateHintButtonInteractable()
         {
-            _answerHintView.SetHintButtonInteractable(CanBuyHint);
+            _answerHintView.SetHintButtonInteractable(CanBuyHint && _questionsModel.IsAnswerGiven == false);
         }
 
         private void Subscribe()
         {
+            _playerModel.GoldAmountChanged += OnGoldAmountChanged;
+            _questionsModel.AnswerGiven += OnAnswerGiven;
             _questionsModel.AnswerHintAvailableFlag.ValueChanged += OnAnswerHintAvailableFlagValueChanged;
+            _answerHintView.HintButtonClicked += OnHintButtonClicked;
         }
 
         private void Unsubscribe()
         {
+            _playerModel.GoldAmountChanged -= OnGoldAmountChanged;
+            _questionsModel.AnswerGiven -= OnAnswerGiven;
             _questionsModel.AnswerHintAvailableFlag.ValueChanged -= OnAnswerHintAvailableFlagValueChanged;
+            _answerHintView.HintButtonClicked -= OnHintButtonClicked;
+        }
+
+        private void OnGoldAmountChanged(int _)
+        {
+            UpdateCrystalsLeft();
+        }
+
+        private void OnAnswerGiven(int _, bool __)
+        {
+            UpdateHintButtonInteractable();
+        }
+
+        private void OnHintButtonClicked()
+        {
+            if (_playerModel.TrySpendGold(Constants.AnswerHintCostCrystals))
+            {
+                _questionsModel.GiveRightAnswer();
+            }
         }
 
         private void OnAnswerHintAvailableFlagValueChanged(bool prevValue, bool currentValue)
@@ -69,6 +93,7 @@ namespace Controller.RaceScene
                 if (CanBuyHint)
                 {
                     _answerHintView.AnimateShowHint();
+                    UpdateHintButtonInteractable();
                 }
             }
             else

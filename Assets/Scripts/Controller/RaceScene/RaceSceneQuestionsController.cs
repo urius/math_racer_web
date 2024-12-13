@@ -66,6 +66,7 @@ namespace Controller.RaceScene
             _questionsModel.TurboIndicatorAdded += OnTurboIndicatorAdded;
             _questionsModel.TurboIndicatorRemoved += OnTurboIndicatorRemoved;
             _questionsModel.TurboActivated += OnTurboActivated;
+            _questionsModel.AnswerGiven += OnAnswerGiven;
         }
 
         private void Unsubscribe()
@@ -76,6 +77,7 @@ namespace Controller.RaceScene
             _questionsModel.TurboIndicatorAdded -= OnTurboIndicatorAdded;
             _questionsModel.TurboIndicatorRemoved -= OnTurboIndicatorRemoved;
             _questionsModel.TurboActivated -= OnTurboActivated;
+            _questionsModel.AnswerGiven -= OnAnswerGiven;
         }
 
         private void InitChildControllers()
@@ -156,8 +158,18 @@ namespace Controller.RaceScene
 
         private void OnAnswerClicked(int answerIndex)
         {
-            var isCorrectAnswer = _questionsModel.GiveAnswer(answerIndex);
-            
+            _questionsModel.GiveAnswer(answerIndex);
+        }
+
+        private void OnAnswerGiven(int answerIndex, bool _)
+        {
+            HandleAnswer(answerIndex);
+        }
+
+        private void HandleAnswer(int answerIndex)
+        {
+            var isCorrectAnswer = _questionsModel.IsRightAnswerGiven;
+
             _answersPanel.SetAnswerInteractable(answerIndex, false);
 
             var answerView = _answersPanel.AnswerViews[answerIndex];

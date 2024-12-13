@@ -75,7 +75,7 @@ namespace Controller.RaceScene
             _carView.StopBoostVFX();
         }
 
-        private void OnAnswerGiven(bool isRightAnswer)
+        private void OnAnswerGiven(int answerIndex, bool isRightAnswer)
         {
             if (isRightAnswer)
             {
