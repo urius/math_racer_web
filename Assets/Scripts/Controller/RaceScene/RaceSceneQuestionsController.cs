@@ -24,6 +24,7 @@ namespace Controller.RaceScene
 
         private QuestionsModel _questionsModel;
         private RaceModel _raceModel;
+        private CarModel _playerCarModel;
 
         public RaceSceneQuestionsController(UIRightPanelView rightPanelView)
         {
@@ -35,6 +36,7 @@ namespace Controller.RaceScene
         public override void Initialize()
         {
             _raceModel = _modelsHolder.GetRaceModel();
+            _playerCarModel = _raceModel.PlayerCar;
             _questionsModel = _modelsHolder.GetRaceModel().QuestionsModel;
 
             for (var i = 0; i < 100; i++)
@@ -63,6 +65,7 @@ namespace Controller.RaceScene
             _answersPanel.AnswerClicked += OnAnswerClicked;
             _updatesProvider.GameplayUpdate += OnGameplayUpdate;
             _raceModel.IsFinishingFlagChanged += OnIsFinishingFlagChanged;
+            _playerCarModel.TurboFlag.ValueChanged += OnPlayerCarTurboFlagValueChanged;
             _questionsModel.TurboIndicatorAdded += OnTurboIndicatorAdded;
             _questionsModel.TurboIndicatorRemoved += OnTurboIndicatorRemoved;
             _questionsModel.TurboActivated += OnTurboActivated;
@@ -74,6 +77,7 @@ namespace Controller.RaceScene
             _answersPanel.AnswerClicked -= OnAnswerClicked;
             _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
             _raceModel.IsFinishingFlagChanged -= OnIsFinishingFlagChanged;
+            _playerCarModel.TurboFlag.ValueChanged -= OnPlayerCarTurboFlagValueChanged;
             _questionsModel.TurboIndicatorAdded -= OnTurboIndicatorAdded;
             _questionsModel.TurboIndicatorRemoved -= OnTurboIndicatorRemoved;
             _questionsModel.TurboActivated -= OnTurboActivated;
@@ -115,16 +119,22 @@ namespace Controller.RaceScene
         private async UniTask ProcessTurboLogic()
         {
             await UniTask.Delay(Constants.TurboIndicatorShowHideDurationMs);
-            
-            _turboTextView.SetTextVisibility(true);
-            
             await _rightPanelView.AnimateTurboBoost();
 
-            await UniTask.Delay(2500);
-            
-            _turboTextView.SetTextVisibility(false);
-
             UpdateIndicatorViews();
+        }
+
+        private void OnPlayerCarTurboFlagValueChanged(bool _, bool value)
+        {
+            if (value)
+            {
+                _turboTextView.SetTextVisibility(true);
+            }
+            else
+            {
+                UniTask.Delay(1000)
+                    .ContinueWith(() => _turboTextView.SetTextVisibility(false));
+            }
         }
 
         private void UpdateIndicatorViews()

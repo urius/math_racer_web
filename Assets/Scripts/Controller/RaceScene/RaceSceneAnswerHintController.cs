@@ -49,7 +49,7 @@ namespace Controller.RaceScene
 
         private void UpdateHintButtonInteractable()
         {
-            _answerHintView.SetHintButtonInteractable(CanBuyHint && _questionsModel.IsAnswerGiven == false);
+            _answerHintView.SetHintButtonInteractable(CanBuyHint && _questionsModel.IsRightAnswerGiven == false);
         }
 
         private void Subscribe()

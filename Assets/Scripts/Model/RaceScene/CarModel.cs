@@ -1,5 +1,6 @@
 using Data;
 using UnityEngine;
+using Utils.ReactiveValue;
 
 namespace Model.RaceScene
 {
@@ -8,8 +9,10 @@ namespace Model.RaceScene
         public const int MaxSpeed = 250;
         
         public readonly CarKey CarKey;
-
+        public readonly ReactiveFlag TurboFlag = new(initialValue: false);
+        
         private float _targetBodyRotation;
+        private float _turboTargetSpeed;
 
         public CarModel(CarKey carKey)
         {
@@ -39,10 +42,15 @@ namespace Model.RaceScene
         {
             Accelerate();
             Accelerate();
+
+            _turboTargetSpeed = TargetSpeedKmph;
+            TurboFlag.Value = true;
         }
 
         public void Decelerate()
         {
+            StopTurbo();
+            
             TargetSpeedKmph -= 5;
             if (TargetSpeedKmph < 0)
             {
@@ -56,6 +64,12 @@ namespace Model.RaceScene
             UpdatePassedDistance(deltaTime);
             UpdateBodyRotation(deltaTime);
             UpdateXOffset(deltaTime);
+        }
+
+        private void StopTurbo()
+        {
+            _turboTargetSpeed = 0;
+            TurboFlag.Value = false;
         }
 
         private void UpdateXOffset(float deltaTime)
@@ -99,7 +113,14 @@ namespace Model.RaceScene
             
             if (CurrentSpeedKmph < TargetSpeedKmph)
             {
-                CurrentSpeedKmph += deltaSpeed;
+                var turboMult = TurboFlag.Value ? 10 : 1;
+                CurrentSpeedKmph += deltaSpeed * turboMult;
+
+                if (CurrentSpeedKmph >= _turboTargetSpeed)
+                {
+                    StopTurbo();
+                }
+                
                 if (CurrentSpeedKmph > TargetSpeedKmph)
                 {
                     CurrentSpeedKmph = TargetSpeedKmph;

@@ -34,7 +34,6 @@ namespace Model.RaceScene
 
         public string Expression { get; private set; }
         public bool IsRightAnswerGiven { get; private set; }
-        public bool IsAnswerGiven { get; private set; }
         public int QuestionsCount { get; private set; } = 0;
         public int RightAnswersCountTotal { get; private set; } = 0;
         public int WrongAnswersCountTotal { get; private set; } = 0;
@@ -95,7 +94,6 @@ namespace Model.RaceScene
 
         public void GiveAnswer(int answerIndex)
         {
-            IsAnswerGiven = true;
             IsRightAnswerGiven = answerIndex == _rightAnswerIndex;
 
             if (IsRightAnswerGiven)
@@ -183,7 +181,7 @@ namespace Model.RaceScene
         {
             _rightAnswerIndex = -1;
             WrongAnswersCountForQuestion = 0;
-            IsRightAnswerGiven = IsAnswerGiven = false;
+            IsRightAnswerGiven = false;
             Expression = null;
             AnswerHintAvailableFlag.Value = false;
         }

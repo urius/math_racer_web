@@ -49,6 +49,7 @@ namespace Controller.RaceScene
             
             _raceModel.QuestionsModel.AnswerGiven += OnAnswerGiven;
             _raceModel.QuestionsModel.TurboActivated += OnTurboActivated;
+            _carModel.TurboFlag.ValueChanged += OnTurboFlagValueChanged;
         }
 
         private void Unsubscribe()
@@ -57,22 +58,25 @@ namespace Controller.RaceScene
             
             _raceModel.QuestionsModel.AnswerGiven -= OnAnswerGiven;
             _raceModel.QuestionsModel.TurboActivated -= OnTurboActivated;
+            _carModel.TurboFlag.ValueChanged -= OnTurboFlagValueChanged;
+        }
+
+        private void OnTurboFlagValueChanged(bool _, bool value)
+        {
+            if (value)
+            {
+                _carView.ShowBoostVFX();
+            }
+            else
+            {
+                UniTask.Delay(500)
+                    .ContinueWith(_carView.StopBoostVFX);
+            }
         }
 
         private void OnTurboActivated()
         {
-            ProcessTurboLogic().Forget();
-        }
-
-        private async UniTask ProcessTurboLogic()
-        {
-            _carView.ShowBoostVFX();
-            
             _carModel.AccelerateTurbo();
-
-            await UniTask.Delay(3000);
-            
-            _carView.StopBoostVFX();
         }
 
         private void OnAnswerGiven(int answerIndex, bool isRightAnswer)
