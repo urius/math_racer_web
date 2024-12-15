@@ -11,5 +11,6 @@ namespace Data
         CarCoupe = CarKey.Coupe + Constants.PrefabCarsOffset,
         CarDeliveryVan = CarKey.DeliveryVan + Constants.PrefabCarsOffset,
         CarDuneBuggy = CarKey.DuneBuggy + Constants.PrefabCarsOffset,
+        CarFormula = CarKey.Formula + Constants.PrefabCarsOffset,
     }
 }

@@ -8,5 +8,6 @@ namespace Data
         Coupe = 30,
         DeliveryVan = 40,
         DuneBuggy = 50,
+        Formula = 60,
     }
 }

@@ -19,7 +19,7 @@ namespace Helpers
             }
 
             const int firstTerm = MinLevelPoints;
-            var lastTerm = firstTerm + (targetLevelIndex - 1) * 50;
+            var lastTerm = firstTerm + (targetLevelIndex - 1) * 100;
             var totalPoints = targetLevelIndex * (firstTerm + lastTerm) / 2;
 
             return totalPoints;

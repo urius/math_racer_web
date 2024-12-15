@@ -103,6 +103,17 @@ namespace Model
             }
         }
 
+        public void IncreaseComplexityLevel()
+        {
+            ComplexityLevel++;
+        }
+
+
+        public void DecreaseComplexityLevel()
+        {
+            ComplexityLevel--;
+        }
+
         public int GetOverallComplexityPercent()
         {
             return ComplexityLevel * 10 + Level;

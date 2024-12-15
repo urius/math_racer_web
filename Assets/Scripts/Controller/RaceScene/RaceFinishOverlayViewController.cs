@@ -113,11 +113,33 @@ namespace Controller.RaceScene
 
         private void OnContinueClicked()
         {
+            ProcessUpdateComplexity();
             var takeRewardsResult = ProcessTakingRewards();
 
             _eventBus.Dispatch(takeRewardsResult == ProcessTakingRewardsResult.LevelUp
                 ? new RequestNextSceneEvent(Constants.NewLevelSceneName)
                 : new RequestNextSceneEvent());
+        }
+
+        private void ProcessUpdateComplexity()
+        {
+            var rndValue = Random.value;
+            var totalAnswersCount = _raceResultsModel.RightAnswersCount + _raceResultsModel.WrongAnswersCount;
+
+            var downThreshold = (float)_raceResultsModel.WrongAnswersCount / totalAnswersCount;
+            var upThreshold = (float)_raceResultsModel.RightAnswersCount / totalAnswersCount - downThreshold;
+
+            if (rndValue <= upThreshold)
+            {
+                _playerModel.IncreaseComplexityLevel();
+                Debug.Log($"Complexity increased to level {_playerModel.ComplexityLevel}, upThreshold: {upThreshold}, rndValue: {rndValue}");
+            }
+
+            if (rndValue <= downThreshold)
+            {
+                _playerModel.DecreaseComplexityLevel();
+                Debug.Log($"Complexity decreased to level {_playerModel.ComplexityLevel}, downThreshold: {downThreshold}, rndValue: {rndValue}");
+            }
         }
 
         private ProcessTakingRewardsResult ProcessTakingRewards()

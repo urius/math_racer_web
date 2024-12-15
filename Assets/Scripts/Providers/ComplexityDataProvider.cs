@@ -15,9 +15,9 @@ namespace Providers
 
             if (complexityLevel > 2) availableOperators.Add(Constants.OperatorMinus);
             if (complexityLevel > 4) availableOperators.Add(Constants.OperatorMultiply);
-            if (complexityLevel > 10) availableOperators.Add(Constants.OperatorDivide);
+            if (complexityLevel > 20) availableOperators.Add(Constants.OperatorDivide);
 
-            var maxDivideOperators = complexityLevel % 8;
+            var maxDivideOperators = complexityLevel % 20;
 
             if (complexityLevel > 3) maxNumbersCount++;
             if (complexityLevel > 9) maxNumbersCount++;
