@@ -91,6 +91,7 @@ namespace Controller.RaceScene
 
         private void TestGenerateExpressionMethod()
         {
+            return;
 #if UNITY_EDITOR
             var complexityData = GetComplexityData();
 

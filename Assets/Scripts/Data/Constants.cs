@@ -19,8 +19,8 @@ namespace Data
         public const string TextSpriteCash = "<sprite name=\"cash\">";
         public const string TextSpriteCrystal = "<sprite name=\"crystal\">";
         public const string TextSpriteAds = "<sprite name=\"ads\">";
-        public const string TextCrystalBlueColor = "#0169FF";
         public const string TextCrystalLiteBlueColor = "#D1DFFF";
+        public const string TextCrystalBlueColor = "#17B0FF";
 
         public const int FPS = 50;
         public const float KmphToMps = 1000f / 3600f;
@@ -37,6 +37,6 @@ namespace Data
         public const float TurboIndicatorShowHideDurationSec = 0.2f;
         public const int TurboIndicatorShowHideDurationMs = (int)(TurboIndicatorShowHideDurationSec * 1000);
 
-        public const int AnswerHintCostCrystals = 1;
+        public const int SolveCostCrystals = 1;
     }
 }

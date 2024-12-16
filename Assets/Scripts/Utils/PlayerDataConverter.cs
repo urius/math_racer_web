@@ -13,7 +13,17 @@ namespace Utils
                 playerDataDto.MoneyAmount,
                 playerDataDto.GoldAmount,
                 playerDataDto.CurrentCar,
-                playerDataDto.BoughtCars);
+                playerDataDto.BoughtCars,
+                ToAudioSettingsModel(playerDataDto.AudioSettings));
+        }
+
+        private static AudioSettingsModel ToAudioSettingsModel(AudioSettingsDto dto)
+        {
+            return new AudioSettingsModel(
+                dto.IsSoundsMuted,
+                dto.IsMusicMuted,
+                dto.SoundsVolume,
+                dto.MusicVolume);
         }
     }
 }

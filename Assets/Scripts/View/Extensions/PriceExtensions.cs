@@ -21,7 +21,12 @@ namespace View.Extensions
 
         public static string ToGoldView(this int priceInt)
         {
-            return $" {RichTextHelper.FormatColor(priceInt, Constants.TextCrystalLiteBlueColor)} {Constants.TextSpriteCrystal}";
+            return priceInt.ToGoldView(Constants.TextCrystalLiteBlueColor);
+        }
+
+        public static string ToGoldView(this int priceInt, string color)
+        {
+            return $"{RichTextHelper.FormatColor(priceInt, color)} {Constants.TextSpriteCrystal}";
         }
 
         public static string ToGoldView2(this int priceInt)

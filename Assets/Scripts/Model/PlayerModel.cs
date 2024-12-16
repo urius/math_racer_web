@@ -16,6 +16,8 @@ namespace Model
         public event Action<int> InsufficientGold;
         public event Action<int> ExpAmountChanged;
         
+        public readonly AudioSettingsModel AudioSettingsModel;
+        
         private readonly List<CarKey> _boughtCars;
 
         public PlayerModel(
@@ -24,8 +26,10 @@ namespace Model
             int cashAmount,
             int goldAmount,
             int currentCar,
-            IEnumerable<int> boughtCars)
+            IEnumerable<int> boughtCars,
+            AudioSettingsModel audioSettingsModel)
         {
+            AudioSettingsModel = audioSettingsModel;
             SetExpAmount(expAmount);
             ComplexityLevel = complexityLevel;
             CashAmount = cashAmount;

@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 #if UNITY_EDITOR
     using UnityEngine.Assertions;
 #endif
@@ -56,25 +57,25 @@ namespace Helpers
             for (var level = 1; level < 300; level++)
             {
                 var expPointsForLevel = LevelPointsHelper.GetExpPointsForLevel(level);
-                //Debug.Log("exp for level " + level + " : " + expPointsForLevel);
+                Debug.Log("exp for level " + level + " : " + expPointsForLevel);
                 if (expPointsForLevel > 0)
                 {
                     var expMinusPoints = expPointsForLevel - 1;
                     var prevLevel = LevelPointsHelper.GetLevelByExpPointsAmount(expMinusPoints);
-                    // Debug.Log("level fo exp points " + expMinusPoints + " : " + prevLevel);
+                    Debug.Log("level fo exp points " + expMinusPoints + " : " + prevLevel);
                     Assert.AreEqual(prevLevel, level - 1);
                 }
 
                 var sameLevel = LevelPointsHelper.GetLevelByExpPointsAmount(expPointsForLevel);
-                // Debug.Log("level fo exp points " + expPointsForLevel + " : " + sameLevel);
+                Debug.Log("level fo exp points " + expPointsForLevel + " : " + sameLevel);
                 Assert.AreEqual(sameLevel, level);
 
                 var expPlusPoints = expPointsForLevel + 1;
                 var sameLevel2 = LevelPointsHelper.GetLevelByExpPointsAmount(expPlusPoints);
-                // Debug.Log("level fo exp points " + expPlusPoints + " : " + sameLevel);
+                Debug.Log("level fo exp points " + expPlusPoints + " : " + sameLevel);
                 Assert.AreEqual(sameLevel, sameLevel2);
             }
         }
-    }
 #endif
+    }
 }

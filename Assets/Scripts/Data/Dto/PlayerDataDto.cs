@@ -11,13 +11,15 @@ namespace Data.Dto
         public int GoldAmount;
         public int CurrentCar;
         public int[] BoughtCars;
+        public AudioSettingsDto AudioSettings;
 
         public PlayerDataDto(int expAmount,
             int complexityLevel,
             int moneyAmount,
             int goldAmount,
             int currentCar,
-            int[] boughtCars)
+            int[] boughtCars,
+            AudioSettingsDto audioSettings)
         {
             ExpAmount = expAmount;
             ComplexityLevel = complexityLevel;
@@ -25,6 +27,7 @@ namespace Data.Dto
             GoldAmount = goldAmount;
             CurrentCar = currentCar;
             BoughtCars = boughtCars;
+            AudioSettings = audioSettings;
         }
 
         public static PlayerDataDto FromDefault()
@@ -38,7 +41,8 @@ namespace Data.Dto
                 new[]
                 {
                     (int)CarKey.Bug
-                });
+                },
+                AudioSettingsDto.FromDefault());
         }
     }
 }

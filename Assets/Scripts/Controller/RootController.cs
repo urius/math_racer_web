@@ -32,6 +32,8 @@ namespace Controller
         public override async void Initialize()
         {
             await InitPlayerModel();
+
+            InitChildControllers();
             
             LoadScene(Constants.MenuSceneName).Forget();
 
@@ -41,6 +43,11 @@ namespace Controller
         public override void DisposeInternal()
         {
             Unsubscribe();
+        }
+
+        private void InitChildControllers()
+        {
+            InitChildController(new AudioController());
         }
 
         private UniTask InitPlayerModel()
@@ -86,14 +93,20 @@ namespace Controller
 
         private async UniTaskVoid LoadScene(string sceneName)
         {
+            _eventBus.Dispatch(new StartUnloadCurrentSceneEvent());
+            
             await _loadingOverlayView.ShowLoadingOverlay();
             DisposeCurrentSceneRootController();
+            
+            _eventBus.Dispatch(new StartLoadSceneEvent(sceneName));
 
             await SceneManager.LoadSceneAsync(sceneName);
             _currentSceneRootController = RunSceneRootController(sceneName);
             _currentSceneName = sceneName;
             
             await _loadingOverlayView.HideLoadingOverlay();
+            
+            _eventBus.Dispatch(new SceneLoadedEvent(sceneName));
         }
 
         private void DisposeCurrentSceneRootController()

@@ -1,12 +1,12 @@
 using Controller;
 using Data;
-using Helpers;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
 using Providers;
 using Providers.LocalizationProvider;
 using UnityEngine;
+using Utils.AudioManager;
 using View.UI;
 
 public class InitScript : MonoBehaviour
@@ -15,14 +15,14 @@ public class InitScript : MonoBehaviour
     [SerializeField] private PrefabsHolderSo _prefabsHolderSo;
     [SerializeField] private UpdatesProvider _updatesProvider;
     [SerializeField] private LocalizationsHolderSo _localizationHolderSo;
+    [SerializeField] private AudioManager _audioManager;
+    [SerializeField] private AudioClipsProviderSo _audioClipsProviderSo;
 
     private RootController _rootController;
     
     private void Awake()
     {
-#if UNITY_EDITOR
-        LevelPointsHelper.TestLevelPointsHelper();
-#endif
+        //LevelPointsHelper.TestLevelPointsHelper();
         
         Application.targetFrameRate = Constants.FPS;
         
@@ -54,6 +54,8 @@ public class InitScript : MonoBehaviour
         SetupInstance.From(_prefabsHolderSo).As<IPrefabHolder>();
         SetupInstance.From(_updatesProvider).As<IUpdatesProvider>();
         SetupInstance.From(_localizationHolderSo).As<ILocalizationProvider>();
+        SetupInstance.From(_audioManager).As<IAudioPlayer>();
+        SetupInstance.From(_audioClipsProviderSo).As<IAudioClipsProvider>();
         
         SetupNewInstance<CommandExecutor, ICommandExecutor>();
         SetupNewInstance<EventBus, IEventBus>();

@@ -123,6 +123,50 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &77189092
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 77189094}
+  - component: {fileID: 77189093}
+  m_Layer: 0
+  m_Name: '[ audio manager ]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &77189093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77189092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44f6101b0ab7f42edbadfad74646c45b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &77189094
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 77189092}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1299844810}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &124295400
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,6 +369,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 124295404}
+  - {fileID: 77189094}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1299844811
@@ -343,6 +388,8 @@ MonoBehaviour:
   _prefabsHolderSo: {fileID: 11400000, guid: 66d560ec8130846e38faf78bd4e55cb6, type: 2}
   _updatesProvider: {fileID: 1299844812}
   _localizationHolderSo: {fileID: 11400000, guid: 24b987a5894e5428591bdf8701a5bd88, type: 2}
+  _audioManager: {fileID: 77189093}
+  _audioClipsProviderSo: {fileID: 11400000, guid: ecc138bbaaa0b42348d500d2b905d24f, type: 2}
 --- !u!114 &1299844812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,7 +412,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1336692383}
   - component: {fileID: 1336692382}
-  - component: {fileID: 1336692381}
+  - component: {fileID: 1336692384}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -373,14 +420,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1336692381
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1336692380}
-  m_Enabled: 1
 --- !u!20 &1336692382
 Camera:
   m_ObjectHideFlags: 0
@@ -447,6 +486,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &1336692384
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336692380}
+  m_Enabled: 1
 --- !u!1 &1910378867
 GameObject:
   m_ObjectHideFlags: 0
