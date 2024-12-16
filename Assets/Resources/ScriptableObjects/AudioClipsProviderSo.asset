@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _musicItems:
   - Key: 1
-    Clip: {fileID: 8300000, guid: 89f78f0f1ba47426397aaaba89ffd256, type: 3}
+    Clip: {fileID: 8300000, guid: 25ef70ab554244e108dce186288efffd, type: 3}
   _soundItems: []
