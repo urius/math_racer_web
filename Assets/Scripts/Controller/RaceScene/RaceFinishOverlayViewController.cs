@@ -52,6 +52,8 @@ namespace Controller.RaceScene
             _finishOverlayView = Instantiate<UIRaceFinishOverlayView>(PrefabKey.UIFinishOverlay, _targetTransform);
             
             SetupView();
+
+            _eventBus.Dispatch(new UIFinishOverlayInitEvent());
             
             await _finishOverlayView.AnimateShow(_raceResultsModel.IsFirst);
 

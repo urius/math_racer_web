@@ -26,7 +26,7 @@ namespace Utils.ReactiveValue
             var prevValue = _value;
             _value = value;
 
-            ValueChanged?.Invoke(prevValue, _value);
+            ValueChanged?.Invoke(_value, prevValue);
         }
     }
 }

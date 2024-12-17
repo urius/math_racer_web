@@ -125,7 +125,7 @@ namespace Controller.RaceScene
             UpdateIndicatorViews();
         }
 
-        private void OnPlayerCarTurboFlagValueChanged(bool _, bool value)
+        private void OnPlayerCarTurboFlagValueChanged(bool value, bool _)
         {
             if (value)
             {

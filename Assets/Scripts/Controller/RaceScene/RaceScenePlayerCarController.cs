@@ -61,7 +61,7 @@ namespace Controller.RaceScene
             _carModel.TurboFlag.ValueChanged -= OnTurboFlagValueChanged;
         }
 
-        private void OnTurboFlagValueChanged(bool _, bool value)
+        private void OnTurboFlagValueChanged(bool value, bool _)
         {
             if (value)
             {

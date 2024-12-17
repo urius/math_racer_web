@@ -95,7 +95,7 @@ namespace Controller.RaceScene
             }
         }
 
-        private void OnAnswerHintAvailableFlagValueChanged(bool prevValue, bool currentValue)
+        private void OnAnswerHintAvailableFlagValueChanged(bool currentValue, bool prevValue)
         {
             if (currentValue)
             {

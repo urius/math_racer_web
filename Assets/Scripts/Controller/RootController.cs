@@ -93,7 +93,7 @@ namespace Controller
 
         private async UniTaskVoid LoadScene(string sceneName)
         {
-            _eventBus.Dispatch(new StartUnloadCurrentSceneEvent());
+            _eventBus.Dispatch(new StartUnloadCurrentSceneEvent(_currentSceneName, sceneName));
             
             await _loadingOverlayView.ShowLoadingOverlay();
             DisposeCurrentSceneRootController();

@@ -38,17 +38,40 @@ namespace Controller
         {
             _eventBus.Subscribe<StartUnloadCurrentSceneEvent>(OnStartUnloadCurrentSceneEvent);
             _eventBus.Subscribe<SceneLoadedEvent>(OnSceneLoadedEvent);
+            
+            _eventBus.Subscribe<RaceFinishingEvent>(OnRaceFinishingEvent);
+            _eventBus.Subscribe<UIFinishOverlayInitEvent>(OnUIFinishOverlayInitEvent);
         }
 
         private void Unsubscribe()
         {
             _eventBus.Unsubscribe<StartUnloadCurrentSceneEvent>(OnStartUnloadCurrentSceneEvent);
             _eventBus.Unsubscribe<SceneLoadedEvent>(OnSceneLoadedEvent);
+            
+            _eventBus.Unsubscribe<RaceFinishingEvent>(OnRaceFinishingEvent);
+            _eventBus.Unsubscribe<UIFinishOverlayInitEvent>(OnUIFinishOverlayInitEvent);
         }
 
         private void OnStartUnloadCurrentSceneEvent(StartUnloadCurrentSceneEvent e)
         {
-            _currentFadeOutMusicTask = _audioPlayer.FadeOutAndStopMusicAsync(CancellationToken.None);
+            if (e.NextSceneName == Constants.NewLevelSceneName) return;
+
+            FadeOutCurrentMusic();
+        }
+
+        private void OnRaceFinishingEvent(RaceFinishingEvent e)
+        {
+            FadeOutCurrentMusic(duration: 0.1f);
+        }
+
+        private void FadeOutCurrentMusic(float duration = 0.5f)
+        {
+            _currentFadeOutMusicTask = _audioPlayer.FadeOutAndStopMusicAsync(CancellationToken.None, duration);
+        }
+
+        private void OnUIFinishOverlayInitEvent(UIFinishOverlayInitEvent e)
+        {
+            _currentFadeOutMusicTask.ContinueWith(() => PlayMusic(MusicKey.FinishRace, 0f));
         }
 
         private void OnSceneLoadedEvent(SceneLoadedEvent e)
@@ -65,14 +88,17 @@ namespace Controller
                 case Constants.MenuSceneName:
                     PlayMusic(MusicKey.MainMenu);
                     break;
+                case Constants.RaceSceneName:
+                    PlayMusic(MusicKey.Race_1);
+                    break;
             }
         }
 
-        private void PlayMusic(MusicKey musicKey)
+        private void PlayMusic(MusicKey musicKey, float duration = 1f)
         {
             var clip = _audioClipsProvider.GetMusicByKey(musicKey);
             
-            _audioPlayer.FadeInAndPlayMusicAsync(CancellationToken.None, clip, 1f);
+            _audioPlayer.FadeInAndPlayMusicAsync(CancellationToken.None, clip, duration);
         }
     }
 }

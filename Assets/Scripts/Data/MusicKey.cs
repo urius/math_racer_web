@@ -5,5 +5,6 @@ namespace Data
         None,
         MainMenu,
         Race_1,
+        FinishRace,
     }
 }

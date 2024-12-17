@@ -15,4 +15,8 @@ MonoBehaviour:
   _musicItems:
   - Key: 1
     Clip: {fileID: 8300000, guid: 25ef70ab554244e108dce186288efffd, type: 3}
+  - Key: 2
+    Clip: {fileID: 8300000, guid: 24c254889d2644c8da9c63aa34b48010, type: 3}
+  - Key: 3
+    Clip: {fileID: 8300000, guid: 502cd66a086ee47c2bdb61c9c76ced88, type: 3}
   _soundItems: []

@@ -1,4 +1,6 @@
+using Events;
 using Extensions;
+using Infra.EventBus;
 using Infra.Instance;
 using Model.RaceScene;
 using Providers;
@@ -11,6 +13,7 @@ namespace Controller.RaceScene
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
+        private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
 
         private readonly Transform _finishLineTransform;
         private readonly UIRaceSceneRootCanvasView _rootCanvasView;
@@ -55,7 +58,6 @@ namespace Controller.RaceScene
             
             _raceModel.IsFinishingFlagChanged -= OnIsFinishingFlagChanged;            
             _raceModel.IsFinishedFlagChanged -= OnIsFinishedFlagChanged;
-
         }
 
         private void OnIsFinishedFlagChanged(bool isFinished)
@@ -81,6 +83,8 @@ namespace Controller.RaceScene
             if (isFinishing)
             {
                 Time.timeScale = 0.1f;
+                
+                _eventBus.Dispatch(new RaceFinishingEvent());
             }
         }
     }
