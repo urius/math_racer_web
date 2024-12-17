@@ -23,7 +23,7 @@ namespace Utils.ReactiveValue
         {
             if (_value.Equals(value)) return;
 
-            var prevValue = value;
+            var prevValue = _value;
             _value = value;
 
             ValueChanged?.Invoke(prevValue, _value);
