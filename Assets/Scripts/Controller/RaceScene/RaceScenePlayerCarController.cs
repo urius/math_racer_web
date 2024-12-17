@@ -1,9 +1,11 @@
 using Cysharp.Threading.Tasks;
+using Data;
 using Extensions;
 using Infra.Instance;
 using Model.RaceScene;
 using Providers;
 using UnityEngine;
+using Utils.AudioManager;
 using View;
 
 namespace Controller.RaceScene
@@ -12,9 +14,24 @@ namespace Controller.RaceScene
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
+        private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         
         private readonly CarModel _carModel;
         private readonly Transform _targetTransform;
+        private readonly SoundKey[] _accelerationSounds = new[]
+        {
+            SoundKey.Acceleration_1,
+            SoundKey.Acceleration_2,
+            SoundKey.Acceleration_3,
+            SoundKey.Acceleration_4,
+            SoundKey.Acceleration_5
+        };
+        private readonly SoundKey[] _brakesSounds = new[]
+        {
+            SoundKey.Brakes_1,
+            SoundKey.Brakes_2,
+            SoundKey.Brakes_3,
+        };
 
         private float _targetSpeed;
         private CarView _carView;
@@ -69,7 +86,7 @@ namespace Controller.RaceScene
             }
             else
             {
-                UniTask.Delay(500)
+                UniTask.Delay(800)
                     .ContinueWith(_carView.StopBoostVFX);
             }
         }
@@ -77,6 +94,8 @@ namespace Controller.RaceScene
         private void OnTurboActivated()
         {
             _carModel.AccelerateTurbo();
+            
+            _audioPlayer.PlaySound(SoundKey.Turbo);
         }
 
         private void OnAnswerGiven(int answerIndex, bool isRightAnswer)
@@ -84,11 +103,32 @@ namespace Controller.RaceScene
             if (isRightAnswer)
             {
                 _carModel.Accelerate();
+                
+                PlayAccelerationSound();
             }
             else
             {
                 _carModel.Decelerate();
+
+                if (_raceModel.QuestionsModel.RightAnswersCountTotal > 0)
+                {
+                    PlayBrakesSound();
+                }
             }
+        }
+
+        private void PlayAccelerationSound()
+        {
+            var index = Random.Range(0, _accelerationSounds.Length);
+            var sound = _accelerationSounds[index];
+            _audioPlayer.PlaySound(sound);
+        }
+
+        private void PlayBrakesSound()
+        {
+            var index = Random.Range(0, _brakesSounds.Length);
+            var sound = _brakesSounds[index];
+            _audioPlayer.PlaySound(sound);
         }
 
         private void OnGameplayUpdate()

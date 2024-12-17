@@ -1,3 +1,4 @@
+using System;
 using Controller;
 using Data;
 using Infra.CommandExecutor;
@@ -29,6 +30,7 @@ public class InitScript : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         _prefabsHolderSo.Init();
+        InitSounds();
         
         SetupInstances();
     }
@@ -38,6 +40,19 @@ public class InitScript : MonoBehaviour
         _localizationHolderSo.SetLocaleLang("en");
         
         InitRootControllers();
+    }
+
+    private void InitSounds()
+    {
+        var soundKeys = Enum.GetValues(typeof(SoundKey));
+        foreach (int i in soundKeys)
+        {
+            if (i > 0)
+            {
+                var sound = _audioClipsProviderSo.GetSoundByKey((SoundKey)i);
+                _audioManager.SetupSound(i, sound);
+            }
+        }
     }
 
     private void InitRootControllers()

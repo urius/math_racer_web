@@ -71,7 +71,7 @@ namespace Controller
 
         private void OnUIFinishOverlayInitEvent(UIFinishOverlayInitEvent e)
         {
-            _currentFadeOutMusicTask.ContinueWith(() => PlayMusic(MusicKey.FinishRace, 0f));
+            _currentFadeOutMusicTask.ContinueWith(() => PlayMusic(MusicKey.FinishRace, 0.1f));
         }
 
         private void OnSceneLoadedEvent(SceneLoadedEvent e)

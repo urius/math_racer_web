@@ -3,6 +3,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
 using Events;
+using Extensions;
 using Helpers;
 using Infra.EventBus;
 using Infra.Instance;
@@ -12,6 +13,7 @@ using Providers;
 using Providers.LocalizationProvider;
 using UnityEngine;
 using Utils;
+using Utils.AudioManager;
 using View.Extensions;
 using View.UI.NewLevelScene;
 using Object = UnityEngine.Object;
@@ -24,7 +26,10 @@ namespace Controller.NewLevelScene
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
         private readonly ICarDataProvider _carDataProvider = Instance.Get<ICarDataProvider>();
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
 
+        private readonly AnimateExpContext _animateExpContext = new AnimateExpContext();
+        
         private Action _expProgressLineIsFullAction;
         private UINewLevelSceneRootCanvasView _rootView;
         private PlayerModel _playerModel;
@@ -106,7 +111,15 @@ namespace Controller.NewLevelScene
 
         private void SetExpAmount(float expFloat)
         {
-            SetExpAmount((int)expFloat);
+            var expAmountInt = (int)expFloat;
+            SetExpAmount(expAmountInt);
+
+            if (expAmountInt != _animateExpContext.ExpAmountInt)
+            {
+                _audioPlayer.PlaySound(SoundKey.ExpTick);
+            }
+
+            _animateExpContext.ExpAmountInt = expAmountInt;
         }
 
         private void SetExpAmount(int expAmount)
@@ -129,7 +142,7 @@ namespace Controller.NewLevelScene
         private async UniTaskVoid RunNewLevelFlow()
         {
             await Delay(800);
-            _expProgressLineIsFullAction = _rootView.ShowStarParticles;
+            _expProgressLineIsFullAction = ShowNewLevelStars;
             await LeanTween
                 .value(_rootView.gameObject, SetExpAmount, _prevExpAmount, _playerModel.ExpAmount, 2f)
                 .setEaseOutQuad()
@@ -145,6 +158,13 @@ namespace Controller.NewLevelScene
             
             await Delay(200);
             _rootView.AnimateContinueButtonAppear();
+        }
+
+        private void ShowNewLevelStars()
+        {
+            _rootView.ShowStarParticles();
+            
+            _audioPlayer.PlaySound(SoundKey.NewLevel);
         }
 
         private UniTask AnimateCarIconsAppearing()
@@ -172,6 +192,11 @@ namespace Controller.NewLevelScene
         private static UniTask Delay(int ms)
         {
             return UniTask.Delay(ms, ignoreTimeScale: true);
+        }
+        
+        private class AnimateExpContext
+        {
+            public int ExpAmountInt;
         }
     }
 }

@@ -19,4 +19,28 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: 24c254889d2644c8da9c63aa34b48010, type: 3}
   - Key: 3
     Clip: {fileID: 8300000, guid: 502cd66a086ee47c2bdb61c9c76ced88, type: 3}
-  _soundItems: []
+  _soundItems:
+  - Key: 1
+    Clip: {fileID: 8300000, guid: 3f4241a59170440dda3cc61e1d9c894b, type: 3}
+  - Key: 2
+    Clip: {fileID: 8300000, guid: 2dfe8a4c05af6498f9eab022772c3f31, type: 3}
+  - Key: 3
+    Clip: {fileID: 8300000, guid: 314e5b82369c0406ba269de54ca31206, type: 3}
+  - Key: 4
+    Clip: {fileID: 8300000, guid: 6b796908b47494a5a8d58c15c2a9d89a, type: 3}
+  - Key: 5
+    Clip: {fileID: 8300000, guid: 3b94063a5c5f4417097caebaeb8a8d66, type: 3}
+  - Key: 6
+    Clip: {fileID: 8300000, guid: 2fefaf0cccf8148c7843eac30e176355, type: 3}
+  - Key: 7
+    Clip: {fileID: 8300000, guid: ea47c58a323a24a15b51331ae74a51c4, type: 3}
+  - Key: 8
+    Clip: {fileID: 8300000, guid: 249838324c5f346b5b798685ae28961c, type: 3}
+  - Key: 9
+    Clip: {fileID: 8300000, guid: 29b48b6935493412db9a22bb430aac64, type: 3}
+  - Key: 10
+    Clip: {fileID: 8300000, guid: 2db6f3781d63643edaf086bc99d90e59, type: 3}
+  - Key: 11
+    Clip: {fileID: 8300000, guid: 95c16d85a34e542ce8fa342679ccaeff, type: 3}
+  - Key: 12
+    Clip: {fileID: 8300000, guid: 97813fed631634dacafaaf830a592ea1, type: 3}

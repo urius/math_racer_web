@@ -36,13 +36,13 @@ namespace Model.RaceScene
             PlayerCar.Update(deltaTime);
             BotCar.Update(deltaTime);
 
-            if (IsFinishing == false && PlayerCarDistanceToFinish < 5)
+            if (IsFinishing == false && PlayerCarDistanceToFinish < 5 * PlayerCar.CurrentSpeedKmph * 0.01f)
             {
                 IsFinishing = true;
                 IsFinishingFlagChanged?.Invoke(IsFinishing);
             }
 
-            if (IsFinished == false && PlayerCarDistanceToFinish <= 0)
+            if (IsFinished == false && PlayerCarDistanceToFinish <= -1f)
             {
                 IsFinished = true;
                 RaceResultsModel.SetResults(PlayerCar, BotCar, QuestionsModel);

@@ -1,3 +1,4 @@
+using Data;
 using Events;
 using Extensions;
 using Infra.EventBus;
@@ -5,6 +6,7 @@ using Infra.Instance;
 using Model.RaceScene;
 using Providers;
 using UnityEngine;
+using Utils.AudioManager;
 using View.UI.RaceScene;
 
 namespace Controller.RaceScene
@@ -14,6 +16,7 @@ namespace Controller.RaceScene
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
 
         private readonly Transform _finishLineTransform;
         private readonly UIRaceSceneRootCanvasView _rootCanvasView;
@@ -74,7 +77,10 @@ namespace Controller.RaceScene
 
             if (_raceModel.PlayerCarDistanceToFinish < 0)
             {
-                Time.timeScale = 1f;
+                LeanTween.value(Time.timeScale, 1, 0.5f)
+                    .setOnUpdate(v => Time.timeScale = v)
+                    .setEaseOutQuad()
+                    .setIgnoreTimeScale(true);
             }
         }
 
@@ -85,6 +91,8 @@ namespace Controller.RaceScene
                 Time.timeScale = 0.1f;
                 
                 _eventBus.Dispatch(new RaceFinishingEvent());
+                
+                _audioPlayer.PlaySound(SoundKey.SlowDown);
             }
         }
     }
