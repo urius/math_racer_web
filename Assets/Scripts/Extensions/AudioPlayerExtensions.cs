@@ -9,5 +9,10 @@ namespace Extensions
         {
             audioPlayer.PlaySound((int)soundKey);
         }
+        
+        public static void PlayButtonSound(this IAudioPlayer audioPlayer)
+        {
+            audioPlayer.PlaySound((int)SoundKey.Button_1);
+        }
     }
 }

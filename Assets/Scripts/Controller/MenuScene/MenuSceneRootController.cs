@@ -1,9 +1,11 @@
 using Data;
 using Events;
+using Extensions;
 using Infra.EventBus;
 using Infra.Instance;
 using Providers.LocalizationProvider;
 using UnityEngine;
+using Utils.AudioManager;
 using View.UI.MenuScene;
 
 namespace Controller.MenuScene
@@ -12,6 +14,7 @@ namespace Controller.MenuScene
     {
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
+        private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         
         private UIMenuSceneRootCanvasView _rootCanvasView;
         private UIMenuSceneRootView _rootView;
@@ -64,12 +67,16 @@ namespace Controller.MenuScene
         private void OnPlayButtonClicked()
         {
             _eventBus.Dispatch(new RequestNextSceneEvent());
+            
+            _audioPlayer.PlayButtonSound();
         }
 
         private void OnCarsButtonClicked()
         {
             var carsPopupController = new MenuSceneCarsPopupController(_rootCanvasView.PopupsCanvasTransform);
             InitChildController(carsPopupController);
+            
+            _audioPlayer.PlayButtonSound();
         }
     }
 }

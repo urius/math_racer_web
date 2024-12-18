@@ -15,5 +15,10 @@ namespace Data
         Brakes_3,
         ExpTick,
         SlowDown,
+        Button_1,
+        CashBox,
+        SelectCar,
+        Button_2,
+        Negative,
     }
 }

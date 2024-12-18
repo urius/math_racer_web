@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _musicItems:
   - Key: 1
-    Clip: {fileID: 8300000, guid: 25ef70ab554244e108dce186288efffd, type: 3}
+    Clip: {fileID: 8300000, guid: a2eab1e5297614040966fed0358c424e, type: 3}
   - Key: 2
     Clip: {fileID: 8300000, guid: 24c254889d2644c8da9c63aa34b48010, type: 3}
   - Key: 3
@@ -44,3 +44,13 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: 95c16d85a34e542ce8fa342679ccaeff, type: 3}
   - Key: 12
     Clip: {fileID: 8300000, guid: 97813fed631634dacafaaf830a592ea1, type: 3}
+  - Key: 13
+    Clip: {fileID: 8300000, guid: 96ac8ceb10d704062962e825ae25aa70, type: 3}
+  - Key: 14
+    Clip: {fileID: 8300000, guid: 88d2fe0caa53d466e9e6b66f0dffc50a, type: 3}
+  - Key: 15
+    Clip: {fileID: 8300000, guid: d3add1fcf9d504ce4962caa236b988a0, type: 3}
+  - Key: 16
+    Clip: {fileID: 8300000, guid: 4d1031832d1b1494da305c1d5953fcce, type: 3}
+  - Key: 17
+    Clip: {fileID: 8300000, guid: 7982143a2e586479c80da31d11c7f207, type: 3}

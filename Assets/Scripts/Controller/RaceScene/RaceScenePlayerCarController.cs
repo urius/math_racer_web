@@ -83,6 +83,7 @@ namespace Controller.RaceScene
             if (value)
             {
                 _carView.ShowBoostVFX();
+                _audioPlayer.PlaySound(SoundKey.Turbo);
             }
             else
             {
@@ -94,8 +95,6 @@ namespace Controller.RaceScene
         private void OnTurboActivated()
         {
             _carModel.AccelerateTurbo();
-            
-            _audioPlayer.PlaySound(SoundKey.Turbo);
         }
 
         private void OnAnswerGiven(int answerIndex, bool isRightAnswer)

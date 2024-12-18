@@ -76,6 +76,8 @@ namespace Controller.NewLevelScene
         private void OnContinueClicked()
         {
             _eventBus.Dispatch(new RequestNextSceneEvent());
+            
+            _audioPlayer.PlayButtonSound();
         }
 
         private void InitTempData()

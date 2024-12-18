@@ -2,11 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
+using Extensions;
 using Infra.Instance;
 using Model;
 using Providers;
 using Providers.LocalizationProvider;
 using UnityEngine;
+using Utils.AudioManager;
 using View.Extensions;
 using View.UI.Popups.CarsPopup;
 using View.UI.Popups.ContentPopup;
@@ -18,6 +20,7 @@ namespace Controller.MenuScene
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly ICarDataProvider _carDataProvider = Instance.Get<ICarDataProvider>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
+        private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         
         private readonly RectTransform _targetTransform;
         private readonly Dictionary<UICarsPopupItemView, CarData> _carDataByItemView = new();
@@ -122,12 +125,16 @@ namespace Controller.MenuScene
                 && _playerModel.TrySpend(carData.Price))
             {
                 _playerModel.AddBoughtCar(carData.CarKey);
+                
+                _audioPlayer.PlaySound(SoundKey.CashBox);
             }
 
             if (IsCarBought(carData))
             {
                 _playerModel.SetCurrentCar(carData.CarKey);
                 UpdateItemViews();
+                
+                _audioPlayer.PlaySound(SoundKey.SelectCar);
             }
         }
 
@@ -152,6 +159,8 @@ namespace Controller.MenuScene
         private void OnCloseButtonClicked()
         {
             ProcessCloseButton().Forget();
+            
+            _audioPlayer.PlayButtonSound();
         }
 
         private async UniTask ProcessCloseButton()

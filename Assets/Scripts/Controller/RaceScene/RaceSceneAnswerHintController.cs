@@ -1,9 +1,11 @@
 using Data;
+using Extensions;
 using Infra.Instance;
 using Model;
 using Model.RaceScene;
 using Providers;
 using Providers.LocalizationProvider;
+using Utils.AudioManager;
 using View.Extensions;
 using View.UI.RaceScene;
 
@@ -13,6 +15,7 @@ namespace Controller.RaceScene
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
+        private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         
         private readonly UIAnswerHintView _answerHintView;
         
@@ -92,6 +95,8 @@ namespace Controller.RaceScene
             if (_playerModel.TrySpendGold(Constants.SolveCostCrystals))
             {
                 _questionsModel.GiveRightAnswer();
+                
+                _audioPlayer.PlaySound(SoundKey.Button_2);
             }
         }
 

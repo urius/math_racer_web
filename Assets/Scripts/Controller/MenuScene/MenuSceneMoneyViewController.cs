@@ -1,6 +1,9 @@
+using Data;
+using Extensions;
 using Infra.Instance;
 using Model;
 using Providers;
+using Utils.AudioManager;
 using View.UI.MenuScene;
 
 namespace Controller.MenuScene
@@ -8,6 +11,7 @@ namespace Controller.MenuScene
     public class MenuSceneMoneyViewController : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
+        private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         
         private readonly UIMenuSceneMoneyCanvasView _moneyCanvasView;
         
@@ -51,6 +55,8 @@ namespace Controller.MenuScene
         private void OnInsufficientGold(int neededAmount)
         {
             _moneyCanvasView.AnimateGoldRedBlink();
+            
+            _audioPlayer.PlaySound(SoundKey.Negative);
         }
 
         private void OnInsufficientCash(int neededAmount)

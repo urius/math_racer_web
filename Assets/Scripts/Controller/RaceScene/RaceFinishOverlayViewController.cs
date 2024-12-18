@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Data;
 using Events;
+using Extensions;
 using Infra.EventBus;
 using Infra.Instance;
 using Model;
@@ -8,6 +9,7 @@ using Model.RaceScene;
 using Providers;
 using Providers.LocalizationProvider;
 using UnityEngine;
+using Utils.AudioManager;
 using View.UI.RaceScene;
 using static View.Helpers.RichTextHelper;
 
@@ -18,6 +20,7 @@ namespace Controller.RaceScene
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         
         private readonly Transform _targetTransform;
         
@@ -121,6 +124,8 @@ namespace Controller.RaceScene
             _eventBus.Dispatch(takeRewardsResult == ProcessTakingRewardsResult.LevelUp
                 ? new RequestNextSceneEvent(Constants.NewLevelSceneName)
                 : new RequestNextSceneEvent());
+            
+            _audioPlayer.PlayButtonSound();
         }
 
         private void ProcessUpdateComplexity()
@@ -161,7 +166,8 @@ namespace Controller.RaceScene
 
         private void OnDoubleRewardsClicked()
         {
-            
+            //show ads
+            _audioPlayer.PlayButtonSound();
         }
 
         private string GetLocale(string key)
