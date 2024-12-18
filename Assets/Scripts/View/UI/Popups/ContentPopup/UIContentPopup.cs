@@ -176,6 +176,13 @@ namespace View.UI.Popups.ContentPopup
             _contentTransform.anchoredPosition = Vector2.zero;
         }
 
+        public void SetContentYPosition(float position)
+        {
+            var pos = _contentTransform.anchoredPosition;
+            pos.y = position;
+            _contentTransform.anchoredPosition = pos;
+        }
+
         public void SetTitleText(string text)
         {
             _titleText.text = text;

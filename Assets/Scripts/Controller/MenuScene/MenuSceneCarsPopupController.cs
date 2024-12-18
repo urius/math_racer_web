@@ -42,6 +42,7 @@ namespace Controller.MenuScene
             _popupView.Setup(1, 800, 670);
 
             SetupContent();
+            SetupContentPosition();
 
             _popupView.AppearAsync()
                 .ContinueWith(Subscribe);
@@ -53,6 +54,19 @@ namespace Controller.MenuScene
             
             Destroy(_popupView);
             _popupView = null;
+        }
+
+        private void SetupContentPosition()
+        {
+            foreach (var kvp in _carDataByItemView)
+            {
+                if (kvp.Value.CarKey == _playerModel.CurrentCar)
+                {
+                    var itemPos = kvp.Key.RectTransform.anchoredPosition;
+                    _popupView.SetContentYPosition(-itemPos.y);
+                    break;
+                }
+            }
         }
 
         private void SetupContent()
