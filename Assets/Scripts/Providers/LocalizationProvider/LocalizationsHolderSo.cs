@@ -7,6 +7,8 @@ namespace Providers.LocalizationProvider
     [CreateAssetMenu(fileName = "LocalizationsHolderSo", menuName = "ScriptableObjects/LocalizationsHolderSo")]
     public class LocalizationsHolderSo : ScriptableObject, ILocalizationProvider
     {
+        public static ILocalizationProvider Instance { get; private set; }
+        
         [SerializeField] private TextAsset _localizationsJson;
 
         private string _localeLang = null;
@@ -18,6 +20,8 @@ namespace Providers.LocalizationProvider
         {
             var localizationItems = JsonUtility.FromJson<LocalizationsData>(_localizationsJson.text);
             _localizationByKey = localizationItems.localizations.ToDictionary(d => d.key);
+
+            Instance = this;
         }
 
         public string GetLocale(string key)

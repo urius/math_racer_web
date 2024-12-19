@@ -1,27 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using View.Extensions;
 
 namespace View.UI.Popups.ContentPopup
 {
-    public class UIContentPopup : MonoBehaviour
+    public class UIContentPopup : UIPopupViewBase
     {
-        public event Action CloseButtonClicked;
-
-        private const float AppearDurationSec = 0.4f;
-        private const float DisappearDurationSec = 0.25f;
-
-        [SerializeField] private Image _blockRaycastsImage;
-        [SerializeField] private TMP_Text _titleText;
-        [SerializeField] private RectTransform _popupTransform;
-        [SerializeField] private CanvasGroup _popupBodyCanvasGroup;
         [SerializeField] private RectTransform _viewportTransform;
         [SerializeField] private RectTransform _contentTransform;
-        [SerializeField] private Button _closeButton;
 
         private readonly LinkedList<ItemData> _hiddenItemsHead = new();
         private readonly LinkedList<ItemData> _displayedItems = new();
@@ -34,11 +20,11 @@ namespace View.UI.Popups.ContentPopup
 
         public RectTransform ContentTransform => _contentTransform;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             _contentTransformPosition = _contentTransform.anchoredPosition;
-
-            _closeButton.onClick.AddListener(OnCloseButtonClick);
         }
 
         private void Update()
@@ -57,79 +43,12 @@ namespace View.UI.Popups.ContentPopup
             _contentTransformPosition = newContentPosition;
         }
 
-        private void OnDestroy()
-        {
-            _closeButton.onClick.RemoveAllListeners();
-        }
-
         public void Setup(int columnsCount, int popupWidth, int popupHeight)
         {
             _viewPortSize = _viewportTransform.rect.size;
 
             _columnsCount = columnsCount;
             SetPopupSize(popupWidth, popupHeight);
-        }
-
-        public UniTask AppearAsync()
-        {
-            var tcs = new UniTaskCompletionSource();
-            _popupBodyCanvasGroup.alpha = 0;
-            LeanTween.value(gameObject, a => _popupBodyCanvasGroup.alpha = a, 0, 1, 0.5f * AppearDurationSec)
-                .setIgnoreTimeScale(true);
-            LeanTween.value(gameObject, p => _popupTransform.anchoredPosition = p, new Vector2(0, -300), Vector2.zero,
-                    AppearDurationSec)
-                .setEaseOutBack()
-                .setOnComplete(() => tcs.TrySetResult())
-                .setIgnoreTimeScale(true);;
-
-            return tcs.Task;
-        }
-
-        public UniTask DisappearAsync()
-        {
-            var tcs = new UniTaskCompletionSource();
-            _blockRaycastsImage.SetAlpha(0);
-            LeanTween.value(gameObject, a => _popupBodyCanvasGroup.alpha = a, 1, 0, DisappearDurationSec)
-                .setIgnoreTimeScale(true);;
-            LeanTween.value(gameObject, p => _popupTransform.anchoredPosition = p, Vector2.zero, new Vector2(0, 300),
-                    DisappearDurationSec)
-                .setEaseInBack()
-                .setOnComplete(() => tcs.TrySetResult())
-                .setIgnoreTimeScale(true);;
-
-            return tcs.Task;
-        }
-
-        public UniTask Appear2Async()
-        {
-            var tcs = new UniTaskCompletionSource();
-            var targetSize = _popupTransform.sizeDelta;
-            var startSize = new Vector2(targetSize.x, 0);
-            _popupBodyCanvasGroup.alpha = 0;
-            LeanTween.value(gameObject, a => _popupBodyCanvasGroup.alpha = a, 0, 1, 0.5f * AppearDurationSec)
-                .setIgnoreTimeScale(true);;
-            LeanTween.value(gameObject, p => _popupTransform.sizeDelta = p, startSize, targetSize, AppearDurationSec)
-                .setEaseOutBack()
-                .setOnComplete(() => tcs.TrySetResult())
-                .setIgnoreTimeScale(true);;
-
-            return tcs.Task;
-        }
-
-        public UniTask Disappear2Async()
-        {
-            var tcs = new UniTaskCompletionSource();
-            var startSize = _popupTransform.sizeDelta;
-            var targetSize = new Vector2(startSize.x, 0);
-            _blockRaycastsImage.SetAlpha(0);
-            LeanTween.value(gameObject, a => _popupBodyCanvasGroup.alpha = a, 1, 0, DisappearDurationSec)
-                .setIgnoreTimeScale(true);;
-            LeanTween.value(gameObject, p => _popupTransform.sizeDelta = p, startSize, targetSize, DisappearDurationSec)
-                .setEaseInBack()
-                .setOnComplete(() => tcs.TrySetResult())
-                .setIgnoreTimeScale(true);;
-            
-            return tcs.Task;
         }
 
         public void AddItem(IUIContentPopupItem item)
@@ -150,11 +69,6 @@ namespace View.UI.Popups.ContentPopup
             _displayedItems.AddLast(new ItemData(item));
 
             TryHideTailItem();
-        }
-
-        public void SetPopupSize(int width, int height)
-        {
-            _popupTransform.sizeDelta = new Vector2(width, height);
         }
 
         public void ClearContent()
@@ -181,11 +95,6 @@ namespace View.UI.Popups.ContentPopup
             var pos = _contentTransform.anchoredPosition;
             pos.y = position;
             _contentTransform.anchoredPosition = pos;
-        }
-
-        public void SetTitleText(string text)
-        {
-            _titleText.text = text;
         }
 
         private void ProcessScrollForward()
@@ -316,14 +225,9 @@ namespace View.UI.Popups.ContentPopup
 
         private void SetContentHeight(float height)
         {
-            var tempSize = _popupTransform.sizeDelta;
+            var tempSize = PopupTransform.sizeDelta;
             _contentTransform.sizeDelta = new Vector2(tempSize.x, height);
             _contentSize = _contentTransform.sizeDelta;
-        }
-
-        private void OnCloseButtonClick()
-        {
-            CloseButtonClicked?.Invoke();
         }
 
         private static void SetItemActive(IUIContentPopupItem item, bool isActive)

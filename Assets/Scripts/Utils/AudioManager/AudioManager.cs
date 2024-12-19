@@ -191,6 +191,8 @@ namespace Utils.AudioManager
 
             audioSettingsModel.SoundsMutedStateChanged += OnAudioMutedStateChanged;
             audioSettingsModel.MusicMutedStateChanged += OnMusicMutedStateChanged;
+            audioSettingsModel.MusicVolumeChanged += OnMusicVolumeChanged;
+            audioSettingsModel.SoundsVolumeChanged += OnSoundsVolumeChanged;
         }
 
         private void UnsubscribeFromSettingsModel(IAudioSettingsModel audioSettingsModel)
@@ -199,6 +201,18 @@ namespace Utils.AudioManager
 
             audioSettingsModel.SoundsMutedStateChanged -= OnAudioMutedStateChanged;
             audioSettingsModel.MusicMutedStateChanged -= OnMusicMutedStateChanged;
+            audioSettingsModel.MusicVolumeChanged -= OnMusicVolumeChanged;
+            audioSettingsModel.SoundsVolumeChanged -= OnSoundsVolumeChanged;
+        }
+
+        private void OnMusicVolumeChanged(float value)
+        {
+            UpdateAudioSettings();
+        }
+
+        private void OnSoundsVolumeChanged(float value)
+        {
+            UpdateAudioSettings();
         }
     }
 }

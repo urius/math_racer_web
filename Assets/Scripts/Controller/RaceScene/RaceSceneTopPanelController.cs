@@ -1,7 +1,11 @@
+using Events;
+using Extensions;
+using Infra.EventBus;
 using Infra.Instance;
 using Model.RaceScene;
 using Providers;
 using UnityEngine;
+using Utils.AudioManager;
 using View.UI.RaceScene;
 
 namespace Controller.RaceScene
@@ -10,15 +14,17 @@ namespace Controller.RaceScene
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
-        
-        public readonly UITopPanelCanvasView TopPanelCanvasView;
+        private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
+
+        private readonly UITopPanelCanvasView _topPanelCanvasView;
         
         private RaceModel _raceModel;
         private CarModel _playerCarModel;
 
         public RaceSceneTopPanelController(UITopPanelCanvasView topPanelCanvasView)
         {
-            TopPanelCanvasView = topPanelCanvasView;
+            _topPanelCanvasView = topPanelCanvasView;
         }
 
         public override void Initialize()
@@ -37,16 +43,25 @@ namespace Controller.RaceScene
         private void Subscribe()
         {
             _updatesProvider.GameplayFixedUpdate += OnGameplayFixedUpdate;
+            _topPanelCanvasView.SettingsButtonClicked += OnSettingsButtonClicked;
         }
 
         private void Unsubscribe()
         {
             _updatesProvider.GameplayFixedUpdate -= OnGameplayFixedUpdate;
+            _topPanelCanvasView.SettingsButtonClicked -= OnSettingsButtonClicked;
+        }
+
+        private void OnSettingsButtonClicked()
+        {
+            _eventBus.Dispatch(new RequestSettingsPopupEvent());
+            
+            _audioPlayer.PlayButtonSound();
         }
 
         private void OnGameplayFixedUpdate()
         {
-            TopPanelCanvasView.SetText(
+            _topPanelCanvasView.SetText(
                 $"speed: {Mathf.RoundToInt(_playerCarModel.CurrentSpeedKmph)} kmh\ndistance: {Mathf.RoundToInt(_playerCarModel.PassedMeters)} m");
         }
     }

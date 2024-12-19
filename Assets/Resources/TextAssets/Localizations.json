@@ -129,6 +129,26 @@
 			"key": "solve_button_text",
 			"en": "Solve",
 			"ru": "Решить"
+		},
+		{
+			"key": "music_volume",
+			"en": "Music",
+			"ru": "Музыка"
+		},
+		{
+			"key": "sounds_volume",
+			"en": "Sounds",
+			"ru": "Звуки"
+		},
+		{
+			"key": "settings",
+			"en": "Settings",
+			"ru": "Настройки"
+		},
+		{
+			"key": "exit_to_menu",
+			"en": "Exit to menu",
+			"ru": "Выход в меню"
 		}
 	]
 }

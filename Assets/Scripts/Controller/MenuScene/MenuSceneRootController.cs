@@ -1,3 +1,4 @@
+using Controller.Common;
 using Data;
 using Events;
 using Extensions;
@@ -56,12 +57,14 @@ namespace Controller.MenuScene
         {
             _rootCanvasView.PlayButtonClicked += OnPlayButtonClicked;
             _rootCanvasView.CarsButtonClicked += OnCarsButtonClicked;
+            _rootCanvasView.SettingsButtonClicked += OnSettingsButtonClicked;
         }
 
         private void Unsubscribe()
         {
             _rootCanvasView.PlayButtonClicked -= OnPlayButtonClicked;
             _rootCanvasView.CarsButtonClicked -= OnCarsButtonClicked;
+            _rootCanvasView.SettingsButtonClicked -= OnSettingsButtonClicked;
         }
 
         private void OnPlayButtonClicked()
@@ -75,6 +78,13 @@ namespace Controller.MenuScene
         {
             var carsPopupController = new MenuSceneCarsPopupController(_rootCanvasView.PopupsCanvasTransform);
             InitChildController(carsPopupController);
+            
+            _audioPlayer.PlayButtonSound();
+        }
+
+        private void OnSettingsButtonClicked()
+        {
+            InitChildController(new SettingsPopupController(_rootCanvasView.PopupsCanvasTransform, isShortVersion: true));
             
             _audioPlayer.PlayButtonSound();
         }

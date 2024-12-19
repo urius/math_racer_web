@@ -19,6 +19,8 @@ MonoBehaviour:
     Prefab: {fileID: 6701860279966104194, guid: c4940748fff644983b082327bebe5a68, type: 3}
   - Key: 3
     Prefab: {fileID: 3140168381317146491, guid: 64376911f2d2b4298a07d914c2f6a952, type: 3}
+  - Key: 4
+    Prefab: {fileID: 1431845141266026177, guid: 6f54ef32730fc40d68e7489746050d1b, type: 3}
   - Key: 1010
     Prefab: {fileID: 2833295192266632595, guid: 5e6ed6c60d4f04065bc9d87733543dc9, type: 3}
   - Key: 1020

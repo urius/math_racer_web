@@ -1,4 +1,7 @@
+using Controller.Common;
 using Data;
+using Events;
+using Infra.EventBus;
 using Infra.Instance;
 using Model;
 using Model.RaceScene;
@@ -13,6 +16,7 @@ namespace Controller.RaceScene
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IComplexityDataProvider _complexityDataProvider = Instance.Get<IComplexityDataProvider>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
+        private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
         
         private RaceContextView _contextView;
         private PlayerModel _playerModel;
@@ -37,11 +41,13 @@ namespace Controller.RaceScene
         private void Subscribe()
         {
             _updatesProvider.GameplayUpdate += OnGameplayUpdate;
+            _eventBus.Subscribe<RequestSettingsPopupEvent>(OnRequestSettingsPopupEvent);
         }
 
         private void Unsubscribe()
         {
             _updatesProvider.GameplayUpdate += OnGameplayUpdate;
+            _eventBus.Unsubscribe<RequestSettingsPopupEvent>(OnRequestSettingsPopupEvent);
         }
 
         private void InitModel()
@@ -74,6 +80,12 @@ namespace Controller.RaceScene
             
             InitChildController(new RaceSceneTopPanelController(_contextView.RootCanvasView.TopPanelCanvasView));
             InitChildController(new RaceSceneQuestionsController(_contextView.RootCanvasView.RightPanelView));
+        }
+
+        private void OnRequestSettingsPopupEvent(RequestSettingsPopupEvent e)
+        {
+            InitChildController(
+                new SettingsPopupController(_contextView.RootCanvasView.PopupsCanvasTransform, isShortVersion: false));
         }
 
         private void OnGameplayUpdate()

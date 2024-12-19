@@ -6,6 +6,7 @@ namespace Data
         UIFinishOverlay,
         UIContentPopup,
         UICarsPopupItem,
+        UISettingsPopup,
         CarBug = CarKey.Bug + Constants.PrefabCarsOffset,
         CarCharger = CarKey.Charger + Constants.PrefabCarsOffset,
         CarCoupe = CarKey.Coupe + Constants.PrefabCarsOffset,
