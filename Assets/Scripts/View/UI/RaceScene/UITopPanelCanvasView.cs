@@ -11,6 +11,9 @@ namespace View.UI.RaceScene
         
         [SerializeField] private TMP_Text _text;
         [SerializeField] private Button _settingsButton;
+        [SerializeField] private UIRaceSceneRaceSchemaView _raceSchemaView;
+
+        public UIRaceSceneRaceSchemaView RaceSchemaView => _raceSchemaView;
 
         private void Awake()
         {
