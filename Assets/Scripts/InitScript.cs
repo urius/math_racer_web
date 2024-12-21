@@ -1,6 +1,9 @@
 using System;
 using Controller;
+using Cysharp.Threading.Tasks;
 using Data;
+using Events;
+using GamePush;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
@@ -8,6 +11,7 @@ using Providers;
 using Providers.LocalizationProvider;
 using UnityEngine;
 using Utils.AudioManager;
+using Utils.GamePush;
 using View.UI;
 
 public class InitScript : MonoBehaviour
@@ -20,6 +24,7 @@ public class InitScript : MonoBehaviour
     [SerializeField] private AudioClipsProviderSo _audioClipsProviderSo;
 
     private RootController _rootController;
+    private UniTask _gpInitTask;
     
     private void Awake()
     {
@@ -33,13 +38,15 @@ public class InitScript : MonoBehaviour
         InitSounds();
         
         SetupInstances();
+
+        _gpInitTask = GamePushWrapper.Init(RequestPauseDelegate);
     }
 
     private void Start()
     {
-        _localizationHolderSo.SetLocaleLang("en");
-        
-        InitRootControllers();
+        _localizationHolderSo.SetLocaleLang(GP_Language.Current().ToLanguageShortStringRepresentation());
+
+        _gpInitTask.ContinueWith(InitRootController);
     }
 
     private void InitSounds()
@@ -55,7 +62,7 @@ public class InitScript : MonoBehaviour
         }
     }
 
-    private void InitRootControllers()
+    private void InitRootController()
     {
         _rootController = new RootController(_loadingOverlayView);
         
@@ -105,5 +112,11 @@ public class InitScript : MonoBehaviour
             .As<TInterface2>();
 
         return instance;
+    }
+
+    private static void RequestPauseDelegate(bool needPause)
+    {
+        Instance.Get<IEventBus>()
+            .Dispatch(new RequestGamePauseEvent(nameof(GamePushWrapper), needPause, needMute: true));
     }
 }
