@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using GamePush;
 using UnityEngine;
@@ -14,7 +16,8 @@ namespace Utils.GamePush
         private UniTaskCompletionSource<bool> _rewardedAdsTcs;
         private UniTaskCompletionSource<bool> _preloaderAdsTcs;
         private Action<bool> _requestPauseAction;
-        
+        private UniTaskCompletionSource<FetchProductData[]> _fetchProductsTcs;
+
         public static UniTask Init(Action<bool> requestPauseAction)
         {
             return Instance.InitInternal(requestPauseAction);
@@ -82,6 +85,18 @@ namespace Utils.GamePush
             return GP_Player.GetID().ToString();
 #endif
             return "undefined_id";
+        }
+
+        public static string GetLanguageShortDescription()
+        {
+            var language = GP_Language.Current();
+
+            return language switch
+            {
+                Language.Russian => "ru",
+                Language.English => "en",
+                _ => "en"
+            };
         }
 
         public static void SavePlayerData(string fieldName, string value, bool needSync = true)
@@ -157,6 +172,39 @@ namespace Utils.GamePush
             return GP_Ads.IsRewardedAvailable();
 #endif
             return true;
+        }
+
+        public static UniTask<FetchProductData[]> FetchProducts()
+        {
+            return Instance.FetchProductsInternal();
+        }
+
+        private UniTask<FetchProductData[]> FetchProductsInternal()
+        {
+            _fetchProductsTcs = new UniTaskCompletionSource<FetchProductData[]>();
+            
+            GP_Payments.OnFetchProducts -= OnFetchProducts;
+            GP_Payments.OnFetchProducts += OnFetchProducts;
+            GP_Payments.OnFetchProductsError -= OnFetchProductsError;
+            GP_Payments.OnFetchProductsError += OnFetchProductsError;
+            
+            GP_Payments.Fetch();
+
+            return _fetchProductsTcs.Task;
+        }
+
+        private void OnFetchProducts(List<FetchProducts> products)
+        {
+            var mappedProducts = products.Select(p => new FetchProductData(p)).ToArray();
+            
+            _fetchProductsTcs.TrySetResult(mappedProducts);
+        }
+
+        private void OnFetchProductsError()
+        {
+            LogError("Fetch products error!");
+            
+            _fetchProductsTcs.TrySetResult(Array.Empty<FetchProductData>());
         }
 
         private async UniTask<bool> ShowRewardedAdsInternal()

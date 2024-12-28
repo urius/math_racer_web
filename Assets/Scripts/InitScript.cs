@@ -3,7 +3,6 @@ using Controller;
 using Cysharp.Threading.Tasks;
 using Data;
 using Events;
-using GamePush;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
@@ -33,20 +32,17 @@ public class InitScript : MonoBehaviour
         Application.targetFrameRate = Constants.FPS;
         
         DontDestroyOnLoad(gameObject);
-
+        
+        _gpInitTask = GamePushWrapper.Init(RequestPauseDelegate);
         _prefabsHolderSo.Init();
         InitSounds();
         
         SetupInstances();
-
-        _gpInitTask = GamePushWrapper.Init(RequestPauseDelegate);
     }
 
     private void Start()
     {
-        _localizationHolderSo.SetLocaleLang(GP_Language.Current().ToLanguageShortStringRepresentation());
-
-        _gpInitTask.ContinueWith(InitRootController);
+        _gpInitTask.ContinueWith(OnGPReady);
     }
 
     private void InitSounds()
@@ -60,6 +56,27 @@ public class InitScript : MonoBehaviour
                 _audioManager.SetupSound(i, sound);
             }
         }
+    }
+
+    private void OnGPReady()
+    {
+        Debug.Log("GP player id: " + GamePushWrapper.GetPlayerId());
+
+        _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());
+
+        GamePushWrapper.FetchProducts().ContinueWith(p =>
+        {
+            Debug.Log("fetchedProducts:");
+
+            foreach (var productData in p)
+            {
+                var productDataJson = JsonUtility.ToJson(productData, true);
+                
+                Debug.Log(productDataJson);
+            }
+        });
+        
+        InitRootController();
     }
 
     private void InitRootController()

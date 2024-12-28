@@ -4,6 +4,7 @@ using System.Linq;
 using Data;
 using Helpers;
 using UnityEngine;
+using Utils.CryptoValue;
 
 namespace Model
 {
@@ -19,6 +20,10 @@ namespace Model
         public readonly AudioSettingsModel AudioSettingsModel;
         
         private readonly List<CarKey> _boughtCars;
+
+        private readonly CryptoInt _expAmountCrypto = new();
+        private readonly CryptoInt _cashAmountCrypto = new();
+        private readonly CryptoInt _goldAmountCrypto = new();
 
         public PlayerModel(
             int expAmount,
@@ -39,11 +44,21 @@ namespace Model
             _boughtCars = boughtCars.Select(c => (CarKey)c).ToList();
         }
 
-        public int ExpAmount { get; private set; }
+        public int ExpAmount => _expAmountCrypto.Value;
         public int Level { get; private set; }
         public int ComplexityLevel { get; private set; }
-        public int CashAmount { get; private set; }
-        public int GoldAmount { get; private set; }
+        public int CashAmount
+        {
+            get => _cashAmountCrypto.Value;
+            private set => _cashAmountCrypto.Value = value;
+        }
+
+        public int GoldAmount
+        {
+            get => _goldAmountCrypto.Value;
+            private set => _goldAmountCrypto.Value = value;
+        }
+
         public int CrystalsAmount => GoldAmount;
         public CarKey CurrentCar { get; private set; }
         public IReadOnlyList<CarKey> BoughtCars => _boughtCars;
@@ -55,23 +70,25 @@ namespace Model
 
         public void AddCash(int cashToAdd)
         {
-            if (CashAmount + cashToAdd < 0)
+            var cashAmountBeforeAdd = CashAmount;
+            if (cashAmountBeforeAdd + cashToAdd < 0)
             {
-                cashToAdd = -CashAmount;
+                cashToAdd = -cashAmountBeforeAdd;
             }
 
-            CashAmount += cashToAdd;
+            CashAmount = cashAmountBeforeAdd + cashToAdd;
             CashAmountChanged?.Invoke(cashToAdd);
         }
 
         public void AddGold(int goldToAdd)
         {
-            if (GoldAmount + goldToAdd < 0)
+            var goldAmountBeforeAdd = GoldAmount;
+            if (goldAmountBeforeAdd + goldToAdd < 0)
             {
-                goldToAdd = -GoldAmount;
+                goldToAdd = -goldAmountBeforeAdd;
             }
 
-            GoldAmount += goldToAdd;
+            GoldAmount = goldAmountBeforeAdd + goldToAdd;
             GoldAmountChanged?.Invoke(goldToAdd);
         }
 
@@ -149,8 +166,8 @@ namespace Model
         public void SetExpAmount(int expAmount)
         {
             var delta = expAmount - ExpAmount;
-            ExpAmount = expAmount;
-            Level = LevelPointsHelper.GetLevelByExpPointsAmount(ExpAmount);
+            _expAmountCrypto.Value = expAmount;
+            Level = LevelPointsHelper.GetLevelByExpPointsAmount(expAmount);
             
             ExpAmountChanged?.Invoke(delta);
         }
