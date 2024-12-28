@@ -107,8 +107,8 @@
 		},
 		{
 			"key": "new_level_congrats",
-			"en": "Congratulations! \nNew Level Reached!",
-			"ru": "Поздравляем! \nВы достигли нового уровня!"
+			"en": "CONGRATULATIONS! \nNEW LEVEL REACHED!",
+			"ru": "ПОЗДРАВЛЯЕМ! \nВЫ ДОСТИГЛИ НОВОГО УРОВНЯ!"
 		},
 		{
 			"key": "new_cars_available",
