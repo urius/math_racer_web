@@ -34,7 +34,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string triggers = GP_Triggers_List();
-            return UtilityJSON.GetArray<TriggerData>(triggers);
+            return Utilities.UtilityJSON.GetArray<TriggerData>(triggers);
 #else
 
             ConsoleLog("LIST");
@@ -49,7 +49,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string triggers = GP_Triggers_ActivatedList();
-            return UtilityJSON.GetArray<TriggerActive>(triggers);
+            return Utilities.UtilityJSON.GetArray<TriggerActive>(triggers);
 #else
 
             ConsoleLog("Activated List");
@@ -64,7 +64,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Triggers_GetTrigger(idOrTag);
-            return UtilityJSON.Get<TriggerAllData>(data);
+            return Utilities.UtilityJSON.Get<TriggerAllData>(data);
 #else
 
             ConsoleLog("Get Trigger");

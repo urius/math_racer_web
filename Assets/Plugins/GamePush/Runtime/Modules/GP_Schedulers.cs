@@ -112,7 +112,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Schedulers_List();
-            return UtilityJSON.GetArray<SchedulerData>(data);
+            return Utilities.UtilityJSON.GetArray<SchedulerData>(data);
 #else
 
             Console.Log("Schedulers: ", "List");
@@ -127,7 +127,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Schedulers_ActiveList();
-            return UtilityJSON.GetArray<PlayerScheduler>(data);
+            return Utilities.UtilityJSON.GetArray<PlayerScheduler>(data);
 #else
 
             Console.Log("Schedulers: ", "List");
@@ -142,7 +142,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Schedulers_GetScheduler(idOrTag);
-            return UtilityJSON.Get<SchedulerInfo>(data);
+            return Utilities.UtilityJSON.Get<SchedulerInfo>(data);
 #else
 
             Console.Log("Schedulers: ", "Get Scheduler");
@@ -157,7 +157,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Schedulers_GetSchedulerDay(idOrTag, day);
-            return UtilityJSON.Get<SchedulerDayInfo>(data);
+            return Utilities.UtilityJSON.Get<SchedulerDayInfo>(data);
 #else
 
             Console.Log("Schedulers: ", "Get Scheduler Day");
@@ -172,7 +172,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Schedulers_GetSchedulerCurrentDay(idOrTag);
-            return UtilityJSON.Get<SchedulerDayInfo>(data);
+            return Utilities.UtilityJSON.Get<SchedulerDayInfo>(data);
 #else
 
             Console.Log("Schedulers: ", "Get Scheduler");

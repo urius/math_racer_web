@@ -49,7 +49,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Rewards_List();
-            return UtilityJSON.GetArray<RewardData>(data);
+            return Utilities.UtilityJSON.GetArray<RewardData>(data);
 #else
 
             ConsoleLog("LIST");
@@ -64,7 +64,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Rewards_GivenList();
-            return UtilityJSON.GetArray<PlayerReward>(data);
+            return Utilities.UtilityJSON.GetArray<PlayerReward>(data);
 #else
 
             ConsoleLog("Given List");
@@ -79,7 +79,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Rewards_GetReward(idOrTag);
-            return UtilityJSON.Get<AllRewardData>(data);
+            return Utilities.UtilityJSON.Get<AllRewardData>(data);
 #else
 
             ConsoleLog("Get Reward");

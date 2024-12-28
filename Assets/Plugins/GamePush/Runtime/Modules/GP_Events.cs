@@ -32,7 +32,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string eventsData = GP_Events_List();
-            return UtilityJSON.GetArray<EventData>(eventsData );
+            return Utilities.UtilityJSON.GetArray<EventData>(eventsData );
 #else
 
             ConsoleLog("LIST");
@@ -47,7 +47,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string activeEvents = GP_Events_ActiveList();
-            return UtilityJSON.GetArray<PlayerEvents>(activeEvents);
+            return Utilities.UtilityJSON.GetArray<PlayerEvents>(activeEvents);
 #else
 
             ConsoleLog("Active List");
@@ -62,7 +62,7 @@ namespace GamePush
         {
 #if !UNITY_EDITOR && UNITY_WEBGL
             string data = GP_Events_GetEvent(idOrTag);
-            return UtilityJSON.Get<EventData>(data);
+            return Utilities.UtilityJSON.Get<EventData>(data);
 #else
 
             ConsoleLog("Get Event");

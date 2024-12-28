@@ -1,4 +1,8 @@
-﻿namespace GamePush
+﻿#if !UNITY_EDITOR && UNITY_WEBGL
+    using System.Runtime.InteropServices;
+#endif
+
+namespace GamePush
 {
     public class GP_Platform : GP_Module
     {
