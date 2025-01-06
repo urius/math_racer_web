@@ -5,8 +5,15 @@ namespace Providers
 {
     public class ModelsHolder : IModelsHolder
     {
+        private readonly SessionDataModel _sessionDataModel = new();
+        
         private RaceModel _raceModel;
         private PlayerModel _playerModel;
+        
+        public SessionDataModel GetSessionDataModel()
+        {
+            return _sessionDataModel;
+        }
         
         public void SetRaceModel(RaceModel raceModel)
         {
@@ -36,5 +43,7 @@ namespace Providers
         
         public void SetPlayerModel(PlayerModel playerModel);
         public PlayerModel GetPlayerModel();
+        
+        public SessionDataModel GetSessionDataModel();
     }
 }

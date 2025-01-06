@@ -4,6 +4,8 @@ using Events;
 using Extensions;
 using Infra.EventBus;
 using Infra.Instance;
+using Model;
+using Providers;
 using Providers.LocalizationProvider;
 using UnityEngine;
 using Utils.AudioManager;
@@ -14,14 +16,18 @@ namespace Controller.MenuScene
     public class MenuSceneRootController : ControllerBase
     {
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
         private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         
         private UIMenuSceneRootCanvasView _rootCanvasView;
         private UIMenuSceneRootView _rootView;
+        private SessionDataModel _sessionDataModel;
 
         public override void Initialize()
         {
+            _sessionDataModel = _modelsHolder.GetSessionDataModel();
+            
             _rootCanvasView = Object.FindObjectOfType<UIMenuSceneRootCanvasView>();
             _rootView = Object.FindObjectOfType<UIMenuSceneRootView>();
 
@@ -58,6 +64,8 @@ namespace Controller.MenuScene
             _rootCanvasView.PlayButtonClicked += OnPlayButtonClicked;
             _rootCanvasView.CarsButtonClicked += OnCarsButtonClicked;
             _rootCanvasView.SettingsButtonClicked += OnSettingsButtonClicked;
+            
+            _eventBus.Subscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
         }
 
         private void Unsubscribe()
@@ -65,6 +73,8 @@ namespace Controller.MenuScene
             _rootCanvasView.PlayButtonClicked -= OnPlayButtonClicked;
             _rootCanvasView.CarsButtonClicked -= OnCarsButtonClicked;
             _rootCanvasView.SettingsButtonClicked -= OnSettingsButtonClicked;
+            
+            _eventBus.Unsubscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
         }
 
         private void OnPlayButtonClicked()
@@ -87,6 +97,14 @@ namespace Controller.MenuScene
             InitChildController(new SettingsPopupController(_rootCanvasView.PopupsCanvasTransform, isShortVersion: true));
             
             _audioPlayer.PlayButtonSound();
+        }
+
+        private void OnRequestBankPopupEvent(UIRequestBankPopupEvent e)
+        {
+            if (_sessionDataModel.IsBankPopupOpened.Value) return;
+            
+            var carsPopupController = new MenuSceneBankPopupController(_rootCanvasView.PopupsCanvasTransform);
+            InitChildController(carsPopupController);
         }
     }
 }

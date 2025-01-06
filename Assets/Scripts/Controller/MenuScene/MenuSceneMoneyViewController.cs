@@ -1,5 +1,7 @@
 using Data;
+using Events;
 using Extensions;
+using Infra.EventBus;
 using Infra.Instance;
 using Model;
 using Providers;
@@ -12,10 +14,12 @@ namespace Controller.MenuScene
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
+        private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
         
         private readonly UIMenuSceneMoneyCanvasView _moneyCanvasView;
         
         private PlayerModel _playerModel;
+        private SessionDataModel _sessionDataModel;
 
         public MenuSceneMoneyViewController(UIMenuSceneMoneyCanvasView moneyCanvasView)
         {
@@ -24,6 +28,7 @@ namespace Controller.MenuScene
         
         public override void Initialize()
         {
+            _sessionDataModel = _modelsHolder.GetSessionDataModel();
             _playerModel = _modelsHolder.GetPlayerModel();
 
             SetupMoneyAmount();
@@ -42,6 +47,9 @@ namespace Controller.MenuScene
             _playerModel.GoldAmountChanged += OnGoldAmountChanged;
             _playerModel.InsufficientGold += OnInsufficientGold;
             _playerModel.InsufficientCash += OnInsufficientCash;
+            _sessionDataModel.IsBankPopupOpened.ValueChanged += OnBankPopupOpenedValueChanged;
+
+            _moneyCanvasView.OpenBankButtonClicked += OnOpenBankButtonClicked;
         }
         
         private void Unsubscribe()
@@ -50,6 +58,28 @@ namespace Controller.MenuScene
             _playerModel.GoldAmountChanged -= OnGoldAmountChanged;
             _playerModel.InsufficientGold -= OnInsufficientGold;
             _playerModel.InsufficientCash -= OnInsufficientCash;
+            _sessionDataModel.IsBankPopupOpened.ValueChanged -= OnBankPopupOpenedValueChanged;
+            
+            _moneyCanvasView.OpenBankButtonClicked -= OnOpenBankButtonClicked;
+        }
+
+        private void OnBankPopupOpenedValueChanged(bool value, bool _)
+        {
+            if (value)
+            {
+                _moneyCanvasView.HideAddGoldButtons();
+            }
+            else
+            {
+                _moneyCanvasView.ShowAddGoldButtons();
+            }
+        }
+
+        private void OnOpenBankButtonClicked()
+        {
+            _eventBus.Dispatch(new UIRequestBankPopupEvent());
+            
+            _audioPlayer.PlayButtonSound();
         }
 
         private void OnInsufficientGold(int neededAmount)

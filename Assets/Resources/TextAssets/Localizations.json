@@ -46,6 +46,11 @@
 			"ru": "Автомагазин"
 		},
 		{
+			"key": "bank_popup_title",
+			"en": "Bank",
+			"ru": "Банк"
+		},
+		{
 			"key": "acceleration",
 			"en": "Acceleration",
 			"ru": "Ускорение"

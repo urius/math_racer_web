@@ -11,6 +11,7 @@ namespace Data
         public const string Accelerations = "accelerations";
         public const string AccelerationParameter = "acceleration";
         public const string CarsPopupTitle = "cars_popup_title";
+        public const string BankPopupTitle = "bank_popup_title";
         public const string MaxSpeedParameter = "max_speed_short";
         public const string TurboBoosts = "turbo_boosts";
         public const string Brakings = "brakings";

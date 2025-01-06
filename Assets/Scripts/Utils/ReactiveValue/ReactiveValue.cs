@@ -3,6 +3,7 @@ using System;
 namespace Utils.ReactiveValue
 {
     public class ReactiveValue<T>
+        where T : struct
     {
         public event Action<T, T> ValueChanged;
 

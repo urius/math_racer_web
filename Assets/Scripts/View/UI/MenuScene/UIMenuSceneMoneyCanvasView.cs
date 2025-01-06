@@ -1,17 +1,23 @@
+using System;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using View.Extensions;
 
 namespace View.UI.MenuScene
 {
     public class UIMenuSceneMoneyCanvasView : MonoBehaviour
     {
+        public event Action OpenBankButtonClicked;
+        
         private const float AnimationDurationSec = 0.4f;
         private const float BlinkDurationSec = 0.8f;
             
         [SerializeField] private TMP_Text _cashText;
         [SerializeField] private TMP_Text _goldText;
+        [SerializeField] private Button[] _openBankButtons;
+        [SerializeField] private CanvasGroup[] _bankButtonsCanvasGroups;
         
         private int _currentCashAmount;
         private int _currentGoldAmount;
@@ -26,6 +32,19 @@ namespace View.UI.MenuScene
             _defaultGoldTextPosition = _goldText.rectTransform.anchoredPosition;
             _defaultCashTextColor = _cashText.color;
             _defaultCashTextPosition = _cashText.rectTransform.anchoredPosition;
+
+            foreach (var openBankButton in _openBankButtons)
+            {
+                openBankButton.onClick.AddListener(OnOpenBankClicked);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var openBankButton in _openBankButtons)
+            {
+                openBankButton.onClick.RemoveAllListeners();
+            }
         }
 
         public void SetCashAmount(int cashAmount)
@@ -33,7 +52,7 @@ namespace View.UI.MenuScene
             _currentCashAmount = cashAmount;
             _cashText.SetText(cashAmount.ToPriceView2());
         }
-        
+
         public void SetGoldAmount(int goldAmount)
         {
             _currentGoldAmount = goldAmount;
@@ -94,6 +113,22 @@ namespace View.UI.MenuScene
                 });
         }
 
+        public void ShowAddGoldButtons()
+        {
+            foreach (var bankButtonsCanvasGroup in _bankButtonsCanvasGroups)
+            {
+                bankButtonsCanvasGroup.LeanAlpha(1, 0.3f).setEaseOutQuad();
+            }
+        }
+
+        public void HideAddGoldButtons()
+        {
+            foreach (var bankButtonsCanvasGroup in _bankButtonsCanvasGroups)
+            {
+                bankButtonsCanvasGroup.LeanAlpha(0, 0.3f).setEaseOutQuad();
+            }
+        }
+
         private void OnAnimateGoldRedBlinkTweenUpdate(float progress)
         {
             var color = Color.Lerp(_defaultGoldTextColor, Color.red, Mathf.PingPong(progress, 1f));
@@ -132,6 +167,11 @@ namespace View.UI.MenuScene
         private void CancelTweenOn(Component tmpText)
         {
             LeanTween.cancel(tmpText.gameObject, callOnComplete: true);
+        }
+
+        private void OnOpenBankClicked()
+        {
+            OpenBankButtonClicked?.Invoke();
         }
     }
 }
