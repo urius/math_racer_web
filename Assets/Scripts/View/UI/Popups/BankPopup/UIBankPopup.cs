@@ -59,9 +59,9 @@ namespace View.UI.Popups.BankPopup
                 goldItem.BuyButtonClicked += OnBuyGoldButtonClicked;
             }
 
-            foreach (var goldItem in _cashItems)
+            foreach (var cashItem in _cashItems)
             {
-                goldItem.BuyButtonClicked += OnBuyCashButtonClicked;
+                cashItem.BuyButtonClicked += OnBuyCashButtonClicked;
             }
         }
 
@@ -72,15 +72,17 @@ namespace View.UI.Popups.BankPopup
                 goldItem.BuyButtonClicked -= OnBuyGoldButtonClicked;
             }
 
-            foreach (var goldItem in _cashItems)
+            foreach (var cashItem in _cashItems)
             {
-                goldItem.BuyButtonClicked -= OnBuyCashButtonClicked;
+                cashItem.BuyButtonClicked -= OnBuyCashButtonClicked;
             }
         }
 
         private void OnBuyGoldButtonClicked(UIBankPopupItemView itemView)
         {
             var index = Array.IndexOf(_goldItems, itemView);
+
+            Debug.Log($"{nameof(OnBuyGoldButtonClicked)} {index}");
             
             GoldItemBuyClicked?.Invoke(index);
         }
@@ -88,6 +90,8 @@ namespace View.UI.Popups.BankPopup
         private void OnBuyCashButtonClicked(UIBankPopupItemView itemView)
         {
             var index = Array.IndexOf(_cashItems, itemView);
+            
+            Debug.Log($"{nameof(OnBuyCashButtonClicked)} {index}");
             
             CashItemBuyClicked?.Invoke(index);
         }

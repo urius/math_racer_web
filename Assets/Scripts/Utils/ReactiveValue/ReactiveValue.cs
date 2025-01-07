@@ -3,7 +3,6 @@ using System;
 namespace Utils.ReactiveValue
 {
     public class ReactiveValue<T>
-        where T : struct
     {
         public event Action<T, T> ValueChanged;
 
@@ -22,7 +21,7 @@ namespace Utils.ReactiveValue
 
         private void SetValue(T value)
         {
-            if (_value.Equals(value)) return;
+            if (Equals(_value, value)) return;
 
             var prevValue = _value;
             _value = value;

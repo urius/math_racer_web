@@ -1,3 +1,5 @@
+// ReSharper disable InconsistentNaming
+
 using System;
 
 namespace Data.Dto
@@ -5,29 +7,29 @@ namespace Data.Dto
     [Serializable]
     public struct PlayerDataDto
     {
-        public int ExpAmount;
-        public int ComplexityLevel;
-        public int MoneyAmount;
-        public int GoldAmount;
-        public int CurrentCar;
-        public int[] BoughtCars;
-        public AudioSettingsDto AudioSettings;
+        public int expAmount;
+        public int complexityLevel;
+        public int cashAmount;
+        public int goldAmount;
+        public int currentCar;
+        public int[] boughtCars;
+        public AudioSettingsDto audioSettings;
 
         public PlayerDataDto(int expAmount,
             int complexityLevel,
-            int moneyAmount,
+            int cashAmount,
             int goldAmount,
             int currentCar,
             int[] boughtCars,
             AudioSettingsDto audioSettings)
         {
-            ExpAmount = expAmount;
-            ComplexityLevel = complexityLevel;
-            MoneyAmount = moneyAmount;
-            GoldAmount = goldAmount;
-            CurrentCar = currentCar;
-            BoughtCars = boughtCars;
-            AudioSettings = audioSettings;
+            this.expAmount = expAmount;
+            this.complexityLevel = complexityLevel;
+            this.cashAmount = cashAmount;
+            this.goldAmount = goldAmount;
+            this.currentCar = currentCar;
+            this.boughtCars = boughtCars;
+            this.audioSettings = audioSettings;
         }
 
         public static PlayerDataDto FromDefault()
@@ -35,7 +37,7 @@ namespace Data.Dto
             return new PlayerDataDto(
                 0,
                 1,
-                1000,
+                0,
                 0,
                 (int)CarKey.Bug,
                 new[]

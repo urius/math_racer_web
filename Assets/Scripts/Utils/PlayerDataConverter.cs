@@ -1,3 +1,4 @@
+using System.Linq;
 using Data.Dto;
 using Model;
 
@@ -8,22 +9,43 @@ namespace Utils
         public static PlayerModel ToPlayerModel(PlayerDataDto playerDataDto)
         {
             return new PlayerModel(
-                playerDataDto.ExpAmount,
-                playerDataDto.ComplexityLevel,
-                playerDataDto.MoneyAmount,
-                playerDataDto.GoldAmount,
-                playerDataDto.CurrentCar,
-                playerDataDto.BoughtCars,
-                ToAudioSettingsModel(playerDataDto.AudioSettings));
+                playerDataDto.expAmount,
+                playerDataDto.complexityLevel,
+                playerDataDto.cashAmount,
+                playerDataDto.goldAmount,
+                playerDataDto.currentCar,
+                playerDataDto.boughtCars,
+                ToAudioSettingsModel(playerDataDto.audioSettings));
+        }
+
+        public static PlayerDataDto ToPlayerDataDto(PlayerModel playerModel)
+        {
+            return new PlayerDataDto(
+                playerModel.ExpAmount,
+                playerModel.ComplexityLevel,
+                playerModel.CashAmount,
+                playerModel.GoldAmount,
+                (int)playerModel.CurrentCar,
+                playerModel.BoughtCars.Select(c => (int)c).ToArray(),
+                ToAudioSettingsDto(playerModel.AudioSettingsModel));
         }
 
         private static AudioSettingsModel ToAudioSettingsModel(AudioSettingsDto dto)
         {
             return new AudioSettingsModel(
-                dto.IsSoundsMuted,
-                dto.IsMusicMuted,
-                dto.SoundsVolume,
-                dto.MusicVolume);
+                dto.isSoundsMuted,
+                dto.isMusicMuted,
+                dto.soundsVolume,
+                dto.musicVolume);
+        }
+
+        private static AudioSettingsDto ToAudioSettingsDto(AudioSettingsModel audioSettingsModel)
+        {
+            return new AudioSettingsDto(
+                audioSettingsModel.IsSoundsMuted,
+                audioSettingsModel.IsMusicMuted,
+                audioSettingsModel.SoundsVolume,
+                audioSettingsModel.MusicVolume);
         }
     }
 }

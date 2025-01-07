@@ -63,18 +63,6 @@ public class InitScript : MonoBehaviour
         Debug.Log("GP player id: " + GamePushWrapper.GetPlayerId());
 
         _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());
-
-        GamePushWrapper.FetchProducts().ContinueWith(p =>
-        {
-            Debug.Log("fetchedProducts:");
-
-            foreach (var productData in p)
-            {
-                var productDataJson = JsonUtility.ToJson(productData, true);
-                
-                Debug.Log(productDataJson);
-            }
-        });
         
         InitRootController();
     }

@@ -823,11 +823,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1277806728}
-  - {fileID: 1738353390}
   - {fileID: 1478119314}
   - {fileID: 1200328792}
   - {fileID: 532815179}
+  - {fileID: 1277806728}
+  - {fileID: 1738353390}
   m_Father: {fileID: 1838582907}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -2754,7 +2754,7 @@ GameObject:
   - component: {fileID: 1738353392}
   - component: {fileID: 1738353391}
   m_Layer: 5
-  m_Name: GoldText (TMP) (1)
+  m_Name: GoldText (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

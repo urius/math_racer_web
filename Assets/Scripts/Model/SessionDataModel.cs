@@ -1,3 +1,4 @@
+using Data;
 using Utils.ReactiveValue;
 
 namespace Model
@@ -5,5 +6,6 @@ namespace Model
     public class SessionDataModel
     {
         public readonly ReactiveFlag IsBankPopupOpened = new();
+        public readonly ReactiveValue<BankProductsData> BankProductsData = new();
     }
 }

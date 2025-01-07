@@ -10,6 +10,7 @@ using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
 using UnityEngine.SceneManagement;
+using Utils.GamePush;
 using View.UI;
 
 namespace Controller
@@ -31,13 +32,27 @@ namespace Controller
 
         public override async void Initialize()
         {
+            _commandExecutor.ExecuteAsync<InitBankProductsCommand>().Forget();
+            
             await InitPlayerModel();
 
             InitChildControllers();
             
+            await ProcessRestorePurchases();
+            
             LoadScene(Constants.MenuSceneName).Forget();
 
             Subscribe();
+        }
+
+        private async UniTask ProcessRestorePurchases()
+        {
+            var fetchPurchaseDataList = await GamePushWrapper.FetchPurchasesTask;
+
+            foreach (var fetchPurchaseData in fetchPurchaseDataList)
+            {
+                await _commandExecutor.ExecuteAsync<ConsumeProductCommand, bool, string>(fetchPurchaseData.Tag);
+            }
         }
 
         public override void DisposeInternal()
@@ -47,6 +62,7 @@ namespace Controller
 
         private void InitChildControllers()
         {
+            InitChildController(new SaveDataController());
             InitChildController(new AudioController());
         }
 

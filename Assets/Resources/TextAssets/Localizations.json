@@ -154,6 +154,51 @@
 			"key": "exit_to_menu",
 			"en": "Exit to menu",
 			"ru": "Выход в меню"
+		},
+		{
+			"key": "crystal",
+			"en": "Crystal",
+			"ru": "Кристалл"
+		},
+		{
+			"key": "cash",
+			"en": "Cash",
+			"ru": "Наличных"
+		},
+		{
+			"key": "watch_ad",
+			"en": "Watch Ad",
+			"ru": "Смотреть рекламу"
+		},
+		{
+			"key": "currency_plural_yan",
+			"en": "Yan",
+			"ru": "ЯН"
+		},
+		{
+			"key": "currency_plural_ok",
+			"en": "Ok",
+			"ru": "ОК"
+		},
+		{
+			"key": "currency_plural_vote",
+			"en": "Votes",
+			"ru": "Голосов"
+		},
+		{
+			"key": "currency_plural_rub",
+			"en": "Rub",
+			"ru": "Рублей"
+		},
+		{
+			"key": "currency_plural_gp",
+			"en": "GP",
+			"ru": "GP"
+		},
+		{
+			"key": "unavailable",
+			"en": "Unavailable",
+			"ru": "Недоступно"
 		}
 	]
 }

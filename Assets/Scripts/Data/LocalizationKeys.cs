@@ -27,5 +27,10 @@ namespace Data
         public const string PlayButton = "play_button";
         public const string CarsButton = "cars_button";
         public const string SolveButtonText = "solve_button_text";
+        public const string Crystal = "crystal";
+        public const string Cash = "cash";
+        public const string WatchAd = "watch_ad";
+        public const string CurrencyFormatPlural = "currency_plural_";
+        public const string Unavailable = "unavailable";
     }
 }

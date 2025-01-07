@@ -1,3 +1,5 @@
+// ReSharper disable InconsistentNaming
+
 using System;
 
 namespace Data.Dto
@@ -5,17 +7,17 @@ namespace Data.Dto
     [Serializable]
     public struct AudioSettingsDto
     {
-        public bool IsMusicMuted;
-        public bool IsSoundsMuted;
-        public float MusicVolume;
-        public float SoundsVolume;
+        public bool isSoundsMuted;
+        public bool isMusicMuted;
+        public float soundsVolume;
+        public float musicVolume;
 
-        public AudioSettingsDto(bool isMusicMuted, bool isSoundsMuted, float musicVolume, float soundsVolume)
+        public AudioSettingsDto( bool isSoundsMuted,bool isMusicMuted, float soundsVolume, float musicVolume)
         {
-            IsMusicMuted = isMusicMuted;
-            IsSoundsMuted = isSoundsMuted;
-            MusicVolume = musicVolume;
-            SoundsVolume = soundsVolume;
+            this.isSoundsMuted = isSoundsMuted;
+            this.isMusicMuted = isMusicMuted;
+            this.soundsVolume = soundsVolume;
+            this.musicVolume = musicVolume;
         }
 
         public static AudioSettingsDto FromDefault()

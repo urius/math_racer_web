@@ -7,6 +7,8 @@ namespace Data
         public const string RaceSceneName = "RaceScene";
         public const string NewLevelSceneName = "NewLevelScene";
         
+        public const string PlayerDataFieldKey = "player_data";
+        
         public const string OperatorPlus = "+";
         public const string OperatorMinus = "-";
         public const string OperatorMultiply = "*";
@@ -38,5 +40,7 @@ namespace Data
         public const int TurboIndicatorShowHideDurationMs = (int)(TurboIndicatorShowHideDurationSec * 1000);
 
         public const int SolveCostCrystals = 1;
+        public const string ProductTypeCash = "cash";
+        public const string ProductTypeGold = "gold";
     }
 }

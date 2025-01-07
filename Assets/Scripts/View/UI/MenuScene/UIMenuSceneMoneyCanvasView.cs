@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils.LeanTweenHelper;
 using View.Extensions;
 
 namespace View.UI.MenuScene
@@ -50,7 +51,7 @@ namespace View.UI.MenuScene
         public void SetCashAmount(int cashAmount)
         {
             _currentCashAmount = cashAmount;
-            _cashText.SetText(cashAmount.ToPriceView2());
+            _cashText.SetText(cashAmount.ToCashView2());
         }
 
         public void SetGoldAmount(int goldAmount)
@@ -69,6 +70,11 @@ namespace View.UI.MenuScene
                 .value(_cashText.gameObject, OnAnimateCashTweenUpdate, _currentCashAmount, targetCashAmount,
                     AnimationDurationSec)
                 .setOnComplete(() => tcs.TrySetResult());
+            
+            if (targetCashAmount > _currentCashAmount)
+            {
+                AnimateBounce(_cashText.rectTransform);
+            }
 
             return tcs.Task;
         }
@@ -83,6 +89,11 @@ namespace View.UI.MenuScene
                 .value(_goldText.gameObject, OnAnimateGoldTweenUpdate, _currentGoldAmount, targetGoldAmount,
                     AnimationDurationSec)
                 .setOnComplete(() => tcs.TrySetResult());
+
+            if (targetGoldAmount > _currentGoldAmount)
+            {
+                AnimateBounce(_goldText.rectTransform);
+            }
 
             return tcs.Task;
         }
@@ -172,6 +183,11 @@ namespace View.UI.MenuScene
         private void OnOpenBankClicked()
         {
             OpenBankButtonClicked?.Invoke();
+        }
+
+        private static void AnimateBounce(RectTransform rectTransform)
+        {
+            LeanTweenHelper.BounceYAsync(rectTransform, -30);
         }
     }
 }

@@ -17,6 +17,12 @@ namespace Utils.GamePush
         private UniTaskCompletionSource<bool> _preloaderAdsTcs;
         private Action<bool> _requestPauseAction;
         private UniTaskCompletionSource<FetchProductData[]> _fetchProductsTcs;
+        private UniTaskCompletionSource<FetchPurchaseData[]> _fetchPurchasesTcs;
+        private UniTaskCompletionSource<bool> _purchaseTcs;
+        private UniTaskCompletionSource<bool> _consumeTcs;
+
+        public static UniTask<FetchPurchaseData[]> FetchPurchasesTask =>
+            Instance._fetchPurchasesTcs?.Task ?? UniTask.FromResult(Array.Empty<FetchPurchaseData>());
 
         public static UniTask Init(Action<bool> requestPauseAction)
         {
@@ -166,6 +172,14 @@ namespace Utils.GamePush
             return "en";
         }
 
+        public static bool IsPaymentsAvailable()
+        {
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
+            return GP_Payments.IsPaymentsAvailable();
+#endif
+            return false;
+        }
+
         public static bool CanShowRewardedAds()
         {
 #if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
@@ -176,17 +190,85 @@ namespace Utils.GamePush
 
         public static UniTask<FetchProductData[]> FetchProducts()
         {
+            if (IsPaymentsAvailable() == false)
+            {
+                LogWarning($"{nameof(FetchProducts)}: Payments are not available");
+
+                return UniTask.FromResult(Array.Empty<FetchProductData>());
+            }
+
             return Instance.FetchProductsInternal();
+        }
+        
+        public static async UniTask<bool> PurchaseProduct(string idOrTag)
+        {
+            RequestPause(true);
+            
+            var purchaseResult = await Instance.PurchaseProductInternal(idOrTag);
+            
+            RequestPause(false);
+
+            return purchaseResult;
+        }
+        
+        public static UniTask<bool> ConsumeProduct(string idOrTag)
+        {
+            return Instance.ConsumeProductInternal(idOrTag);
+        }
+
+        private UniTask<bool> ConsumeProductInternal(string idOrTag)
+        {
+            _consumeTcs = new UniTaskCompletionSource<bool>();
+            
+            GP_Payments.Consume(idOrTag, OnConsumeSuccess, OnConsumeError);
+
+            return _consumeTcs.Task;
+        }
+
+        private void OnConsumeSuccess(string idOrTag)
+        {
+            Log("PRODUCT CONSUME SUCCESS: " + idOrTag);
+            
+            _consumeTcs.TrySetResult(true);
+        }
+
+        private void OnConsumeError()
+        {
+            Log("PRODUCT CONSUME ERROR");
+            
+            _consumeTcs.TrySetResult(false);
+        }
+
+        private UniTask<bool> PurchaseProductInternal(string idOrTag)
+        {
+            _purchaseTcs = new UniTaskCompletionSource<bool>();
+            
+            GP_Payments.Purchase(idOrTag, OnPurchaseSuccess, OnPurchaseError);
+
+            return _purchaseTcs.Task;
+        }
+
+        private void OnPurchaseSuccess(string idOrTag)
+        {
+            _purchaseTcs.TrySetResult(true);
+        }
+
+        private void OnPurchaseError()
+        {
+            _purchaseTcs.TrySetResult(false);
         }
 
         private UniTask<FetchProductData[]> FetchProductsInternal()
         {
             _fetchProductsTcs = new UniTaskCompletionSource<FetchProductData[]>();
+            _fetchPurchasesTcs = new UniTaskCompletionSource<FetchPurchaseData[]>();
             
             GP_Payments.OnFetchProducts -= OnFetchProducts;
             GP_Payments.OnFetchProducts += OnFetchProducts;
             GP_Payments.OnFetchProductsError -= OnFetchProductsError;
             GP_Payments.OnFetchProductsError += OnFetchProductsError;
+            GP_Payments.OnFetchPlayerPurchases -= OnFetchPlayerPurchases;
+            GP_Payments.OnFetchPlayerPurchases += OnFetchPlayerPurchases;
             
             GP_Payments.Fetch();
 
@@ -205,6 +287,15 @@ namespace Utils.GamePush
             LogError("Fetch products error!");
             
             _fetchProductsTcs.TrySetResult(Array.Empty<FetchProductData>());
+        }
+
+        private void OnFetchPlayerPurchases(List<FetchPlayerPurchases> purchases)
+        {
+            Log($"{nameof(OnFetchPlayerPurchases)} count: {purchases.Count}");
+            
+            var mappedPurchases = purchases.Select(p => new FetchPurchaseData(p)).ToArray();
+
+            _fetchPurchasesTcs.TrySetResult(mappedPurchases);
         }
 
         private async UniTask<bool> ShowRewardedAdsInternal()

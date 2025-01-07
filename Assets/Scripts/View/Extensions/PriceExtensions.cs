@@ -9,14 +9,25 @@ namespace View.Extensions
         public static string ToPriceView(this int priceInt)
         {
             return priceInt > 0
-                ? $"{RichTextHelper.FormatGreen(priceInt)} {Constants.TextSpriteCash}"
+                ? ToCashView(priceInt)
                 : ToGoldView(Mathf.Abs(priceInt));
         }
+
         public static string ToPriceView2(this int priceInt)
         {
             return priceInt > 0
-                ? $"{Constants.TextSpriteCash} {priceInt}"
+                ? ToCashView2(priceInt)
                 : ToGoldView2(Mathf.Abs(priceInt));
+        }
+        
+        public static string ToCashView(this int priceInt)
+        {
+            return $"{RichTextHelper.FormatGreen(priceInt)} {Constants.TextSpriteCash}";
+        }
+        
+        public static string ToCashView2(this int priceInt)
+        {
+            return $"{Constants.TextSpriteCash} {priceInt}";
         }
 
         public static string ToGoldView(this int priceInt)
