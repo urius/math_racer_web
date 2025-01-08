@@ -1,8 +1,8 @@
 using System;
 using Controller;
+using Controller.Commands;
 using Cysharp.Threading.Tasks;
 using Data;
-using Events;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
@@ -121,7 +121,6 @@ public class InitScript : MonoBehaviour
 
     private static void RequestPauseDelegate(bool needPause)
     {
-        Instance.Get<IEventBus>()
-            .Dispatch(new RequestGamePauseEvent(nameof(GamePushWrapper), needPause, needMute: true));
+        Instance.Get<ICommandExecutor>().Execute<PerformGamePauseCommand, bool>(needPause);
     }
 }

@@ -92,16 +92,28 @@ namespace Controller.MenuScene
         private void OnInsufficientCash(int neededAmount)
         {
             _moneyCanvasView.AnimateCashRedBlink();
+            
+            _audioPlayer.PlaySound(SoundKey.Negative);
         }
 
         private void OnCashAmountChanged(int deltaCash)
         {
             _moneyCanvasView.AnimateCashAmount(_playerModel.CashAmount);
+
+            if (deltaCash > 0)
+            {
+                _audioPlayer.PlaySound(SoundKey.CashBox);
+            }
         }
 
         private void OnGoldAmountChanged(int deltaGold)
         {
             _moneyCanvasView.AnimateGoldAmount(_playerModel.GoldAmount);
+            
+            if (deltaGold > 0)
+            {
+                _audioPlayer.PlaySound(SoundKey.CashBox);
+            }
         }
 
         private void SetupMoneyAmount()
