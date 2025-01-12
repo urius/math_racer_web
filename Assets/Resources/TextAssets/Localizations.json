@@ -121,9 +121,34 @@
 			"ru": "Доступны новые машины:"
 		},
 		{
-			"key": "play_button",
+			"key": "single_play_button",
 			"en": "Start Race",
 			"ru": "Начать Гонку"
+		},
+		{
+			"key": "multiplayer_button",
+			"en": "Multiplayer",
+			"ru": "Гонка по сети"
+		},
+		{
+			"key": "multiplayer_popup_title",
+			"en": "Multiplayer",
+			"ru": "Гонка по сети"
+		},
+		{
+			"key": "multiplayer_popup_random_button",
+			"en": "Random game",
+			"ru": "Случайный соперник"
+		},
+		{
+			"key": "multiplayer_popup_host_button",
+			"en": "Host game",
+			"ru": "Создать игру"
+		},
+		{
+			"key": "multiplayer_popup_join_button",
+			"en": "Join game",
+			"ru": "Присоединиться"
 		},
 		{
 			"key": "cars_button",

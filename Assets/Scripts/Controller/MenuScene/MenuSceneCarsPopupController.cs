@@ -173,12 +173,12 @@ namespace Controller.MenuScene
         private void OnCloseButtonClicked()
         {
             ProcessCloseButton().Forget();
-            
-            _audioPlayer.PlayButtonSound();
         }
 
         private async UniTask ProcessCloseButton()
         {
+            _audioPlayer.PlayButtonSound();
+            
             await _popupView.DisappearAsync();
             
             RequestDispose();

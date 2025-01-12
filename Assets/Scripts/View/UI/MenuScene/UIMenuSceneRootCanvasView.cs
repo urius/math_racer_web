@@ -11,6 +11,11 @@ namespace View.UI.MenuScene
             add => _playButton.ButtonClicked += value;
             remove => _playButton.ButtonClicked -= value;
         }
+        public event Action MultiplayerButtonClicked
+        {
+            add => _multiplayerButton.ButtonClicked += value;
+            remove => _multiplayerButton.ButtonClicked -= value;
+        }
         public event Action CarsButtonClicked
         {
             add => _carsButton.ButtonClicked += value;
@@ -23,6 +28,7 @@ namespace View.UI.MenuScene
         }
         
         [SerializeField] private UITextButtonView _playButton;
+        [SerializeField] private UITextButtonView _multiplayerButton;
         [SerializeField] private UITextButtonView _carsButton;
         [SerializeField] private UITextButtonView _settingsButton;
         [SerializeField] private RectTransform _popupsCanvasTransform;

@@ -1,5 +1,4 @@
 using Controller.Common;
-using Data;
 using Events;
 using Extensions;
 using Infra.EventBus;
@@ -30,8 +29,6 @@ namespace Controller.MenuScene
             
             _rootCanvasView = Object.FindObjectOfType<UIMenuSceneRootCanvasView>();
             _rootView = Object.FindObjectOfType<UIMenuSceneRootView>();
-
-            SetButtonTexts();
             
             InitChildControllers();
             
@@ -45,12 +42,6 @@ namespace Controller.MenuScene
             _rootCanvasView = null;
         }
 
-        private void SetButtonTexts()
-        {
-            _rootCanvasView.SetPlayButtonText(_localizationProvider.GetLocale(LocalizationKeys.PlayButton));
-            _rootCanvasView.SetCarsButtonText(_localizationProvider.GetLocale(LocalizationKeys.CarsButton));
-        }
-
         private void InitChildControllers()
         {
             InitChildController(new MenuSceneRootViewController(_rootView));
@@ -62,6 +53,7 @@ namespace Controller.MenuScene
         private void Subscribe()
         {
             _rootCanvasView.PlayButtonClicked += OnPlayButtonClicked;
+            _rootCanvasView.MultiplayerButtonClicked += OnMultiplayerButtonClicked;
             _rootCanvasView.CarsButtonClicked += OnCarsButtonClicked;
             _rootCanvasView.SettingsButtonClicked += OnSettingsButtonClicked;
             
@@ -71,6 +63,7 @@ namespace Controller.MenuScene
         private void Unsubscribe()
         {
             _rootCanvasView.PlayButtonClicked -= OnPlayButtonClicked;
+            _rootCanvasView.MultiplayerButtonClicked -= OnMultiplayerButtonClicked;
             _rootCanvasView.CarsButtonClicked -= OnCarsButtonClicked;
             _rootCanvasView.SettingsButtonClicked -= OnSettingsButtonClicked;
             
@@ -80,6 +73,14 @@ namespace Controller.MenuScene
         private void OnPlayButtonClicked()
         {
             _eventBus.Dispatch(new RequestNextSceneEvent());
+            
+            _audioPlayer.PlayButtonSound();
+        }
+
+        private void OnMultiplayerButtonClicked()
+        {
+            var multiplayerPopupController = new MenuSceneMultiplayerRootPopupController(_rootCanvasView.PopupsCanvasTransform);
+            InitChildController(multiplayerPopupController);
             
             _audioPlayer.PlayButtonSound();
         }
