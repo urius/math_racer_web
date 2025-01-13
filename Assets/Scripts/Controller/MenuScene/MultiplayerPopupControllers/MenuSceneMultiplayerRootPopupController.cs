@@ -6,7 +6,7 @@ using UnityEngine;
 using Utils.AudioManager;
 using View.UI.Popups.MultiplayerPopups;
 
-namespace Controller.MenuScene
+namespace Controller.MenuScene.MultiplayerPopupControllers
 {
     public class MenuSceneMultiplayerRootPopupController : ControllerBase
     {
@@ -31,6 +31,8 @@ namespace Controller.MenuScene
 
         public override void DisposeInternal()
         {
+            Unsubscribe();
+            
             Destroy(_popupView);
             _popupView = null;
         }
@@ -69,7 +71,10 @@ namespace Controller.MenuScene
 
         private void OnHostButtonClicked()
         {
+            var multiplayerPopupController = new MenuSceneMultiplayerHostPopupController(_targetTransform);
+            InitChildController(multiplayerPopupController);
             
+            _audioPlayer.PlayButtonSound();
         }
 
         private void OnJoinButtonClicked()

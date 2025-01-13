@@ -1,6 +1,6 @@
 namespace Data
 {
-    public class Constants
+    public abstract class Constants
     {
         public const string BootstrapSceneName = "BootstrapScene";
         public const string MenuSceneName = "MenuScene";

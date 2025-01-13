@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 
 namespace Utils.WebRequestSender
 {
-    public class WebRequestsSender
+    public static class WebRequestsSender
     {
         private static readonly int[] RetryMsArray = { 0, 500, 1000, 5000 };
 
@@ -67,6 +67,7 @@ namespace Utils.WebRequestSender
         private static async UniTask<WebRequestResult<string>> SendRequestAsync(Func<UnityWebRequest> unityWebRequestFactory)
         {
             var retryPrefix = string.Empty;
+            var lastError = string.Empty;
             for (var i = 0; i < RetryMsArray.Length; i++)
             {
                 var unityWebRequest = unityWebRequestFactory();
@@ -88,6 +89,10 @@ namespace Utils.WebRequestSender
                         {
                             return new WebRequestResult<string>(result.downloadHandler.text);
                         }
+                        else
+                        {
+                            lastError = result.error;
+                        }
                     }
                     catch (Exception e)
                     {
@@ -96,7 +101,7 @@ namespace Utils.WebRequestSender
                 }
             }
 
-            return new WebRequestResult<string>();
+            return WebRequestResult<string>.FromError(lastError);
         }
 
         private static WebRequestResult<T> HandleGenericResponse<T>(WebRequestResult<string> resultStr)
@@ -139,13 +144,23 @@ namespace Utils.WebRequestSender
 
     public struct WebRequestResult<T>
     {
+        public readonly bool IsSuccess;
+        public readonly T Result;
+        public string Error;
+        
         public WebRequestResult(T result)
         {
             IsSuccess = true;
             Result = result;
+            Error = null;
         }
 
-        public readonly bool IsSuccess;
-        public readonly T Result;
+        public static WebRequestResult<T> FromError(string error)
+        {
+            var result = new WebRequestResult<T>();
+            result.Error = error;
+            
+            return result;
+        }
     }
 }

@@ -151,6 +151,11 @@
 			"ru": "Присоединиться"
 		},
 		{
+			"key": "host_popup_title",
+			"en": "Host game",
+			"ru": "Создать игру"
+		},
+		{
 			"key": "cars_button",
 			"en": "Cars Shop",
 			"ru": "Купить Машину"
@@ -224,6 +229,21 @@
 			"key": "unavailable",
 			"en": "Unavailable",
 			"ru": "Недоступно"
+		},
+		{
+			"key": "host_popup_preparing",
+			"en": "Creating room...",
+			"ru": "Создание комнаты..."
+		},
+		{
+			"key": "host_popup_room_ready",
+			"en": "Room created!\nSend this room code to your friend to connect",
+			"ru": "Пришлите этот код другу для подключения"
+		},
+		{
+			"key": "host_popup_room_error",
+			"en": "Room creation error\nCheck your internet connection and try again later",
+			"ru": "Ошибка\nПроверьте интернет соединение или попробуйте позже"
 		}
 	]
 }

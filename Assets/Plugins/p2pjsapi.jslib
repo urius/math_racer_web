@@ -155,15 +155,24 @@ mergeInto(LibraryManager.library, {
          ];
       },
       InitLib: function () {
-          if (window.p2pIceServers === null) {
+          if (window.p2pIceServers == null) {
                 window.p2pIceServers = [
-                    { urls: 'stun:stun.l.google.com:19302', }
+                    { urls: 'stun:stun.l.google.com:19302' }
                 ];
           }          
                                  
           window.p2pCreatePeerConnection = 
-          async function (props) {
-                 const { remoteDescription, iceServers = [], onChannelOpen, onMessageReceived, onChannelClose } = props;
+              async function (props) {          
+                 console.log("p2pCreatePeerConnection() props: " + JSON.stringify(props));
+                 
+                 const iceServers = props.iceServers;
+                 const remoteDescription = props.remoteDescription;
+                 const onChannelOpen = props.onChannelOpen;
+                 const onMessageReceived = props.onMessageReceived;
+                 const onChannelClose = props.onChannelClose;
+                 
+                 console.log("p2pCreatePeerConnection() iceServers: " + props.iceServers);
+                 console.log("p2pCreatePeerConnection() JSON.stringify(props.iceServers): " + JSON.stringify(iceServers));
                
                  if (window.p2pContextsInfo == null) {
                     window.p2pContextsInfo = { totalContextsCreated:0 };
@@ -182,7 +191,7 @@ mergeInto(LibraryManager.library, {
                  const peerConnection = new RTCPeerConnection({ iceServers });
                  p2pContext.peerConnection = peerConnection;
                  let channelInstance;
-                 //console.log("peerConnection: " + peerConnection + " iceServers.length: " + iceServers.length);
+                 console.log("peerConnection: " + peerConnection + " iceServers.length: " + iceServers.length);
                
                  function setupChannelAsAHost() {
                         // console.log("setupChannelAsAHost");

@@ -23,7 +23,7 @@ public class InitScript : MonoBehaviour
     [SerializeField] private AudioClipsProviderSo _audioClipsProviderSo;
 
     private RootController _rootController;
-    private UniTask _gpInitTask;
+    private UniTask<bool> _gpInitTask;
     
     private void Awake()
     {
@@ -58,11 +58,20 @@ public class InitScript : MonoBehaviour
         }
     }
 
-    private void OnGPReady()
+    private void OnGPReady(bool initSuccess)
     {
-        Debug.Log("GP player id: " + GamePushWrapper.GetPlayerId());
+        if (initSuccess)
+        {
+            Debug.Log("GP player id: " + GamePushWrapper.GetPlayerId());
 
-        _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());
+            _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());
+        }
+        else
+        {
+            Debug.Log("GP Init failed. Try to continue without" );
+            
+            _localizationHolderSo.SetLocaleLang("ru");
+        }
         
         InitRootController();
     }

@@ -11,7 +11,7 @@ namespace Utils.GamePush
     {
         public static readonly GamePushWrapper Instance = new GamePushWrapper();
 
-        private readonly UniTaskCompletionSource _initTcs = new UniTaskCompletionSource();
+        private readonly UniTaskCompletionSource<bool> _initTcs = new();
 
         private UniTaskCompletionSource<bool> _rewardedAdsTcs;
         private UniTaskCompletionSource<bool> _preloaderAdsTcs;
@@ -24,7 +24,9 @@ namespace Utils.GamePush
         public static UniTask<FetchPurchaseData[]> FetchPurchasesTask =>
             Instance._fetchPurchasesTcs?.Task ?? UniTask.FromResult(Array.Empty<FetchPurchaseData>());
 
-        public static UniTask Init(Action<bool> requestPauseAction)
+        public static bool IsGPInit => GP_Init.isReady;
+
+        public static UniTask<bool> Init(Action<bool> requestPauseAction)
         {
             return Instance.InitInternal(requestPauseAction);
         }
@@ -74,7 +76,7 @@ namespace Utils.GamePush
         public static string GetPlayerData(string fieldName)
         {
 #if !UNITY_STANDALONE_OSX
-            if (GP_Player.IsStub() == false)
+            if (IsGPInit && GP_Player.IsStub() == false)
             {
                 return GP_Player.GetString(fieldName);
             }
@@ -88,7 +90,10 @@ namespace Utils.GamePush
         public static string GetPlayerId()
         {
 #if !UNITY_STANDALONE_OSX
-            return GP_Player.GetID().ToString();
+            if (IsGPInit)
+            {
+                return GP_Player.GetID().ToString();
+            }
 #endif
             return "undefined_id";
         }
@@ -175,7 +180,7 @@ namespace Utils.GamePush
         public static bool IsPaymentsAvailable()
         {
 #if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
-            return GP_Payments.IsPaymentsAvailable();
+            return IsGPInit && GP_Payments.IsPaymentsAvailable();
 #endif
             return false;
         }
@@ -183,7 +188,7 @@ namespace Utils.GamePush
         public static bool CanShowRewardedAds()
         {
 #if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
-            return GP_Ads.IsRewardedAvailable();
+            return IsGPInit && GP_Ads.IsRewardedAvailable();
 #endif
             return true;
         }
@@ -333,14 +338,14 @@ namespace Utils.GamePush
             return true;
         }
 
-        private UniTask InitInternal(Action<bool> requestPauseAction)
+        private UniTask<bool> InitInternal(Action<bool> requestPauseAction)
         {
             _requestPauseAction = requestPauseAction;
             
 #if !UNITY_STANDALONE_OSX
             if (GP_Init.isReady)
             {
-                _initTcs.TrySetResult();
+                _initTcs.TrySetResult(true);
             }
             else
             {
@@ -352,7 +357,7 @@ namespace Utils.GamePush
 
             return _initTcs.Task;
 #endif
-            return UniTask.CompletedTask;
+            return UniTask.FromResult(true);
         }
 
 
@@ -363,12 +368,14 @@ namespace Utils.GamePush
             GP_Init.OnReady -= OnGpInitReady;
 #endif
             
-            _initTcs.TrySetResult();
+            _initTcs.TrySetResult(true);
         }
 
         private void OnGpInitError()
         {
             LogError("Game Push init error!");
+            
+            _initTcs.TrySetResult(false);
         }
 
         private static void RequestPause(bool enable)

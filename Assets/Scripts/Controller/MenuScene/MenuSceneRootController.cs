@@ -1,4 +1,5 @@
 using Controller.Common;
+using Controller.MenuScene.MultiplayerPopupControllers;
 using Events;
 using Extensions;
 using Infra.EventBus;

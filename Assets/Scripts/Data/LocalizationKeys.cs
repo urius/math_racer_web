@@ -30,5 +30,8 @@ namespace Data
         public const string WatchAd = "watch_ad";
         public const string CurrencyFormatPlural = "currency_plural_";
         public const string Unavailable = "unavailable";
+        public const string HostPopupPreparingMessage = "host_popup_preparing";
+        public const string HostPopupRoomReadyMessage = "host_popup_room_ready";
+        public const string HostPopupErrorMessage = "host_popup_room_error";
     }
 }

@@ -54,9 +54,9 @@ namespace Utils.P2PLib
         public void HandleChannelOpened()
         {
             ConnectionState = P2PConnectionState.Established;
-            _connectionEstablishedTcs.TrySetResult();
             
             ChanelOpened?.Invoke(this);
+            _connectionEstablishedTcs.TrySetResult();
         }
 
         public void HandleChannelClosed()
@@ -91,6 +91,7 @@ namespace Utils.P2PLib
         public bool IsHost { get; }
         public string ChannelLabel { get; }
         public string ConnectionLocalDescription { get; }
+        public P2PConnectionState ConnectionState { get; }
 
         public void SendMessage(string msg);
         public void Close();
