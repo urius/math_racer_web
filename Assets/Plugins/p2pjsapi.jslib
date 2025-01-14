@@ -50,7 +50,7 @@ mergeInto(LibraryManager.library, {
             callbackAction(p2pContext.channelLabel, localDescriptionAdv_b64);
       },
       JoinConnection: async function (connectionDescription, callback, onChannelOpenCallback, onChannelCloseCallback, onMessageReceivedCallback) {
-            const descriptionAdv64Str = Pointer_stringify(connectionDescription);
+            const descriptionAdv64Str = UTF8ToString(connectionDescription);
             
             console.log("join...,  hostDescription: " + descriptionAdv64Str);
             
@@ -102,11 +102,14 @@ mergeInto(LibraryManager.library, {
             callbackAction(p2pContext.channelLabel, localDescriptionAdv64);
       },
       CompleteHostConnection: function (joinedPeerDescription64) {
-            const joinedPeerDescription64Str = Pointer_stringify(joinedPeerDescription64);
+            const joinedPeerDescription64Str = UTF8ToString(joinedPeerDescription64);
             
             console.log("host2 (complete host)...");
 
-            answerDescriptionAdv = JSON.parse(atob(joinedPeerDescription64Str));
+            const decryptedDescription = atob(joinedPeerDescription64Str);
+            console.log("host2 decryptedDescription: " + decryptedDescription);
+            
+            answerDescriptionAdv = JSON.parse(decryptedDescription);
             const channelLabel = answerDescriptionAdv.channelLabel;
             const answerDescription = JSON.stringify(answerDescriptionAdv.description);
 
@@ -120,14 +123,14 @@ mergeInto(LibraryManager.library, {
             }
       },
       SendToAll: function (msg) {
-           const msgStr = Pointer_stringify(msg);
+           const msgStr = UTF8ToString(msg);
            for (let i = 0; i < window.p2pContexts.length; i++) {
               p2pContexts[i].sendMessage(msgStr);
            }
       },
       SendTo: function (channelLabel, msg) {      
-           const channelLabelStr = Pointer_stringify(channelLabel);
-           const msgStr = Pointer_stringify(msg);
+           const channelLabelStr = UTF8ToString(channelLabel);
+           const msgStr = UTF8ToString(msg);
            
            for (let i = 0; i < window.p2pContexts.length; i++) {
                if (p2pContexts[i].channelLabel === channelLabelStr) {
@@ -136,7 +139,7 @@ mergeInto(LibraryManager.library, {
            }
       },
       Close: function (channelLabel) {        
-        const channelLabelStr = Pointer_stringify(channelLabel);   
+        const channelLabelStr = UTF8ToString(channelLabel);   
         
         console.log("closing " + channelLabelStr);
                      
@@ -151,7 +154,7 @@ mergeInto(LibraryManager.library, {
       },
       SetupIceServerUrl: function(url) {
          window.p2pIceServers = [
-             { urls: Pointer_stringify(url), }
+             { urls: UTF8ToString(url), }
          ];
       },
       InitLib: function () {

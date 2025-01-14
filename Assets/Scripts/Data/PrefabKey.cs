@@ -10,6 +10,7 @@ namespace Data
         UIBankPopup,
         UIMultiplayerRootPopup,
         UIHostPopup,
+        UIJoinPopup,
         CarBug = CarKey.Bug + Constants.PrefabCarsOffset,
         CarCharger = CarKey.Charger + Constants.PrefabCarsOffset,
         CarCoupe = CarKey.Coupe + Constants.PrefabCarsOffset,

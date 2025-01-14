@@ -1,3 +1,4 @@
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Data;
 using Extensions;
@@ -50,14 +51,14 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
         {
             Subscribe();
 
-            PrecessCreateRoom().Forget();
+            ProcessCreateRoom().Forget();
         }
 
-        private async UniTaskVoid PrecessCreateRoom()
+        private async UniTaskVoid ProcessCreateRoom()
         {
             _p2pRoom = new P2PRoom(Urls.P2PRoomsServiceUrl);
 
-            var createRoomResult = await _p2pRoom.Create();
+            var createRoomResult = await _p2pRoom.Create(2, CancellationToken.None);
 
             if (createRoomResult)
             {
@@ -91,6 +92,9 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
         private async UniTask ProcessCloseButton()
         {
             _audioPlayer.PlayButtonSound();
+            
+            _p2pRoom?.Dispose();
+            _p2pRoom = null;
             
             await _popupView.Disappear2Async();
             

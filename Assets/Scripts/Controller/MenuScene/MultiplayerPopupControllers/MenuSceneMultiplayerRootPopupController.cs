@@ -79,7 +79,10 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
         private void OnJoinButtonClicked()
         {
+            var multiplayerPopupController = new MenuSceneMultiplayerJoinPopupController(_targetTransform);
+            InitChildController(multiplayerPopupController);
             
+            _audioPlayer.PlayButtonSound();
         }
 
         private void OnRandomButtonClicked()
