@@ -9,7 +9,7 @@ namespace Utils.P2PLib
         public event Action<P2PConnection> ChanelClosed;
         public event Action<P2PConnection, string> MessageReceived;
 
-        private readonly UniTaskCompletionSource _connectionEstablishedTcs = new UniTaskCompletionSource();
+        private readonly UniTaskCompletionSource _connectionEstablishedTcs = new();
 
         public P2PConnection(bool isHost, string channelLabel, string connectionLocalDescription)
         {
@@ -21,7 +21,7 @@ namespace Utils.P2PLib
         }
 
         public UniTask ConnectionEstablishedTask => _connectionEstablishedTcs.Task;
-        public bool IsHost { get; private set; }
+        public bool IsHost { get; }
         public P2PConnectionState ConnectionState { get; private set; }
         public string ChannelLabel { get; private set; }
         public string ConnectionLocalDescription { get; private set; }

@@ -34,6 +34,7 @@ namespace Data
         public const string HostPopupRoomReadyMessage = "host_popup_room_ready";
         public const string HostPopupErrorMessage = "host_popup_room_error";
         public const string JoinPopupPreparingMessage = "join_popup_preparing";
+        public const string JoinPopupErrorMessage = "join_popup_error";
         public const string EnterJoinCode = "enter_join_code";
         public const string JoinButton = "join_button";
         public const string JoinPopupWaitingStartMessage = "join_popup_waiting_start";

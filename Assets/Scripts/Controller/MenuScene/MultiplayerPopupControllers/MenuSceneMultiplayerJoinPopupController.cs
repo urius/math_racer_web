@@ -34,7 +34,6 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
             _popupView.Appear2Async()
                 .ContinueWith(Subscribe);
-            
         }
 
         public override void DisposeInternal()
@@ -81,6 +80,10 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
                 else
                 {
                     _popupView.SetRoomCodeInteractable(true);
+
+                    var messageWithError = _localizationProvider.GetLocale(LocalizationKeys.JoinPopupErrorMessage) +
+                                           "\n" + _localizationProvider.GetLocale(LocalizationKeys.JoinPopupPreparingMessage);
+                    _popupView.SetMessageText(messageWithError);
                     
                     _p2pRoom.Dispose();
                     _p2pRoom = null;

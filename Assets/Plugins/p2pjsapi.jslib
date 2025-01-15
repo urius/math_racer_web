@@ -173,9 +173,6 @@ mergeInto(LibraryManager.library, {
                  const onChannelOpen = props.onChannelOpen;
                  const onMessageReceived = props.onMessageReceived;
                  const onChannelClose = props.onChannelClose;
-                 
-                 console.log("p2pCreatePeerConnection() iceServers: " + props.iceServers);
-                 console.log("p2pCreatePeerConnection() JSON.stringify(props.iceServers): " + JSON.stringify(iceServers));
                
                  if (window.p2pContextsInfo == null) {
                     window.p2pContextsInfo = { totalContextsCreated:0 };
@@ -194,17 +191,13 @@ mergeInto(LibraryManager.library, {
                  const peerConnection = new RTCPeerConnection({ iceServers });
                  p2pContext.peerConnection = peerConnection;
                  let channelInstance;
-                 console.log("peerConnection: " + peerConnection + " iceServers.length: " + iceServers.length);
                
-                 function setupChannelAsAHost() {
-                        // console.log("setupChannelAsAHost");
-                   
+                 function setupChannelAsAHost() {                  
                        try {
                          channelInstance = peerConnection.createDataChannel(channelLabel);
                          console.log("channelInstance id: " + channelInstance.id + " label: " + channelInstance.label);
                    
                          channelInstance.onopen = function () {
-                            //console.log("onChannelOpen channelInstance id: " + channelInstance.id + " label: " + channelInstance.label);
                            onChannelOpen(p2pContext.channelLabel);
                          };
                    
@@ -221,20 +214,15 @@ mergeInto(LibraryManager.library, {
                        }
                  }
                
-                 async function createOffer() {
-                        // console.log("createOffer, peerConnection: " + peerConnection);
-                   
-                       const description = await peerConnection.createOffer();
-                       //console.log("description: " + JSON.stringify(description));
-                   
+                 async function createOffer() {                   
+                       const description = await peerConnection.createOffer();                   
                        peerConnection.setLocalDescription(description);
                  }
                
                  function setupChannelAsASlave() {
-                        peerConnection.ondatachannel = function ({ channel }) {
+                         peerConnection.ondatachannel = function ({ channel }) {
                          channelInstance = channel;
-                         //console.log("channelInstance id: " + channelInstance.id + " label: " + channelInstance.label);
-                   
+                                            
                          channelInstance.onopen = function () {
                            onChannelOpen(p2pContext.channelLabel);
                          };
@@ -282,13 +270,10 @@ mergeInto(LibraryManager.library, {
                
                  return new Promise((resolve) => {
                        peerConnection.onicecandidate = function (e) {
-                         //console.log("onicecandidate  e:" + e + "\n e.candidate: " + e.candidate + "\n peerConnection.localDescription: \n" + JSON.stringify(peerConnection.localDescription));
-                   
                          if (e.candidate === null && peerConnection.localDescription) {
                            peerConnection.localDescription.sdp = peerConnection.localDescription.sdp.replace('b=AS:30', 'b=AS:1638400');
                    
                             const descriptionAdv = { description: peerConnection.localDescription, channelLabel: p2pContext.channelLabel};
-                            //console.log("descriptionAdv: " + JSON.stringify(descriptionAdv));
                             p2pContext.localDescription = JSON.stringify(descriptionAdv);
                             p2pContext.setAnswerDescription = setAnswerDescription;
                             p2pContext.sendMessage = sendMessage;

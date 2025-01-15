@@ -256,6 +256,11 @@
 			"ru": "Введите код подключения:"
 		},
 		{
+			"key": "join_popup_error",
+			"en": "<color=red>Join rror</color>",
+			"ru": "<color=red>Ошибка подключения</color>"
+		},
+		{
 			"key": "join_popup_waiting_start",
 			"en": "Connected successfully!\nWaiting for start...",
 			"ru": "Успешно подключено!\nОжидание старта игры..."

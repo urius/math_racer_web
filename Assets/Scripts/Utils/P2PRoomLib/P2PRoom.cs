@@ -11,6 +11,11 @@ namespace Utils.P2PRoomLib
 {
     public class P2PRoom : IDisposable
     {
+        public event Action<IP2PConnection> PeerConnected;
+        public event Action<IP2PConnection, string> MessageReceivedFrom;
+        public event Action<string> MessageReceived;
+        public event Action<IP2PConnection> PeerDisconnected;
+        
         private readonly string _serviceUrl;
         private readonly List<IP2PHostSideConnection> _hostedConnections = new();
         private readonly List<IP2PJoinSideConnection> _joiningConnections = new();
@@ -54,16 +59,17 @@ namespace Utils.P2PRoomLib
                 _hostedConnections.AddRange(connections);
                 var descriptionsStr = string.Join(",", _hostedConnections.Select(c => c.ConnectionLocalDescription));
             
-                var createRoomResult = await WebRequestsSender.PostAsync<P2PCreateRoomResponseDto>(CreateRoomUrl,
+                var createRoomResponse = await WebRequestsSender.PostAsync<P2PCreateRoomResponseDto>(CreateRoomUrl,
                     new Dictionary<string, string>
                     {
                         { "channel_keys", descriptionsStr }
                     });
 
-                if (createRoomResult.IsSuccess
+                if (createRoomResponse.IsSuccess
+                    && createRoomResponse.Result.IsNoError
                     && stopToken.IsCancellationRequested == false)
                 {
-                    HandleRoomCreated(createRoomResult.Result, stopToken);
+                    HandleRoomCreated(createRoomResponse.Result, stopToken);
                 }
             }
 
@@ -76,12 +82,13 @@ namespace Utils.P2PRoomLib
             RoomId = roomId;
             var token = _disposeCts.Token;
 
-            var reserveFreeChannelResult = await WebRequestsSender.GetAsync<P2PReserveFreeChannelResponseDto>(ReserveFreeChannelUrl);
+            var reserveFreeChannelResponse = await WebRequestsSender.GetAsync<P2PReserveFreeChannelResponseDto>(ReserveFreeChannelUrl);
             
-            if (reserveFreeChannelResult.IsSuccess 
+            if (reserveFreeChannelResponse.IsSuccess
+                && reserveFreeChannelResponse.Result.IsNoError
                 && !token.IsCancellationRequested)
             {
-                var channelData = reserveFreeChannelResult.Result.data;
+                var channelData = reserveFreeChannelResponse.Result.Data;
 
                 var joinConnection = await P2PConnection.Join(channelData.channel_key);
                 _joiningConnections.Add(joinConnection);
@@ -104,12 +111,12 @@ namespace Utils.P2PRoomLib
                     SubscribeOnChannelOpened(joinConnection);
                     var cancellationRegistration = token.Register(cancelChannelAction);
 
-                    var connectResult = await WebRequestsSender
+                    var connectResponse = await WebRequestsSender
                         .GetAsync<P2PConnectToRoomResponseDto>(
                             ConnectToRoomUrl +
                             $"&channel_id={channelData.id}&join_key={joinConnection.ConnectionLocalDescription}");
 
-                    if (connectResult.IsSuccess 
+                    if (connectResponse.IsSuccess 
                         && !token.IsCancellationRequested)
                     {
                         await UniTask.WhenAny(joinConnection.ConnectionEstablishedTask, tsc.Task);
@@ -119,7 +126,7 @@ namespace Utils.P2PRoomLib
 
                     if (!token.IsCancellationRequested)
                     {
-                        result = connectResult.IsSuccess;
+                        result = connectResponse.IsSuccess;
                     }
                 }
             }
@@ -130,6 +137,14 @@ namespace Utils.P2PRoomLib
         public void CancelJoiningLoop()
         {
             _joiningLoopTcs?.Cancel();
+        }
+
+        public void SendToAll(string message)
+        {
+            foreach (var activeConnection in _activeConnections)
+            {
+                activeConnection.SendMessage(message);
+            }
         }
 
         public void Dispose()
@@ -165,21 +180,26 @@ namespace Utils.P2PRoomLib
 
         private void HandleRoomCreated(P2PCreateRoomResponseDto createRoomResponse, CancellationToken cancellationToken)
         {
-            RoomId = createRoomResponse.data.room_id;
+            RoomId = createRoomResponse.Data.room_id;
             _getReservedChannelsUrl = _serviceUrl + $"?command=get_reserved&room_id={RoomId}";
-
-            foreach (var hostSideConnection in _hostedConnections)
-            {
-                SubscribeOnChannelOpened(hostSideConnection);
-            }
             
-            CheckJoiningLoop(cancellationToken).Forget();
+            _hostedConnections.ForEach(SubscribeOnChannelOpened);
+            
+            RunCheckJoinLoop(cancellationToken).Forget();
         }
 
         private void SubscribeOnChannelOpened(IP2PConnection connection)
         {
             connection.ChanelOpened -= OnConnectionChannelOpened;
             connection.ChanelOpened += OnConnectionChannelOpened;
+        }
+        
+        private void SubscribeOnActiveConnection(IP2PConnection connection)
+        {
+            UnsubscribeFromConnection(connection);
+            
+            connection.MessageReceived += OnConnectionChannelMessageReceived;
+            connection.ChanelClosed += OnConnectionChannelClosed;
         }
         
         private void UnsubscribeFromConnection(IP2PConnection connection)
@@ -194,7 +214,7 @@ namespace Utils.P2PRoomLib
             connection.ChanelOpened -= OnConnectionChannelOpened;
         }
 
-        private async UniTaskVoid CheckJoiningLoop(CancellationToken cancellationToken)
+        private async UniTaskVoid RunCheckJoinLoop(CancellationToken cancellationToken)
         {
             var iterationsCount = 1000;
             _joiningLoopTcs = new CancellationTokenSource();
@@ -213,14 +233,15 @@ namespace Utils.P2PRoomLib
                     break;
                 }
 
-                var getJoiningResult = await WebRequestsSender.GetAsync<P2PGetJoiningResponseDto>(_getReservedChannelsUrl);
+                var getJoiningResponse = await WebRequestsSender.GetAsync<P2PGetJoiningResponseDto>(_getReservedChannelsUrl);
 
-                if (getJoiningResult.IsSuccess
+                if (getJoiningResponse.IsSuccess
                     && stopToken.IsCancellationRequested == false)
                 {
-                    if (getJoiningResult.Result.data.Length > 0)
+                    if (getJoiningResponse.Result.IsNoError 
+                        && getJoiningResponse.Result.Data.Length > 0)
                     {
-                        foreach (var joiningDataDto in getJoiningResult.Result.data)
+                        foreach (var joiningDataDto in getJoiningResponse.Result.Data)
                         {
                             var connection = _hostedConnections.FirstOrDefault(c =>
                                 c.ConnectionLocalDescription == joiningDataDto.channel_key
@@ -229,10 +250,10 @@ namespace Utils.P2PRoomLib
                             connection?.HostComplete(joiningDataDto.join_key);
                         }
                     }
-                }
-                else
-                {
-                    break;
+                    else if (getJoiningResponse.Result.ErrorCode == ErrorCodes.ERROR_ROOM_NOT_FOUND)
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -244,16 +265,34 @@ namespace Utils.P2PRoomLib
             _joiningConnections.Remove(connection);
             _hostedConnections.Remove(connection);
             _activeConnections.Add(connection);
+
+            SubscribeOnActiveConnection(connection);
+
+            PeerConnected?.Invoke(connection);
+
+            if (connection.IsHost)
+            {
+                connection.SendMessage("Initial message");
+            }
         }
 
         private void OnConnectionChannelMessageReceived(P2PConnection connection, string message)
         {
-            
+            MessageReceived?.Invoke(message);
+            MessageReceivedFrom?.Invoke(connection, message);
+
+            if (message == "Initial message")
+            {
+                connection.SendMessage("Response initial message");
+            }
         }
 
         private void OnConnectionChannelClosed(P2PConnection connection)
         {
-            
+            _activeConnections.Remove(connection);
+            DisposeConnection(connection);
+
+            PeerDisconnected?.Invoke(connection);
         }
     }
 }

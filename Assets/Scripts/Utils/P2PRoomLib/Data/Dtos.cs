@@ -5,10 +5,16 @@ using System;
 namespace Utils.P2PRoomLib.Data
 {
     [Serializable]
-    public class P2PGenericResponseDto<T>
+    public class P2PGenericResponseDto<T> : IP2PBaseResponse
     {
         public int success;
+        public int error_code;
+        public int error_message;
         public T data;
+
+        public bool IsNoError => success > 0 && error_code == 0;
+        public int ErrorCode => error_code;
+        public T Data => data;
     }
     
     [Serializable]
@@ -50,5 +56,11 @@ namespace Utils.P2PRoomLib.Data
     public struct P2PConnectToRoomDataDto
     {
         public string join_key;
+    }
+
+    public interface IP2PBaseResponse
+    {
+        public bool IsNoError { get; }
+        public int ErrorCode { get; }
     }
 }
