@@ -1,4 +1,3 @@
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using Data;
 using Extensions;
@@ -6,6 +5,7 @@ using Infra.Instance;
 using Providers.LocalizationProvider;
 using UnityEngine;
 using Utils.AudioManager;
+using Utils.P2PLib;
 using Utils.P2PRoomLib;
 using View.UI.Popups.MultiplayerPopups;
 
@@ -57,8 +57,9 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
         private async UniTaskVoid ProcessCreateRoom()
         {
             _p2pRoom = new P2PRoom(Urls.P2PRoomsServiceUrl);
+            _p2pRoom.PeerConnected += OnNewPlayerConnected;
 
-            var createRoomResult = await _p2pRoom.Create(2, CancellationToken.None);
+            var createRoomResult = await _p2pRoom.Create(2);
 
             if (createRoomResult)
             {
@@ -72,6 +73,11 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
                 _popupView.SetRoomCodeVisibility(false);
                 _popupView.SetMessageText(_localizationProvider.GetLocale(LocalizationKeys.HostPopupErrorMessage));
             }
+        }
+
+        private void OnNewPlayerConnected(IP2PConnection connection)
+        {
+            
         }
 
         private void Subscribe()

@@ -28,6 +28,11 @@ namespace Utils.P2PRoomLib.Data
     }
     
     [Serializable]
+    public class P2PAddHostChannelResponseDto : P2PGenericResponseDto<P2PRoomChannelDto[]>
+    {
+    }
+    
+    [Serializable]
     public class P2PGetJoiningResponseDto : P2PGenericResponseDto<P2PRoomChannelDto[]>
     {
     }
@@ -41,6 +46,8 @@ namespace Utils.P2PRoomLib.Data
     public struct P2PCreateRoomDataDto
     {
         public int room_id;
+        
+        public int RoomId => room_id;
     }
     
     [Serializable]
@@ -50,6 +57,10 @@ namespace Utils.P2PRoomLib.Data
         public string channel_key;
         public string join_key;
         public string connection_state;
+
+        public int Id => id;
+        public string ChannelKey => channel_key;
+        public string JoinKey => join_key;
     }
     
     [Serializable]
