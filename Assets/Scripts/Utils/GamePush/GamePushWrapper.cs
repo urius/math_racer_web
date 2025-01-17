@@ -81,10 +81,7 @@ namespace Utils.GamePush
                 return GP_Player.GetString(fieldName);
             }
 #endif
-#if UNITY_EDITOR
             return PlayerPrefs.GetString(fieldName);
-#endif
-            return null;
         }
 
         public static string GetPlayerId()
@@ -113,16 +110,19 @@ namespace Utils.GamePush
         public static void SavePlayerData(string fieldName, string value, bool needSync = true)
         {
 #if !UNITY_STANDALONE_OSX
-            GP_Player.Set(fieldName, value);
-            
-            if (needSync)
+            if (IsGPInit)
             {
-                SyncPlayerData();
+                GP_Player.Set(fieldName, value);
+
+                if (needSync)
+                {
+                    SyncPlayerData();
+                }
+
+                return;
             }
 #endif
-#if UNITY_EDITOR
             PlayerPrefs.SetString(fieldName, value);
-#endif
         }
 
         public static void SavePlayerData(string fieldName, long value, bool needSync = true)
@@ -133,45 +133,52 @@ namespace Utils.GamePush
         public static void SyncPlayerData()
         {
 #if !UNITY_STANDALONE_OSX
-            GP_Player.Sync();
+            if (IsGPInit)
+            {
+                GP_Player.Sync();
+            }
 #endif
         }
 
         public static void ResetPlayer()
         {
 #if !UNITY_STANDALONE_OSX
-            GP_Player.ResetPlayer();
-            SyncPlayerData();
+            if (IsGPInit)
+            {
+                GP_Player.ResetPlayer();
+                SyncPlayerData();
+            }
 #endif
-#if UNITY_EDITOR
             PlayerPrefs.DeleteAll();
-#endif
         }
 
         public static string GetLanguage()
         {
 #if !UNITY_STANDALONE_OSX
-            var gpCurrentLanguage = GP_Language.Current();
-
-            switch (gpCurrentLanguage)
+            if (IsGPInit)
             {
-                case Language.Russian:
-                    return "ru";
-                case Language.English:
-                case Language.Turkish:
-                case Language.French:
-                case Language.Italian:
-                case Language.German:
-                case Language.Spanish:
-                case Language.Chineese:
-                case Language.Portuguese:
-                case Language.Korean:
-                case Language.Japanese:
-                case Language.Arab:
-                case Language.Hindi:
-                case Language.Indonesian:
-                default:
-                    return "en";
+                var gpCurrentLanguage = GP_Language.Current();
+
+                switch (gpCurrentLanguage)
+                {
+                    case Language.Russian:
+                        return "ru";
+                    case Language.English:
+                    case Language.Turkish:
+                    case Language.French:
+                    case Language.Italian:
+                    case Language.German:
+                    case Language.Spanish:
+                    case Language.Chineese:
+                    case Language.Portuguese:
+                    case Language.Korean:
+                    case Language.Japanese:
+                    case Language.Arab:
+                    case Language.Hindi:
+                    case Language.Indonesian:
+                    default:
+                        return "en";
+                }
             }
 #endif
             return "en";

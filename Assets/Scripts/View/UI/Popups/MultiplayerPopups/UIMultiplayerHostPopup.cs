@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using View.UI.Common;
 
 namespace View.UI.Popups.MultiplayerPopups
 {
@@ -7,6 +8,9 @@ namespace View.UI.Popups.MultiplayerPopups
     {
         [SerializeField] private TMP_Text _messageText;
         [SerializeField] private TMP_InputField _roomCodeText;
+        [SerializeField] private UITextButtonView _startGameButton;
+
+        public UITextButtonView StartGameButton => _startGameButton;
 
         public void SetMessageText(string text)
         {

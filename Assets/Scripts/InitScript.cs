@@ -8,6 +8,7 @@ using Infra.EventBus;
 using Infra.Instance;
 using Providers;
 using Providers.LocalizationProvider;
+using Services;
 using UnityEngine;
 using Utils.AudioManager;
 using Utils.GamePush;
@@ -97,6 +98,7 @@ public class InitScript : MonoBehaviour
         SetupNewInstance<EventBus, IEventBus>();
         SetupNewInstance<ModelsHolder, IModelsHolder>();
         SetupNewInstance<ComplexityDataProvider, IComplexityDataProvider>();
+        SetupNewInstance<P2PRoomService, IP2PRoomService>();
     }
     
     private void Map<TEvent, TCommand>()

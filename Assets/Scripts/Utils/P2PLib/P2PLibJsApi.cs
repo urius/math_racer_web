@@ -145,8 +145,7 @@ namespace Utils.P2PLib
         [MonoPInvokeCallback(typeof(Action<string>))]
         private static void MessageReceivedCallback(string channelLabel, string message)
         {
-            Debug.Log(
-                $"MessageReceivedCallback received channelLabel:\"{channelLabel}\",\nmessage: {message}");
+            //Debug.Log($"MessageReceivedCallback received channelLabel:\"{channelLabel}\",\nmessage: {message}");
 
             if (TruGetConnectionByChannelLabel(channelLabel, out var connection))
                 connection.HandleMessageReceived(message);

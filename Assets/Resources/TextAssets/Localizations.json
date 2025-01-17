@@ -126,6 +126,11 @@
 			"ru": "Начать Гонку"
 		},
 		{
+			"key": "start_multiplayer_race_button",
+			"en": "Start Race",
+			"ru": "Начать Гонку"
+		},
+		{
 			"key": "multiplayer_button",
 			"en": "Multiplayer",
 			"ru": "Гонка по сети"
@@ -244,6 +249,11 @@
 			"key": "host_popup_room_error",
 			"en": "Room creation error\nCheck your internet connection and try again later",
 			"ru": "Ошибка\nПроверьте интернет соединение или попробуйте позже"
+		},
+		{
+			"key": "host_popup_room_connected_players",
+			"en": "Connected players: ",
+			"ru": "Подключено игроков: "
 		},
 		{
 			"key": "join_popup_title",

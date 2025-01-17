@@ -46,14 +46,16 @@ namespace Utils.P2PRoomLib
             get => _isJoinAllowed;
             set => SetIsJoinAllowed(value);
         }
+        public bool IsHostRoom { get; private set; }
 
         private bool IsJoinLoopActive => _joiningLoopTcs is { IsCancellationRequested: false };
 
         public async UniTask<bool> Create(int maxConnectionsCount)
         {
-            var stopToken = _disposeCts.Token;
             _maxConnectionsCount = maxConnectionsCount;
+            IsHostRoom = true;
 
+            var stopToken = _disposeCts.Token;
             var newConnections = await PrepareMissingHostConnections(stopToken);
             
             if (newConnections.Length > 0
@@ -103,7 +105,7 @@ namespace Utils.P2PRoomLib
                 
                 var cancelChannelAction = new Action(() =>
                 {
-                    UnsubscribeFromChannelOpened(joinConnection);
+                    UnsubscribeFromConnection(joinConnection);
                     _joiningConnections.Remove(joinConnection);
                     joinConnection.Close();
                     tsc.TrySetResult();
@@ -115,7 +117,7 @@ namespace Utils.P2PRoomLib
                 }
                 else
                 {
-                    SubscribeOnChannelOpened(joinConnection);
+                    SubscribeOnConnection(joinConnection);
                     var cancellationRegistration = token.Register(cancelChannelAction);
 
                     var connectResponse = await WebRequestsSender
@@ -182,7 +184,7 @@ namespace Utils.P2PRoomLib
                 {
                     foreach (var connection in connections)
                     {
-                        SubscribeOnChannelOpened(connection);
+                        SubscribeOnConnection(connection);
                     }
                     
                     _hostedConnections.AddRange(connections);
@@ -291,59 +293,34 @@ namespace Utils.P2PRoomLib
             }
         }
 
-        private void SubscribeOnChannelOpened(IP2PConnection connection)
-        {
-            connection.ChanelOpened -= OnConnectionChannelOpened;
-            connection.ChanelOpened += OnConnectionChannelOpened;
-        }
-
-        private void SubscribeOnActiveConnection(IP2PConnection connection)
+        private void SubscribeOnConnection(IP2PConnection connection)
         {
             UnsubscribeFromConnection(connection);
-            
+            connection.ChanelOpened += OnConnectionChannelOpened;
             connection.MessageReceived += OnConnectionChannelMessageReceived;
             connection.ChanelClosed += OnConnectionChannelClosed;
         }
 
         private void UnsubscribeFromConnection(IP2PConnection connection)
         {
-            UnsubscribeFromChannelOpened(connection);
-            connection.ChanelClosed -= OnConnectionChannelClosed;
-            connection.MessageReceived -= OnConnectionChannelMessageReceived;
-        }
-
-        private void UnsubscribeFromChannelOpened(IP2PConnection connection)
-        {
             connection.ChanelOpened -= OnConnectionChannelOpened;
+            connection.MessageReceived -= OnConnectionChannelMessageReceived;
+            connection.ChanelClosed -= OnConnectionChannelClosed;
         }
 
         private void OnConnectionChannelOpened(P2PConnection connection)
         {
-            UnsubscribeFromChannelOpened(connection);
-
             _joiningConnections.Remove(connection);
             _hostedConnections.Remove(connection);
             _activeConnections.Add(connection);
 
-            SubscribeOnActiveConnection(connection);
-
             PeerConnected?.Invoke(connection);
-
-            if (connection.IsHost)
-            {
-                connection.SendMessage("Initial message");
-            }
         }
 
         private void OnConnectionChannelMessageReceived(P2PConnection connection, string message)
         {
             MessageReceived?.Invoke(message);
             MessageReceivedFrom?.Invoke(connection, message);
-
-            if (message == "Initial message")
-            {
-                connection.SendMessage("Response initial message");
-            }
         }
 
         private void OnConnectionChannelClosed(P2PConnection connection)

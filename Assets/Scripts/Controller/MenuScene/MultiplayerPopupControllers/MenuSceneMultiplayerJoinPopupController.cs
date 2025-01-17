@@ -2,8 +2,8 @@ using Cysharp.Threading.Tasks;
 using Data;
 using Infra.Instance;
 using Providers.LocalizationProvider;
+using Services;
 using UnityEngine;
-using Utils.P2PRoomLib;
 using View.UI.Popups.MultiplayerPopups;
 
 namespace Controller.MenuScene.MultiplayerPopupControllers
@@ -11,10 +11,10 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
     public class MenuSceneMultiplayerJoinPopupController : ControllerBase
     {
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
+        private readonly IP2PRoomService _p2pRoomService = Instance.Get<IP2PRoomService>();
         private readonly RectTransform _targetTransform;
         
         private UIMultiplayerJoinPopup _popupView;
-        private P2PRoom _p2pRoom;
 
         public MenuSceneMultiplayerJoinPopupController(RectTransform targetTransform)
         {
@@ -67,10 +67,10 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             {
                 _popupView.SetRoomCodeInteractable(false);
 
-                _p2pRoom = new P2PRoom(Urls.P2PRoomsServiceUrl);
+                var joinResult = await _p2pRoomService.JoinRoom(int.Parse(_popupView.JoinCodeText));
+                
                 UpdateJoinButtonState();
-
-                var joinResult = await _p2pRoom.Join(int.Parse(_popupView.JoinCodeText));
+                
                 if (joinResult)
                 {
                     _popupView.SetRoomCodeVisibility(false);
@@ -85,8 +85,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
                                            "\n" + _localizationProvider.GetLocale(LocalizationKeys.JoinPopupPreparingMessage);
                     _popupView.SetMessageText(messageWithError);
                     
-                    _p2pRoom.Dispose();
-                    _p2pRoom = null;
+                    _p2pRoomService.DestroyCurrentRoom();
                 }
             }
 
@@ -97,11 +96,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
         {
             Unsubscribe();
             
-            if (_p2pRoom != null)
-            {
-                _p2pRoom.Dispose();
-                _p2pRoom = null;
-            }
+            _p2pRoomService.DestroyCurrentRoom();
 
             _popupView.Disappear2Async()
                 .ContinueWith(RequestDispose);
@@ -114,7 +109,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
         private void UpdateJoinButtonState()
         {
-            _popupView.JoinButton.SetInteractable(IsJoinCodeValid() && _p2pRoom == null);
+            _popupView.JoinButton.SetInteractable(IsJoinCodeValid() && _p2pRoomService.HasRoom == false);
         }
 
         private bool IsJoinCodeValid()

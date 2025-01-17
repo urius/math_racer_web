@@ -3,10 +3,10 @@ using Data;
 using Extensions;
 using Infra.Instance;
 using Providers.LocalizationProvider;
+using Services;
 using UnityEngine;
 using Utils.AudioManager;
 using Utils.P2PLib;
-using Utils.P2PRoomLib;
 using View.UI.Popups.MultiplayerPopups;
 
 namespace Controller.MenuScene.MultiplayerPopupControllers
@@ -15,11 +15,11 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
     {
         private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
+        private readonly IP2PRoomService _p2pRoomService = Instance.Get<IP2PRoomService>();
 
         private readonly RectTransform _targetTransform;
         
         private UIMultiplayerHostPopup _popupView;
-        private P2PRoom _p2pRoom;
 
         public MenuSceneMultiplayerHostPopupController(RectTransform targetTransform)
         {
@@ -41,8 +41,6 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
         {
             Unsubscribe();
             
-            _p2pRoom?.CancelJoiningLoop();
-            
             Destroy(_popupView);
             _popupView = null;
         }
@@ -56,16 +54,13 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
         private async UniTaskVoid ProcessCreateRoom()
         {
-            _p2pRoom = new P2PRoom(Urls.P2PRoomsServiceUrl);
-            _p2pRoom.PeerConnected += OnNewPlayerConnected;
-
-            var createRoomResult = await _p2pRoom.Create(2);
+            var createRoomResult = await _p2pRoomService.HostNewRoom();
 
             if (createRoomResult)
             {
                 _popupView.SetMessageText(_localizationProvider.GetLocale(LocalizationKeys.HostPopupRoomReadyMessage));
                 
-                _popupView.SetRoomCodeText(_p2pRoom.RoomId.ToString());
+                _popupView.SetRoomCodeText(_p2pRoomService.RoomId);
                 _popupView.SetRoomCodeVisibility(true);
             }
             else
@@ -75,36 +70,62 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             }
         }
 
-        private void OnNewPlayerConnected(IP2PConnection connection)
-        {
-            
-        }
-
         private void Subscribe()
         {
+            _p2pRoomService.ConnectedPlayerReady += OnConnectedPlayerReady;
+            _p2pRoomService.PlayerDisconnected += OnPlayerDisconnected;
+
+            _popupView.StartGameButton.ButtonClicked += OnStartGameButtonClicked;
             _popupView.CloseButtonClicked += OnCloseButtonClicked;
         }
 
         private void Unsubscribe()
         {
+            _p2pRoomService.ConnectedPlayerReady -= OnConnectedPlayerReady;
+            _p2pRoomService.PlayerDisconnected -= OnPlayerDisconnected;
+            
+            _popupView.StartGameButton.ButtonClicked -= OnStartGameButtonClicked;
             _popupView.CloseButtonClicked -= OnCloseButtonClicked;
+        }
+
+        private void OnStartGameButtonClicked()
+        {
+            _p2pRoomService.IsJoinAllowed = false;
+
+            _p2pRoomService.SendStartRace();
+        }
+
+        private void OnConnectedPlayerReady(IP2PConnection connection)
+        {
+            ShowPlayersConnectedMessage();
+            UpdateStartButtonState();
+        }
+
+        private void OnPlayerDisconnected(IP2PConnection connection)
+        {
+            ShowPlayersConnectedMessage();
+            UpdateStartButtonState();
+        }
+
+        private void UpdateStartButtonState()
+        {
+            _popupView.StartGameButton.SetInteractable(_p2pRoomService.ActiveConnections.Count > 0);
+        }
+
+        private void ShowPlayersConnectedMessage()
+        {
+            var message = _localizationProvider.GetLocale(LocalizationKeys.HostPopupRoomConnectedPlayersMessage);
+            _popupView.SetMessageText(message + _p2pRoomService.ActiveConnections.Count);
         }
 
         private void OnCloseButtonClicked()
         {
-            ProcessCloseButton().Forget();
-        }
-
-        private async UniTask ProcessCloseButton()
-        {
             _audioPlayer.PlayButtonSound();
-            
-            _p2pRoom?.Dispose();
-            _p2pRoom = null;
-            
-            await _popupView.Disappear2Async();
-            
-            RequestDispose();
+
+            _p2pRoomService.DestroyCurrentRoom(); // we destroy room only if player closes connection window
+
+            _popupView.Disappear2Async()
+                .ContinueWith(RequestDispose);
         }
     }
 }

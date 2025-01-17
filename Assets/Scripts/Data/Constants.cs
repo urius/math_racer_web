@@ -42,5 +42,8 @@ namespace Data
         public const int SolveCostCrystals = 1;
         public const string ProductTypeCash = "cash";
         public const string ProductTypeGold = "gold";
+        
+        public const string P2PCommandSeparator = "|";
+        public const string P2PBodyParamsSeparator = ",";
     }
 }

@@ -32,6 +32,7 @@ namespace Data
         public const string Unavailable = "unavailable";
         public const string HostPopupPreparingMessage = "host_popup_preparing";
         public const string HostPopupRoomReadyMessage = "host_popup_room_ready";
+        public const string HostPopupRoomConnectedPlayersMessage = "host_popup_room_connected_players";
         public const string HostPopupErrorMessage = "host_popup_room_error";
         public const string JoinPopupPreparingMessage = "join_popup_preparing";
         public const string JoinPopupErrorMessage = "join_popup_error";
