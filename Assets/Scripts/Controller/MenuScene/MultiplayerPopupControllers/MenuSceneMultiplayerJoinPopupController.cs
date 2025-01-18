@@ -1,5 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Data;
+using Events;
+using Infra.EventBus;
 using Infra.Instance;
 using Providers.LocalizationProvider;
 using Services;
@@ -12,6 +14,8 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
     {
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
         private readonly IP2PRoomService _p2pRoomService = Instance.Get<IP2PRoomService>();
+        private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        
         private readonly RectTransform _targetTransform;
         
         private UIMultiplayerJoinPopup _popupView;
@@ -44,6 +48,8 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
         private void Subscribe()
         {
+            _p2pRoomService.StartGameReceived += OnStartGameReceived;
+            
             _popupView.CloseButtonClicked += OnCloseButtonClicked;
             _popupView.JoinCodeValueChanged += OnJoinCodeValueChanged;
             _popupView.JoinButton.ButtonClicked += OnJoinButtonClicked;
@@ -51,6 +57,8 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
         private void Unsubscribe()
         {
+            _p2pRoomService.StartGameReceived -= OnStartGameReceived;
+            
             _popupView.CloseButtonClicked -= OnCloseButtonClicked;
             _popupView.JoinCodeValueChanged -= OnJoinCodeValueChanged;
             _popupView.JoinButton.ButtonClicked -= OnJoinButtonClicked;
@@ -90,6 +98,14 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             }
 
             UpdateJoinButtonState();
+        }
+
+        private void OnStartGameReceived()
+        {
+            Unsubscribe();
+            
+            _eventBus.Dispatch(
+                new RequestNextSceneEvent(requestSceneParams: new RequestRaceSceneParams(isMultiplayer: true)));
         }
 
         private void OnCloseButtonClicked()

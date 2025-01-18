@@ -35,6 +35,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
             _popupView.SetMessageText(_localizationProvider.GetLocale(LocalizationKeys.HostPopupPreparingMessage));
             _popupView.SetRoomCodeVisibility(false);
+            UpdateStartButtonState();
 
             _popupView.Appear2Async()
                 .ContinueWith(OnShown);
@@ -95,7 +96,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
         {
             _p2pRoomService.IsJoinAllowed = false;
 
-            _p2pRoomService.SendStartRace();
+            _p2pRoomService.SendStartToReadyPlayers();
 
             _eventBus.Dispatch(
                 new RequestNextSceneEvent(requestSceneParams: new RequestRaceSceneParams(isMultiplayer: true)));
@@ -115,13 +116,13 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
         private void UpdateStartButtonState()
         {
-            _popupView.StartGameButton.SetInteractable(_p2pRoomService.ActiveConnections.Count > 0);
+            _popupView.StartGameButton.SetInteractable(_p2pRoomService.ReadyPlayersCount > 0);
         }
 
         private void ShowPlayersConnectedMessage()
         {
             var message = _localizationProvider.GetLocale(LocalizationKeys.HostPopupRoomConnectedPlayersMessage);
-            _popupView.SetMessageText(message + _p2pRoomService.ActiveConnections.Count);
+            _popupView.SetMessageText(message + _p2pRoomService.ReadyPlayersCount);
         }
 
         private void OnCloseButtonClicked()

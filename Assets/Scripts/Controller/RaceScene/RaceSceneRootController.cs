@@ -21,6 +21,10 @@ namespace Controller.RaceScene
         private RaceContextView _contextView;
         private PlayerModel _playerModel;
         private RaceModel _raceModel;
+        private SessionDataModel _sessionDataModel;
+
+        private bool IsMultiplayerGame =>
+            (_sessionDataModel.RequestSceneParams as RequestRaceSceneParams)?.IsMultiplayer ?? false;
 
         public override void Initialize()
         {
@@ -53,6 +57,7 @@ namespace Controller.RaceScene
         private void InitModel()
         {
             _playerModel = _modelsHolder.GetPlayerModel();
+            _sessionDataModel = _modelsHolder.GetSessionDataModel();
             
             var complexityData = _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
             _raceModel = new RaceModel(_playerModel.CurrentCar, CarKey.Bug, complexityData);
@@ -67,6 +72,8 @@ namespace Controller.RaceScene
 
         private void InitControllers()
         {
+            //todo use IsMultiplayerGame
+            
             InitChildController(new RaceScenePlayerCarController(_raceModel.PlayerCar, _contextView.PlayerCarTargetTransform));
             InitChildController(new RaceSceneBotCarController(_raceModel.BotCar, _contextView.BotCarTargetTransform));
             InitChildController(new RaceSceneStartLineController(_contextView.StartLineTransform, _contextView.TrafficLightView));

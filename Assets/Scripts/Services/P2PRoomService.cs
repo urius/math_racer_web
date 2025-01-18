@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Dto.P2P;
@@ -18,6 +18,7 @@ namespace Services
         public event Action<IP2PConnection, string> MessageReceived;
         public event Action<IP2PConnection> PlayerDisconnected;
         public event Action<IP2PConnection> ConnectedPlayerReady;
+        public event Action StartGameReceived;
 
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         
@@ -25,14 +26,15 @@ namespace Services
         private const string CommandInitResponse = "init_response";
         private const string CommandSetTime = "set_time";
         private const string CommandPlayerReady = "player_ready";
-        private const string StartRaceCommand = "start_race";
+        private const string StartGameCommand = "start_race";
         
         private P2PRoom _p2pRoom;
         private long _hostDeltaTimeMs;
+        private bool _gameIsStarted;
 
         public string RoomId => _p2pRoom?.RoomId.ToString() ?? "-";
         public bool HasRoom => _p2pRoom != null;
-        public IReadOnlyList<IP2PConnection> ActiveConnections => _p2pRoom.ActiveConnections;
+        public int ReadyPlayersCount => PlayersData?.PlayerDataByConnection.Values.Count(p => p.IsReady) ?? 0;
         public P2PPlayersData PlayersData { get; private set; }
 
         private PlayerModel PlayerModel => _modelsHolder.GetPlayerModel();
@@ -74,11 +76,6 @@ namespace Services
             return joinResult;
         }
 
-        public void SendStartRace()
-        {
-            _p2pRoom.SendToAll(StartRaceCommand);
-        }
-
         public void DestroyCurrentRoom()
         {
             if (_p2pRoom != null)
@@ -86,6 +83,19 @@ namespace Services
                 UnsubscribeFromRoom(_p2pRoom);
                 _p2pRoom.Dispose();
                 _p2pRoom = null;
+                PlayersData = null;
+            }
+        }
+
+        public void SendStartToReadyPlayers()
+        {
+            _gameIsStarted = true;
+            foreach (var kvp in PlayersData.PlayerDataByConnection)
+            {
+                if (kvp.Value.IsReady)
+                {
+                    kvp.Key.SendMessage(StartGameCommand);
+                }
             }
         }
 
@@ -152,8 +162,11 @@ namespace Services
                 case CommandSetTime:
                     ProcessSetTimeCommand(connection, body);
                     break;
-                case CommandPlayerReady: // host side
-                    ConnectedPlayerReady?.Invoke(connection);
+                case CommandPlayerReady:
+                    ProcessPlayerReadyCommand(connection);
+                    break;
+                case StartGameCommand: //host side
+                    StartGameReceived?.Invoke();
                     break;
                 default:
                     MessageReceived?.Invoke(connection, message);
@@ -161,8 +174,7 @@ namespace Services
             }
         }
 
-        // join side
-        private void ProcessInitCommand(IP2PConnection connection, string body)
+        private void ProcessInitCommand(IP2PConnection connection, string body)  // join side
         {
             var commandBodyDto = P2PInitCommandBodyDto.Parse(body);
 
@@ -173,9 +185,8 @@ namespace Services
             var initResponseCommandBodyDto = new P2PInitResponseCommandBodyDto(PlayerModel.CurrentCar, commandBodyDto.HostTimeMs);
             SendCommandTo(connection, CommandInitResponse, initResponseCommandBodyDto.ToString());
         }
-        
-        //host side
-        private void ProcessInitResponseCommand(IP2PConnection connection, string body)
+
+        private void ProcessInitResponseCommand(IP2PConnection connection, string body)  //host side
         {
             var currentTimeMs = MillisecondsSinceStartup;
             var commandBodyDto = P2PInitResponseCommandBodyDto.Parse(body);
@@ -193,15 +204,28 @@ namespace Services
             SendCommandTo(connection, CommandSetTime, setTimeCommandBodyDto.ToString());
         }
 
-        // join side
-        private void ProcessSetTimeCommand(IP2PConnection connection, string body)
+        private void ProcessSetTimeCommand(IP2PConnection connection, string body)  // join side
         {
             var currentTimeMs = MillisecondsSinceStartup;
             
             var commandBodyDto = P2PSetTimeCommandBodyDto.Parse(body);
             _hostDeltaTimeMs = commandBodyDto.EstimatedJoinSideTimeMs - currentTimeMs;
+
+            PlayersData.SelfData.SetReady();
             
             SendCommandTo(connection, CommandPlayerReady, string.Empty);
+        }
+
+        private void ProcessPlayerReadyCommand(IP2PConnection connection)  // host side
+        {
+            PlayersData.SelfData.SetReady();
+            PlayersData.PlayerDataByConnection[connection].SetReady();
+            ConnectedPlayerReady?.Invoke(connection);
+            
+            if (_gameIsStarted)
+            {
+                connection.SendMessage(StartGameCommand);
+            }
         }
 
         private void OnPeerDisconnected(IP2PConnection connection)
@@ -216,15 +240,16 @@ namespace Services
         public event Action<IP2PConnection, string> MessageReceived;
         public event Action<IP2PConnection> PlayerDisconnected;
         public event Action<IP2PConnection> ConnectedPlayerReady;
+        public event Action StartGameReceived;
         
         public string RoomId { get; }
         public bool HasRoom { get; }
-        public IReadOnlyList<IP2PConnection> ActiveConnections { get; }
+        public int ReadyPlayersCount { get; }
         public bool IsJoinAllowed { get; set; }
 
         public UniTask<bool> HostNewRoom();
         public void DestroyCurrentRoom();
         UniTask<bool> JoinRoom(int parse);
-        public void SendStartRace();
+        public void SendStartToReadyPlayers();
     }
 }

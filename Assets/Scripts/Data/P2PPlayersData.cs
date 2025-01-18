@@ -32,10 +32,17 @@ namespace Data
         {
         }
 
+        public bool IsReady { get; private set; } = false;
+
         public P2PPlayerData(CarKey carKey, int positionIndex = 0)
         {
             CarKey = carKey;
             PositionIndex = positionIndex;
+        }
+
+        public void SetReady()
+        {
+            IsReady = true;
         }
     }
 }

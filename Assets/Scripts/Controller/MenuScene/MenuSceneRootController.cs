@@ -6,7 +6,7 @@ using Infra.EventBus;
 using Infra.Instance;
 using Model;
 using Providers;
-using Providers.LocalizationProvider;
+using Services;
 using UnityEngine;
 using Utils.AudioManager;
 using View.UI.MenuScene;
@@ -17,7 +17,7 @@ namespace Controller.MenuScene
     {
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
-        private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
+        private readonly IP2PRoomService _roomService = Instance.Get<IP2PRoomService>();
         private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         
         private UIMenuSceneRootCanvasView _rootCanvasView;
@@ -26,6 +26,8 @@ namespace Controller.MenuScene
 
         public override void Initialize()
         {
+            _roomService.DestroyCurrentRoom(); // finish p2p connections from prev game if any 
+            
             _sessionDataModel = _modelsHolder.GetSessionDataModel();
             
             _rootCanvasView = Object.FindObjectOfType<UIMenuSceneRootCanvasView>();
