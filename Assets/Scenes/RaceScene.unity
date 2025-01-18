@@ -598,7 +598,7 @@ Transform:
   m_GameObject: {fileID: 320082736}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: -4.1, z: 0}
+  m_LocalPosition: {x: 5, y: -4.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -980,7 +980,7 @@ GameObject:
   - component: {fileID: 517049305}
   - component: {fileID: 517049306}
   m_Layer: 0
-  m_Name: -- bot car container
+  m_Name: -- opponent car container
   m_TagString: Untagged
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -995,7 +995,7 @@ Transform:
   m_GameObject: {fileID: 517049304}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: -3.4, z: 0}
+  m_LocalPosition: {x: 5, y: -3.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1815,7 +1815,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerCarTargetTransform: {fileID: 320082737}
-  _botCarTargetTransform: {fileID: 517049305}
+  _opponentCarTargetTransform: {fileID: 517049305}
+  _opponent2CarTargetTransform: {fileID: 2113049782}
   _startLineTransform: {fileID: 1482853982}
   _finishLineTransform: {fileID: 329100267}
   _rootCanvasView: {fileID: 696670403}
@@ -5631,6 +5632,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e0d1b966c0145b4b01990c4ac54b312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2113049780
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2113049782}
+  - component: {fileID: 2113049781}
+  m_Layer: 0
+  m_Name: -- opponent 2 car container
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!210 &2113049781
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113049780}
+  m_Enabled: 1
+  m_SortingLayerID: 535136467
+  m_SortingLayer: 3
+  m_SortingOrder: 1
+  m_SortAtRoot: 0
+--- !u!4 &2113049782
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113049780}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5, y: -3.85, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8389201623983971501
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5855,6 +5900,7 @@ SceneRoots:
   - {fileID: 656845072}
   - {fileID: 696670399}
   - {fileID: 517049305}
+  - {fileID: 2113049782}
   - {fileID: 320082737}
   - {fileID: 758064670}
   - {fileID: 1439853019}

@@ -75,7 +75,7 @@ namespace Controller.RaceScene
             //todo use IsMultiplayerGame
             
             InitChildController(new RaceScenePlayerCarController(_raceModel.PlayerCar, _contextView.PlayerCarTargetTransform));
-            InitChildController(new RaceSceneBotCarController(_raceModel.BotCar, _contextView.BotCarTargetTransform));
+            InitChildController(new RaceSceneBotCarController(_raceModel.BotCar, _contextView.OpponentCarTargetTransform));
             InitChildController(new RaceSceneStartLineController(_contextView.StartLineTransform, _contextView.TrafficLightView));
             InitChildController(new RaceSceneBackgroundController(
                 _contextView.BgContainerView,
