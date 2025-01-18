@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
 using Data;
+using Events;
 using Extensions;
+using Infra.EventBus;
 using Infra.Instance;
 using Providers.LocalizationProvider;
 using Services;
@@ -16,6 +18,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
         private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
         private readonly IP2PRoomService _p2pRoomService = Instance.Get<IP2PRoomService>();
+        private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
 
         private readonly RectTransform _targetTransform;
         
@@ -93,6 +96,9 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             _p2pRoomService.IsJoinAllowed = false;
 
             _p2pRoomService.SendStartRace();
+
+            _eventBus.Dispatch(
+                new RequestNextSceneEvent(requestSceneParams: new RequestRaceSceneParams(isMultiplayer: true)));
         }
 
         private void OnConnectedPlayerReady(IP2PConnection connection)

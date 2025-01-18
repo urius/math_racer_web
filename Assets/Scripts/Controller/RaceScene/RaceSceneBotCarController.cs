@@ -1,9 +1,9 @@
-using Extensions;
 using Infra.Instance;
 using Model.RaceScene;
 using Providers;
 using UnityEngine;
 using View;
+using View.Presenters;
 using Random = System.Random;
 
 namespace Controller.RaceScene
@@ -14,8 +14,8 @@ namespace Controller.RaceScene
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
 
         private readonly CarModel _carModel;
-        private readonly Transform _targetTransform;
         private readonly Random _random;
+        private readonly RaceCarPresenter _carPresenter;
 
         private RaceModel _raceModel;
         private CarView _carView;
@@ -24,9 +24,8 @@ namespace Controller.RaceScene
         public RaceSceneBotCarController(CarModel carModel, Transform targetTransform)
         {
             _carModel = carModel;
-            _targetTransform = targetTransform;
-
             _random = new Random();
+            _carPresenter = new RaceCarPresenter(carModel, targetTransform, muteSounds: true);
         }
 
         public override void Initialize()
@@ -34,36 +33,25 @@ namespace Controller.RaceScene
             _raceModel = _modelsHolder.GetRaceModel();
             _playerCarModel = _raceModel.PlayerCar;
             
-            _carView = Instantiate<CarView>(_carModel.CarKey.ToPrefabKey(), _targetTransform);
-
+            _carPresenter.Present();
             Subscribe();
         }
 
         public override void DisposeInternal()
         {
             Unsubscribe();
-            
-            Destroy(_carView);
-            _carView = null;
+            _carPresenter.Dispose();
         }
 
         private void Subscribe()
         {
-            _updatesProvider.GameplayUpdate += OnGameplayUpdate;
             _updatesProvider.GameplayHalfSecondPassed += OnGameplayHalfSecondPassed;
         }
 
         private void Unsubscribe()
         {
-            _updatesProvider.GameplayUpdate -= OnGameplayUpdate;
             _updatesProvider.GameplayHalfSecondPassed -= OnGameplayHalfSecondPassed;
         }
-
-        private void OnGameplayUpdate()
-        {
-            UpdateCarView();
-        }
-
         private void OnGameplayHalfSecondPassed()
         {
             if (_carModel.TargetSpeedKmph <= 0)
@@ -83,10 +71,6 @@ namespace Controller.RaceScene
                 var decelerationProbability = actionProbabilityVar > 0 ? actionProbabilityVar : 0;
                 
                 ProcessAccelerateDecelerateByProbabilities(accelerationProbability, decelerationProbability);
-
-                // Debug.Log("accelerationProbability: " + accelerationProbability + " decelerationProbability: " + decelerationProbability);
-                // Debug.Log("deltaPassedMeters: " + deltaPassedMeters + " delta speed: " + deltaTargetSpeed);
-                // Debug.Log("");
             }
         }
 
@@ -110,16 +94,6 @@ namespace Controller.RaceScene
         private void Decelerate()
         {
             _carModel.Decelerate();
-        }
-
-        private void UpdateCarView()
-        {
-            var deltaWheelRotation = _carModel.CurrentUpdateMetersPassed * _carView.WheelRotationMultiplier;
-            
-            _carView.SetBodyRotation(_carModel.CurrentBodyRotation);
-            _carView.RotateWheels(deltaWheelRotation);
-            
-            _carView.SetXOffset(_carModel.PassedMeters - _playerCarModel.PassedMeters);
         }
     }
 }

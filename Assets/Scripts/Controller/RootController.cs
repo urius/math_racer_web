@@ -9,6 +9,8 @@ using Events;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
+using Model;
+using Providers;
 using UnityEngine.SceneManagement;
 using Utils.GamePush;
 using View.UI;
@@ -19,11 +21,13 @@ namespace Controller
     {
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
         private readonly ICommandExecutor _commandExecutor = Instance.Get<ICommandExecutor>();
+        private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         
         private readonly UILoadingOverlayView _loadingOverlayView;
         
         private ControllerBase _currentSceneRootController;
         private string _currentSceneName;
+        private SessionDataModel _sessionDataModel;
 
         public RootController(UILoadingOverlayView loadingOverlayView)
         {
@@ -32,6 +36,8 @@ namespace Controller
 
         public override async void Initialize()
         {
+            _sessionDataModel = _modelsHolder.GetSessionDataModel();
+            
             _commandExecutor.ExecuteAsync<InitBankProductsCommand>().Forget();
             
             await InitPlayerModel();
@@ -83,6 +89,8 @@ namespace Controller
 
         private void OnRequestNextSceneEvent(RequestNextSceneEvent e)
         {
+            _sessionDataModel.RequestSceneParams = e.RequestSceneParams;
+            
             var nextSceneName = string.Empty;
 
             if (e.SceneName == null)

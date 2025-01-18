@@ -20,11 +20,6 @@ namespace Controller
         
         private static IPrefabHolder PrefabHolder => Instance.Get<IPrefabHolder>();
 
-        private void Awake()
-        {
-            Initialize();
-        }
-
         public void Dispose()
         {
             DisposeChildren();

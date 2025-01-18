@@ -7,5 +7,7 @@ namespace Model
     {
         public readonly ReactiveFlag IsBankPopupOpened = new();
         public readonly ReactiveValue<BankProductsData> BankProductsData = new();
+
+        public RequestSceneParamsBase RequestSceneParams;
     }
 }

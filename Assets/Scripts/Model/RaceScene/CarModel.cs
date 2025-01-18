@@ -1,3 +1,4 @@
+using System;
 using Data;
 using UnityEngine;
 using Utils.ReactiveValue;
@@ -6,6 +7,9 @@ namespace Model.RaceScene
 {
     public class CarModel
     {
+        public event Action AccelerateHappened;
+        public event Action DecelerateHappened;
+        
         public const int MaxSpeed = 250;
         
         public readonly CarKey CarKey;
@@ -13,6 +17,9 @@ namespace Model.RaceScene
         
         private float _targetBodyRotation;
         private float _turboTargetSpeed;
+        private bool _suppressEventsFlag;
+        private float _distanceToPlayerCar;
+        private float _xOffsetLocal;
 
         public CarModel(CarKey carKey)
         {
@@ -25,7 +32,7 @@ namespace Model.RaceScene
         public float CurrentBodyRotation { get; private set; }
         public float PassedMeters { get; private set; }
         public float CurrentUpdateMetersPassed { get; private set; }
-        public float XOffset { get; private set; }
+        public float XOffset => _xOffsetLocal - _distanceToPlayerCar;
 
         public void Accelerate()
         {
@@ -36,12 +43,16 @@ namespace Model.RaceScene
             }
 
             UpdateTargetBodyRotation();
+
+            Dispatch(AccelerateHappened);
         }
-        
+
         public void AccelerateTurbo()
         {
+            _suppressEventsFlag = true;
             Accelerate();
             Accelerate();
+            _suppressEventsFlag = false;
 
             _turboTargetSpeed = TargetSpeedKmph;
             TurboFlag.Value = true;
@@ -56,6 +67,8 @@ namespace Model.RaceScene
             {
                 TargetSpeedKmph = 0;
             }
+            
+            Dispatch(DecelerateHappened);
         }
 
         public void Update(float deltaTime)
@@ -78,26 +91,26 @@ namespace Model.RaceScene
             const float deltaSpeedKmBounds = 2;
             
             var deltaSpeedKmh = TargetSpeedKmph - CurrentSpeedKmph;
-            var mult = Mathf.Abs(XOffset) > 0.8f * offsetMax ? 0.2f : 0.5f;
+            var mult = Mathf.Abs(_xOffsetLocal) > 0.8f * offsetMax ? 0.2f : 0.5f;
             var deltaOffset = mult * deltaTime;
 
             if (deltaSpeedKmh > deltaSpeedKmBounds)
             {
-                XOffset += deltaOffset;
+                _xOffsetLocal += deltaOffset;
             }
             else if (deltaSpeedKmh < -deltaSpeedKmBounds)
             {
-                XOffset -= deltaOffset;
+                _xOffsetLocal -= deltaOffset;
             }
-            else if (XOffset != 0)
+            else if (_xOffsetLocal != 0)
             {
-                XOffset *= 0.995f;
+                _xOffsetLocal *= 0.995f;
             }
 
-            XOffset = Mathf.Clamp(XOffset, -offsetMax, offsetMax);
-            if (Mathf.Abs(XOffset) < 0.001f)
+            _xOffsetLocal = Mathf.Clamp(_xOffsetLocal, -offsetMax, offsetMax);
+            if (Mathf.Abs(_xOffsetLocal) < 0.001f)
             {
-                XOffset = 0;
+                _xOffsetLocal = 0;
             }
         }
 
@@ -162,6 +175,19 @@ namespace Model.RaceScene
                     CurrentBodyRotation -= Mathf.Min(-deltaRotation, addRotationValue);
                     break;
             }
+        }
+
+        private void Dispatch(Action action)
+        {
+            if (_suppressEventsFlag == false)
+            {
+                action?.Invoke();
+            }
+        }
+
+        public void SetDistanceToPlayerCar(float distanceToPlayerCar)
+        {
+            _distanceToPlayerCar = distanceToPlayerCar;
         }
     }
 }

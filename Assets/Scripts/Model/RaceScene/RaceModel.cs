@@ -34,7 +34,7 @@ namespace Model.RaceScene
         {
             QuestionsModel.Update(deltaTime);
             PlayerCar.Update(deltaTime);
-            BotCar.Update(deltaTime);
+            UpdateSecondaryCar(BotCar, deltaTime);
 
             if (IsFinishing == false && PlayerCarDistanceToFinish < 5 * PlayerCar.CurrentSpeedKmph * 0.01f)
             {
@@ -49,6 +49,12 @@ namespace Model.RaceScene
                 RaceRewards = new RaceRewardsModel(DistanceMeters, RaceResultsModel, _complexityData);
                 IsFinishedFlagChanged?.Invoke(IsFinished);
             }
+        }
+
+        private void UpdateSecondaryCar(CarModel carModel, float deltaTime)
+        {
+            carModel.Update(deltaTime);
+            carModel.SetDistanceToPlayerCar(PlayerCar.PassedMeters - carModel.PassedMeters);
         }
     }
 }
