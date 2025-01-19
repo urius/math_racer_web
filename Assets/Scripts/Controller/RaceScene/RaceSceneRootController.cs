@@ -1,3 +1,4 @@
+using System.Linq;
 using Controller.Common;
 using Data;
 using Events;
@@ -6,8 +7,11 @@ using Infra.Instance;
 using Model;
 using Model.RaceScene;
 using Providers;
+using Services;
 using UnityEngine;
 using View.Gameplay.Race;
+using Object = UnityEngine.Object;
+using Random = System.Random;
 
 namespace Controller.RaceScene
 {
@@ -17,6 +21,9 @@ namespace Controller.RaceScene
         private readonly IComplexityDataProvider _complexityDataProvider = Instance.Get<IComplexityDataProvider>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        private readonly ICarDataProvider _carDataProvider = Instance.Get<ICarDataProvider>();
+        private readonly IP2PRoomService _p2pRoomService = Instance.Get<IP2PRoomService>();
+        private readonly Random _random = new();
         
         private RaceContextView _contextView;
         private PlayerModel _playerModel;
@@ -25,6 +32,8 @@ namespace Controller.RaceScene
 
         private bool IsMultiplayerGame =>
             (_sessionDataModel.RequestSceneParams as RequestRaceSceneParams)?.IsMultiplayer ?? false;
+
+        private bool IsSinglePlayerGame => !IsMultiplayerGame;
 
         public override void Initialize()
         {
@@ -59,10 +68,42 @@ namespace Controller.RaceScene
             _playerModel = _modelsHolder.GetPlayerModel();
             _sessionDataModel = _modelsHolder.GetSessionDataModel();
             
-            var complexityData = _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
-            _raceModel = new RaceModel(_playerModel.CurrentCar, CarKey.Bug, complexityData);
-            
+            if (IsSinglePlayerGame)
+            {
+                var complexityData = _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
+                var unlockedCars = _carDataProvider.GetUnlockedCarsByLevel(_playerModel.Level);
+                var opponentCarKey = unlockedCars[_random.Next(unlockedCars.Count)].CarKey;
+
+                _raceModel = new RaceModel(
+                    new CarRaceModelData(_playerModel.CurrentCar, carPositionIndex: 0),
+                    complexityData,
+                    new CarRaceModelData(opponentCarKey, carPositionIndex: 1));
+            }
+            else
+            {
+                var complexityData =
+                    _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
+                
+                var netPlayersData = _p2pRoomService.PlayersData;
+                var playerCarData = ToCarRaceModelData(netPlayersData.SelfData);
+                var opponentCarDataList = netPlayersData.PlayerDataByConnection.Values
+                    .Select(ToCarRaceModelData)
+                    .ToArray();
+
+                _raceModel = new RaceModel(
+                    playerCarData,
+                    complexityData,
+                    opponentCarDataList[0],
+                    opponentCarDataList.Length > 0 ? opponentCarDataList[1] : null);
+
+            }
+
             _modelsHolder.SetRaceModel(_raceModel);
+        }
+
+        private CarRaceModelData ToCarRaceModelData(P2PPlayerData p2pPlayerData)
+        {
+            return new CarRaceModelData(p2pPlayerData.CarKey, p2pPlayerData.PositionIndex);
         }
 
         private void InitView()
@@ -72,12 +113,24 @@ namespace Controller.RaceScene
 
         private void InitControllers()
         {
-            //todo use IsMultiplayerGame
-            
-            InitChildController(new RaceScenePlayerCarController(_raceModel.PlayerCar, _contextView.PlayerCarTargetTransform));
-            InitChildController(new RaceSceneBotCarController(_raceModel.BotCar, _contextView.OpponentCarTargetTransform));
-            InitChildController(new RaceSceneStartLineController(_contextView.StartLineTransform, _contextView.TrafficLightView));
-            InitChildController(new RaceSceneBackgroundController(
+            if (IsSinglePlayerGame)
+            {
+                InitChildController(new SingleRacePlayerCarController(_raceModel.PlayerCar,
+                    _contextView.CarContainerTransforms[_raceModel.PlayerCar.PositionIndex]));
+                
+                foreach (var opponentCarModel in _raceModel.OpponentCarModels)
+                {
+                    InitChildController(new RaceBotCarController(opponentCarModel,
+                        _contextView.CarContainerTransforms[opponentCarModel.PositionIndex]));
+                }
+            }
+            else
+            {
+                
+            }
+
+            InitChildController(new RaceStartLineController(_contextView.StartLineTransform, _contextView.TrafficLightView));
+            InitChildController(new RaceBackgroundController(
                 _contextView.BgContainerView,
                 _contextView.RoadContainerView));
             InitChildController(new RaceFinishController(
@@ -85,8 +138,8 @@ namespace Controller.RaceScene
                 _contextView.PlayerCarTargetTransform,
                 _contextView.RootCanvasView));
             
-            InitChildController(new RaceSceneTopPanelController(_contextView.RootCanvasView.TopPanelCanvasView));
-            InitChildController(new RaceSceneQuestionsController(_contextView.RootCanvasView.RightPanelView));
+            InitChildController(new RaceTopPanelController(_contextView.RootCanvasView.TopPanelCanvasView));
+            InitChildController(new RaceQuestionsController(_contextView.RootCanvasView.RightPanelView));
         }
 
         private void OnRequestSettingsPopupEvent(RequestSettingsPopupEvent e)

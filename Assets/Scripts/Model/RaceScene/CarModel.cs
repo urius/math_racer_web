@@ -13,6 +13,7 @@ namespace Model.RaceScene
         public const int MaxSpeed = 250;
         
         public readonly CarKey CarKey;
+        public readonly int PositionIndex;
         public readonly ReactiveFlag TurboFlag = new(initialValue: false);
         
         private float _targetBodyRotation;
@@ -21,9 +22,10 @@ namespace Model.RaceScene
         private float _distanceToPlayerCar;
         private float _xOffsetLocal;
 
-        public CarModel(CarKey carKey)
+        public CarModel(CarRaceModelData carRaceModelData)
         {
-            CarKey = carKey;
+            CarKey = carRaceModelData.CarKey;
+            PositionIndex = carRaceModelData.CarPositionIndex;
         }
 
         public float CurrentSpeedKmph { get; private set; }

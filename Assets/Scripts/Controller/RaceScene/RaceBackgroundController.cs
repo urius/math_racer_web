@@ -5,7 +5,7 @@ using View.Gameplay.Race;
 
 namespace Controller.RaceScene
 {
-    public class RaceSceneBackgroundController : ControllerBase
+    public class RaceBackgroundController : ControllerBase
     {
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
@@ -16,7 +16,7 @@ namespace Controller.RaceScene
         private CarModel _playerCarModel;
         private RaceModel _raceModel;
 
-        public RaceSceneBackgroundController(BgContainerView bgContainerView, RoadContainerView roadContainerView)
+        public RaceBackgroundController(BgContainerView bgContainerView, RoadContainerView roadContainerView)
         {
             _bgContainerView = bgContainerView;
             _roadContainerView = roadContainerView;

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using Data;
 using Extensions;
@@ -71,10 +70,7 @@ namespace Controller.MenuScene
 
         private void SetupContent()
         {
-            var dataToDisplay = _carDataProvider.CarDataList
-                .Where(c => c.UnlockLevel <= _playerModel.Level + 1)
-                .OrderBy(c => c.UnlockLevel)
-                .ToArray();
+            var dataToDisplay = _carDataProvider.GetUnlockedCarsByLevel(_playerModel.Level + 1);
 
             foreach (var carData in dataToDisplay)
             {

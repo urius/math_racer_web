@@ -289,6 +289,9 @@ MonoBehaviour:
   _playerCarImage: {fileID: 1115214728}
   _playerCarRectTransform: {fileID: 1115214727}
   _botCarImage: {fileID: 764578531}
+  _opponentCarImages:
+  - {fileID: 764578531}
+  - {fileID: 840913257}
   _botCarRectTransform: {fileID: 764578530}
   _distanceText: {fileID: 1134436884}
 --- !u!1 &233846833
@@ -583,7 +586,7 @@ GameObject:
   - component: {fileID: 320082737}
   - component: {fileID: 320082738}
   m_Layer: 0
-  m_Name: -- player car container
+  m_Name: -- car 1 container
   m_TagString: Untagged
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -614,7 +617,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 535136467
   m_SortingLayer: 3
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_SortAtRoot: 0
 --- !u!1 &329100266
 GameObject:
@@ -980,7 +983,7 @@ GameObject:
   - component: {fileID: 517049305}
   - component: {fileID: 517049306}
   m_Layer: 0
-  m_Name: -- opponent car container
+  m_Name: -- car 3 container
   m_TagString: Untagged
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -1707,7 +1710,7 @@ GameObject:
   - component: {fileID: 764578532}
   - component: {fileID: 764578531}
   m_Layer: 5
-  m_Name: BotCarIcon
+  m_Name: Opponent1CarIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1817,12 +1820,91 @@ MonoBehaviour:
   _playerCarTargetTransform: {fileID: 320082737}
   _opponentCarTargetTransform: {fileID: 517049305}
   _opponent2CarTargetTransform: {fileID: 2113049782}
+  _carContainerTransforms:
+  - {fileID: 320082737}
+  - {fileID: 2113049782}
+  - {fileID: 517049305}
   _startLineTransform: {fileID: 1482853982}
   _finishLineTransform: {fileID: 329100267}
   _rootCanvasView: {fileID: 696670403}
   _bgContainerView: {fileID: 758064671}
   _roadContainerView: {fileID: 1439853020}
   _trafficLightView: {fileID: 1917220594}
+--- !u!1 &840913254
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 840913255}
+  - component: {fileID: 840913256}
+  - component: {fileID: 840913257}
+  m_Layer: 5
+  m_Name: Opponent2CarIcon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &840913255
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840913254}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2051710071}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 3}
+  m_SizeDelta: {x: 55, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &840913256
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840913254}
+  m_CullTransparentMesh: 1
+--- !u!114 &840913257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840913254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0.6556604, b: 0.6556604, a: 0.7058824}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: eb982491a65d442afaf06a46c3467d20, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 6
 --- !u!1 &841477275
 GameObject:
   m_ObjectHideFlags: 0
@@ -5472,6 +5554,7 @@ RectTransform:
   m_Children:
   - {fileID: 1737806532}
   - {fileID: 764578530}
+  - {fileID: 840913255}
   - {fileID: 1115214727}
   - {fileID: 1134436883}
   m_Father: {fileID: 114618140}
@@ -5643,7 +5726,7 @@ GameObject:
   - component: {fileID: 2113049782}
   - component: {fileID: 2113049781}
   m_Layer: 0
-  m_Name: -- opponent 2 car container
+  m_Name: -- car 2 container
   m_TagString: Untagged
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -5659,7 +5742,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 535136467
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_SortAtRoot: 0
 --- !u!4 &2113049782
 Transform:

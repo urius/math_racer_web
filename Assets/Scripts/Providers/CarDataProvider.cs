@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Data;
 using Data.MonoBehaviourData;
 
@@ -20,6 +21,14 @@ namespace Providers
         public CarData GetCarData(CarKey carKey)
         {
             return _carDataByKey[carKey];
+        }
+
+        public IReadOnlyList<CarData> GetUnlockedCarsByLevel(int targetLevel)
+        {
+            return CarDataList
+                .Where(c => c.UnlockLevel <= targetLevel)
+                .OrderBy(c => c.UnlockLevel)
+                .ToArray();
         }
 
         private void CollectCarsData(IPrefabHolder prefabHolder)
@@ -63,5 +72,6 @@ namespace Providers
     {
         public IReadOnlyList<CarData> CarDataList { get; }
         public CarData GetCarData(CarKey carKey);
+        public IReadOnlyList<CarData> GetUnlockedCarsByLevel(int level);
     }
 }

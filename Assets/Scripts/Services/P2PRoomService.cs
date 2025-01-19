@@ -246,6 +246,7 @@ namespace Services
         public bool HasRoom { get; }
         public int ReadyPlayersCount { get; }
         public bool IsJoinAllowed { get; set; }
+        public P2PPlayersData PlayersData { get; }
 
         public UniTask<bool> HostNewRoom();
         public void DestroyCurrentRoom();

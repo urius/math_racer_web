@@ -8,7 +8,7 @@ using Random = System.Random;
 
 namespace Controller.RaceScene
 {
-    public class RaceSceneBotCarController : ControllerBase
+    public class RaceBotCarController : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
@@ -21,7 +21,7 @@ namespace Controller.RaceScene
         private CarView _carView;
         private CarModel _playerCarModel;
 
-        public RaceSceneBotCarController(CarModel carModel, Transform targetTransform)
+        public RaceBotCarController(CarModel carModel, Transform targetTransform)
         {
             _carModel = carModel;
             _random = new Random();

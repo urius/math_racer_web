@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,9 +9,19 @@ namespace View.UI.RaceScene
     {
         [SerializeField] private Image _playerCarImage;
         [SerializeField] private RectTransform _playerCarRectTransform;
-        [SerializeField] private Image _botCarImage;
-        [SerializeField] private RectTransform _botCarRectTransform;
+        [SerializeField] private Image[] _opponentCarImages;
         [SerializeField] private TMP_Text _distanceText;
+        
+        private RectTransform[] _opponentCarRectTransforms;
+
+        private void Awake()
+        {
+            _opponentCarRectTransforms = _opponentCarImages.Select(i => i.transform as RectTransform).ToArray();
+            foreach (var rectTransform in _opponentCarRectTransforms)
+            {
+                rectTransform.gameObject.SetActive(false);
+            }
+        }
 
         public void SetDistanceText(string text)
         {
@@ -22,9 +33,10 @@ namespace View.UI.RaceScene
             _playerCarImage.sprite = sprite;
         }
         
-        public void SetBotCarIconSprite(Sprite sprite)
+        public void SetOpponentCarIconSprite(int opponentIndex, Sprite sprite)
         {
-            _botCarImage.sprite = sprite;
+            _opponentCarImages[opponentIndex].gameObject.SetActive(true);
+            _opponentCarImages[opponentIndex].sprite = sprite;
         }
         
         public void SetPlayerCarPassedDistancePercent(float percent)
@@ -32,9 +44,9 @@ namespace View.UI.RaceScene
             SetAnchorXMinMax(_playerCarRectTransform, percent); 
         }
         
-        public void SetBotCarPassedDistancePercent(float percent)
+        public void SetOpponentCarPassedDistancePercent(int opponentIndex, float percent)
         {
-            SetAnchorXMinMax(_botCarRectTransform, percent); 
+            SetAnchorXMinMax(_opponentCarRectTransforms[opponentIndex], percent); 
         }
 
         private void SetAnchorXMinMax(RectTransform rectTransform, float value)

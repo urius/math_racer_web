@@ -7,7 +7,7 @@ using View.Gameplay.Race;
 
 namespace Controller.RaceScene
 {
-    public class RaceSceneStartLineController : ControllerBase
+    public class RaceStartLineController : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
@@ -19,7 +19,7 @@ namespace Controller.RaceScene
         private int _currentLightIndex = 0;
         private CarModel _playerCarModel;
 
-        public RaceSceneStartLineController(Transform startLineTransform, TrafficLightView trafficLightView)
+        public RaceStartLineController(Transform startLineTransform, TrafficLightView trafficLightView)
         {
             _startLineTransform = startLineTransform;
             _trafficLightView = trafficLightView;

@@ -11,7 +11,7 @@ using View.UI.RaceScene;
 
 namespace Controller.RaceScene
 {
-    public class RaceSceneQuestionsController : ControllerBase
+    public class RaceQuestionsController : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IComplexityDataProvider _complexityDataProvider = Instance.Get<IComplexityDataProvider>();
@@ -26,7 +26,7 @@ namespace Controller.RaceScene
         private RaceModel _raceModel;
         private CarModel _playerCarModel;
 
-        public RaceSceneQuestionsController(UIRightPanelView rightPanelView)
+        public RaceQuestionsController(UIRightPanelView rightPanelView)
         {
             _rightPanelView = rightPanelView;
             _answersPanel = _rightPanelView.AnswersPanel;

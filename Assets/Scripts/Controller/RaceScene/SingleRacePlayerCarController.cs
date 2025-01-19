@@ -6,7 +6,7 @@ using View.Presenters;
 
 namespace Controller.RaceScene
 {
-    public class RaceScenePlayerCarController : ControllerBase
+    public class SingleRacePlayerCarController : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         
@@ -16,7 +16,7 @@ namespace Controller.RaceScene
         private float _targetSpeed;
         private RaceModel _raceModel;
 
-        public RaceScenePlayerCarController(CarModel carModel, Transform targetTransform)
+        public SingleRacePlayerCarController(CarModel carModel, Transform targetTransform)
         {
             _carModel = carModel;
             _carPresenter = new RaceCarPresenter(carModel, targetTransform);

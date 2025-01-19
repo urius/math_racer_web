@@ -12,7 +12,7 @@ using View.UI.RaceScene;
 
 namespace Controller.RaceScene
 {
-    public class RaceSceneTopPanelController : ControllerBase
+    public class RaceTopPanelController : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
@@ -27,7 +27,7 @@ namespace Controller.RaceScene
         private RaceModel _raceModel;
         private CarModel _playerCarModel;
 
-        public RaceSceneTopPanelController(UITopPanelCanvasView topPanelCanvasView)
+        public RaceTopPanelController(UITopPanelCanvasView topPanelCanvasView)
         {
             _topPanelCanvasView = topPanelCanvasView;
             _raceSchemaView = _topPanelCanvasView.RaceSchemaView;
@@ -55,10 +55,13 @@ namespace Controller.RaceScene
             var playerCarData = _carDataProvider.GetCarData(_playerCarModel.CarKey);
             _raceSchemaView.SetPlayerCarIconSprite(playerCarData.IconSprite);
             _raceSchemaView.SetPlayerCarPassedDistancePercent(0);
-            
-            var botCarData = _carDataProvider.GetCarData(_raceModel.BotCar.CarKey);
-            _raceSchemaView.SetBotCarIconSprite(botCarData.IconSprite);
-            _raceSchemaView.SetBotCarPassedDistancePercent(0);
+
+            for (var index = 0; index < _raceModel.OpponentCarModels.Length; index++)
+            {
+                var carData = _carDataProvider.GetCarData(_raceModel.OpponentCarModels[index].CarKey);
+                _raceSchemaView.SetOpponentCarIconSprite(index, carData.IconSprite);
+                _raceSchemaView.SetOpponentCarPassedDistancePercent(index, 0);
+            }
         }
 
         private void Subscribe()
@@ -92,8 +95,12 @@ namespace Controller.RaceScene
             var playerPassedDistancePercent = _playerCarModel.PassedMeters / _raceModel.DistanceMeters;
             _raceSchemaView.SetPlayerCarPassedDistancePercent(playerPassedDistancePercent);
 
-            var botPassedDistancePercent = _raceModel.BotCar.PassedMeters / _raceModel.DistanceMeters;
-            _raceSchemaView.SetBotCarPassedDistancePercent(botPassedDistancePercent);
+            for (var index = 0; index < _raceModel.OpponentCarModels.Length; index++)
+            {
+                var carModel = _raceModel.OpponentCarModels[index];
+                var botPassedDistancePercent = carModel.PassedMeters / _raceModel.DistanceMeters;
+                _raceSchemaView.SetOpponentCarPassedDistancePercent(index, botPassedDistancePercent);
+            }
         }
     }
 }
