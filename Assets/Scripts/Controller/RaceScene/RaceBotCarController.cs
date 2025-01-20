@@ -52,6 +52,7 @@ namespace Controller.RaceScene
         {
             _updatesProvider.GameplayHalfSecondPassed -= OnGameplayHalfSecondPassed;
         }
+
         private void OnGameplayHalfSecondPassed()
         {
             if (_carModel.TargetSpeedKmph <= 0)

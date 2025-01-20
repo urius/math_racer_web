@@ -45,5 +45,7 @@ namespace Data
         
         public const string P2PCommandSeparator = "|";
         public const string P2PBodyParamsSeparator = ",";
+        public const string P2PBodyParamsSeparator2 = "_";
+        public const string P2PBodyArraySeparator = ";";
     }
 }

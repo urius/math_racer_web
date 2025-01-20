@@ -85,8 +85,8 @@ namespace Controller.RaceScene
                     _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
                 
                 var netPlayersData = _p2pRoomService.PlayersData;
-                var playerCarData = ToCarRaceModelData(netPlayersData.SelfData);
-                var opponentCarDataList = netPlayersData.PlayerDataByConnection.Values
+                var playerCarData = ToCarRaceModelData(netPlayersData.LocalPlayerData);
+                var opponentCarDataList = netPlayersData.AllPlayerDataList
                     .Select(ToCarRaceModelData)
                     .ToArray();
 
@@ -126,7 +126,14 @@ namespace Controller.RaceScene
             }
             else
             {
-                
+                InitChildController(new NetRacePlayerCarController(_raceModel.PlayerCar,
+                    _contextView.CarContainerTransforms[_raceModel.PlayerCar.PositionIndex]));
+
+                foreach (var opponentCarModel in _raceModel.OpponentCarModels)
+                {
+                    InitChildController(new NetRaceOpponentCarController(opponentCarModel,
+                        _contextView.CarContainerTransforms[opponentCarModel.PositionIndex]));
+                }
             }
 
             InitChildController(new RaceStartLineController(_contextView.StartLineTransform, _contextView.TrafficLightView));
