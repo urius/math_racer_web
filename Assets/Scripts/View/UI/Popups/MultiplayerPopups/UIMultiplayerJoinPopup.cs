@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using View.UI.Common;
 
 namespace View.UI.Popups.MultiplayerPopups
@@ -10,8 +11,8 @@ namespace View.UI.Popups.MultiplayerPopups
         public event Action<string> JoinCodeValueChanged;
         
         [SerializeField] private TMP_Text _messageText;
-        [SerializeField] private TMP_InputField _roomCodeText;
-        [SerializeField] private TMP_Text _roomPlaceholderText;
+        [SerializeField] private InputField _roomCodeText;
+        [SerializeField] private Text _roomPlaceholderText;
         [SerializeField] private UITextButtonView _joinButton;
 
         public UITextButtonView JoinButton => _joinButton;
