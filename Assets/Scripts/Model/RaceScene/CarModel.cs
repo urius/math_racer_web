@@ -12,6 +12,7 @@ namespace Model.RaceScene
         
         public const int MaxSpeed = 250;
         
+        public readonly int NetId;
         public readonly CarKey CarKey;
         public readonly int PositionIndex;
         public readonly ReactiveFlag TurboFlag = new(initialValue: false);
@@ -26,6 +27,7 @@ namespace Model.RaceScene
         {
             CarKey = carRaceModelData.CarKey;
             PositionIndex = carRaceModelData.CarPositionIndex;
+            NetId = carRaceModelData.Id;
         }
 
         public float CurrentSpeedKmph { get; private set; }

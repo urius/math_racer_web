@@ -40,32 +40,43 @@ namespace Controller.RaceScene
         {
             _raceModel.QuestionsModel.AnswerGiven += OnAnswerGiven;
             _raceModel.QuestionsModel.TurboActivated += OnTurboActivated;
+            _raceModel.IsFinishedFlagChanged += OnIsFinishedFlagChanged;
         }
 
         private void Unsubscribe()
         {
             _raceModel.QuestionsModel.AnswerGiven -= OnAnswerGiven;
             _raceModel.QuestionsModel.TurboActivated -= OnTurboActivated;
+            _raceModel.IsFinishedFlagChanged -= OnIsFinishedFlagChanged;
         }
 
         private void OnAnswerGiven(int answerIndex, bool isRightAnswer)
         {
             if (isRightAnswer)
             {
-                _roomService.SendToAll(P2PRoomService.CommandAccelerated);
+                _roomService.SendAccelerate();
                 _carModel.Accelerate();
             }
             else
             {
-                _roomService.SendToAll(P2PRoomService.CommandDecelerated);
+                _roomService.SendDecelerate();
                 _carModel.Decelerate();
             }
         }
 
         private void OnTurboActivated()
         {
-            _roomService.SendToAll(P2PRoomService.CommandAcceleratedTurbo);
+            _roomService.SendAccelerateTurbo();
             _carModel.AccelerateTurbo();
+        }
+
+        private void OnIsFinishedFlagChanged(bool flagValue)
+        {
+            if (flagValue)
+            {
+                var raceResultsModel = _raceModel.RaceResultsModel;
+                _roomService.SendFinished(raceResultsModel.PlayerSpeed, raceResultsModel.RaceTimeSec);
+            }
         }
     }
 }

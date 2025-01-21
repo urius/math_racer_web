@@ -41,6 +41,8 @@ namespace Controller.RaceScene
             InitView();
             InitControllers();
 
+            _raceModel.StartRace();
+
             Subscribe();
         }
 
@@ -75,9 +77,9 @@ namespace Controller.RaceScene
                 var opponentCarKey = unlockedCars[_random.Next(unlockedCars.Count)].CarKey;
 
                 _raceModel = new RaceModel(
-                    new CarRaceModelData(_playerModel.CurrentCar, carPositionIndex: 0),
+                    new CarRaceModelData(_playerModel.CurrentCar, carPositionIndex: 0, id: 1),
                     complexityData,
-                    new CarRaceModelData(opponentCarKey, carPositionIndex: 1));
+                    new CarRaceModelData(opponentCarKey, carPositionIndex: 1, id: 2));
             }
             else
             {
@@ -87,15 +89,15 @@ namespace Controller.RaceScene
                 var netPlayersData = _p2pRoomService.PlayersData;
                 var playerCarData = ToCarRaceModelData(netPlayersData.LocalPlayerData);
                 var opponentCarDataList = netPlayersData.AllPlayerDataList
+                    .Where(d => d != netPlayersData.LocalPlayerData)
                     .Select(ToCarRaceModelData)
                     .ToArray();
 
-                _raceModel = new RaceModel(
+                _raceModel = new NetRaceModel(
                     playerCarData,
                     complexityData,
                     opponentCarDataList[0],
                     opponentCarDataList.Length > 0 ? opponentCarDataList[1] : null);
-
             }
 
             _modelsHolder.SetRaceModel(_raceModel);
@@ -103,7 +105,7 @@ namespace Controller.RaceScene
 
         private CarRaceModelData ToCarRaceModelData(P2PPlayerData p2pPlayerData)
         {
-            return new CarRaceModelData(p2pPlayerData.CarKey, p2pPlayerData.PositionIndex);
+            return new CarRaceModelData(p2pPlayerData.CarKey, p2pPlayerData.PositionIndex, p2pPlayerData.Id);
         }
 
         private void InitView()
@@ -134,6 +136,8 @@ namespace Controller.RaceScene
                     InitChildController(new NetRaceOpponentCarController(opponentCarModel,
                         _contextView.CarContainerTransforms[opponentCarModel.PositionIndex]));
                 }
+
+                InitChildController(new NetOpponentsProcessFinishController(_raceModel as NetRaceModel));
             }
 
             InitChildController(new RaceStartLineController(_contextView.StartLineTransform, _contextView.TrafficLightView));

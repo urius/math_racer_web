@@ -21,16 +21,20 @@ namespace Services
         public event Action<IP2PConnection> PlayerDisconnected;
         public event Action<IP2PConnection> ConnectedPlayerReady;
         public event Action StartGameReceived;
-        
-        public const string CommandAccelerated = "accelerated";
-        public const string CommandAcceleratedTurbo = "accelerated_turbo";
-        public const string CommandDecelerated = "decelerated";
+        public event Action<int, long> AccelerateReceived;
+        public event Action<int, long> AccelerateTurboReceived;
+        public event Action<int, long> DecelerateReceived;
+        public event Action<int, int, int> OpponentFinishedReceived;
         
         private const string CommandInit = "init";
         private const string CommandInitResponse = "init_response";
         private const string CommandSetTime = "set_time";
         private const string CommandPlayerReady = "player_ready";
         private const string StartGameCommand = "start_race";
+        private const string CommandAccelerate = "accelerate";
+        private const string CommandAccelerateTurbo = "accelerate_turbo";
+        private const string CommandDecelerate = "decelerate";
+        private const string CommandFinished = "finished";
 
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
 
@@ -47,6 +51,7 @@ namespace Services
 
         private PlayerModel PlayerModel => _modelsHolder.GetPlayerModel();
         private long HostUtcTimestampMs => UtcTimestampMs + _hostDeltaTimeMs;
+        private int PlayerNetId => PlayersData.LocalPlayerData.Id;
 
         public bool IsJoinAllowed
         {
@@ -122,6 +127,41 @@ namespace Services
         public void SendToAll(string command, string data)
         {
             _p2pRoom.SendToAll(ToCommandFormat(command, data));
+        }
+
+        public void SendToAllExcept(IP2PConnection exceptConnection, string command, string data)
+        {
+            for (var i = 0; i < _p2pRoom.ActiveConnections.Count; i++)
+            {
+                if (_p2pRoom.ActiveConnections[i] != exceptConnection)
+                {
+                    _p2pRoom.ActiveConnections[i].SendMessage(ToCommandFormat(command, data));
+                }
+            }
+        }
+
+        public void SendAccelerate()
+        {
+            var commandBody = new P2PCommonRaceCommandBodyDto(PlayerNetId, HostUtcTimestampMs);
+            SendToAll(CommandAccelerate, commandBody.ToString());
+        }
+
+        public void SendAccelerateTurbo()
+        {
+            var commandBody = new P2PCommonRaceCommandBodyDto(PlayerNetId, HostUtcTimestampMs);
+            SendToAll(CommandAccelerateTurbo, commandBody.ToString());
+        }
+
+        public void SendDecelerate()
+        {
+            var commandBody = new P2PCommonRaceCommandBodyDto(PlayerNetId, HostUtcTimestampMs);
+            SendToAll(CommandDecelerate, commandBody.ToString());
+        }
+
+        public void SendFinished(int playerSpeed, float raceTimeSec)
+        {
+            var commandBody = new P2PPlayerFinishedCommandBodyDto(PlayerNetId, playerSpeed, (int)(raceTimeSec * 1000));
+            SendToAll(CommandFinished, commandBody.ToString());
         }
 
         private P2PRoom CreateRoomInstance()
@@ -201,8 +241,10 @@ namespace Services
                 default:
                     if (_p2pRoom.IsHostRoom)
                     {
-                        SendToAll(command, data);
+                        SendToAllExcept(connection, command, data);
                     }
+
+                    HandleCommonMessage(command, data);
                     MessageReceived?.Invoke(connection, message);
                     break;
             }
@@ -274,6 +316,32 @@ namespace Services
             StartGameReceived?.Invoke();
         }
 
+        private void HandleCommonMessage(string command, string data)
+        {
+            switch (command)
+            {
+                case CommandAccelerate:
+                    DispatchCommonCommand(AccelerateReceived, data);
+                    break;
+                case CommandAccelerateTurbo:
+                    DispatchCommonCommand(AccelerateTurboReceived, data);
+                    break;
+                case CommandDecelerate:
+                    DispatchCommonCommand(DecelerateReceived, data);
+                    break;
+                case CommandFinished:
+                    var bodyDto = P2PPlayerFinishedCommandBodyDto.Parse(data);
+                    OpponentFinishedReceived?.Invoke(bodyDto.NetId, bodyDto.Speed, bodyDto.RaceTimeMs);
+                    break;
+            }
+        }
+
+        private void DispatchCommonCommand(Action<int, long> eventToDispatch, string data)
+        {
+            var bodyDto = P2PCommonRaceCommandBodyDto.Parse(data);
+            eventToDispatch?.Invoke(bodyDto.Id, bodyDto.TimestampMs);
+        }
+
         private static void FillPLayerData(P2PPlayerData playerData, P2PPlayerDataDto netPlayerDataDto)
         {
             playerData.CarKey = netPlayerDataDto.CarKey;
@@ -310,6 +378,10 @@ namespace Services
         public event Action<IP2PConnection> PlayerDisconnected;
         public event Action<IP2PConnection> ConnectedPlayerReady;
         public event Action StartGameReceived;
+        public event Action<int, long> AccelerateReceived;
+        public event Action<int, long> AccelerateTurboReceived;
+        public event Action<int, long> DecelerateReceived;
+        public event Action<int, int, int> OpponentFinishedReceived;
         
         public string RoomId { get; }
         public bool HasRoom { get; }
@@ -322,5 +394,9 @@ namespace Services
         UniTask<bool> JoinRoom(int parse);
         public void SendStartToReadyPlayers();
         public void SendToAll(string command, string data = null);
+        public void SendAccelerate();
+        public void SendAccelerateTurbo();
+        public void SendDecelerate();
+        public void SendFinished(int playerSpeed, float raceTimeSec);
     }
 }

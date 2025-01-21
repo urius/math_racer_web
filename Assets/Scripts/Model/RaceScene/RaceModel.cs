@@ -1,5 +1,6 @@
 using System;
 using Data;
+using UnityEngine;
 
 namespace Model.RaceScene
 {
@@ -8,9 +9,11 @@ namespace Model.RaceScene
         public event Action<bool> IsFinishingFlagChanged; 
         public event Action<bool> IsFinishedFlagChanged; 
         
+        public readonly int DistanceMeters = 500;
+        
         private readonly ComplexityData _complexityData;
         
-        public readonly int DistanceMeters = 500;
+        private float _startRaceTime;
 
         public RaceModel(CarRaceModelData playerCarModelData, ComplexityData complexityData, CarRaceModelData opponent1CarModelData, CarRaceModelData opponent2CarModelData = null)
         {
@@ -32,6 +35,11 @@ namespace Model.RaceScene
         public bool IsFinished { get; private set; }
         public float PlayerCarDistanceToFinish => DistanceMeters - PlayerCar.PassedMeters;
 
+        public void StartRace()
+        {
+            _startRaceTime = Time.realtimeSinceStartup;
+        }
+
         public void Update(float deltaTime)
         {
             QuestionsModel.Update(deltaTime);
@@ -49,8 +57,9 @@ namespace Model.RaceScene
 
             if (IsFinished == false && PlayerCarDistanceToFinish <= -1f)
             {
+                var raceTimeSec = Time.realtimeSinceStartup - _startRaceTime;
                 IsFinished = true;
-                RaceResultsModel.SetResults(PlayerCar, OpponentCarModels, QuestionsModel);
+                RaceResultsModel.SetResults(PlayerCar, OpponentCarModels, QuestionsModel, raceTimeSec);
                 RaceRewards = new RaceRewardsModel(DistanceMeters, RaceResultsModel, _complexityData);
                 IsFinishedFlagChanged?.Invoke(IsFinished);
             }
@@ -65,13 +74,15 @@ namespace Model.RaceScene
 
     public class CarRaceModelData
     {
+        public readonly int Id;
         public readonly CarKey CarKey;
         public readonly int CarPositionIndex;
 
-        public CarRaceModelData(CarKey carKey, int carPositionIndex)
+        public CarRaceModelData(CarKey carKey, int carPositionIndex, int id)
         {
             CarKey = carKey;
             CarPositionIndex = carPositionIndex;
+            Id = id;
         }
     }
 }

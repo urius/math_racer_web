@@ -2,7 +2,6 @@ using Infra.Instance;
 using Model.RaceScene;
 using Services;
 using UnityEngine;
-using Utils.P2PLib;
 using View.Presenters;
 
 namespace Controller.RaceScene
@@ -17,7 +16,7 @@ namespace Controller.RaceScene
         public NetRaceOpponentCarController(CarModel carModel, Transform targetTransform)
         {
             _carModel = carModel;
-            _presenter = new RaceCarPresenter(carModel, targetTransform);
+            _presenter = new RaceCarPresenter(carModel, targetTransform, muteSounds: true);
         }
 
         public override void Initialize()
@@ -34,17 +33,40 @@ namespace Controller.RaceScene
 
         private void Subscribe()
         {
-            _roomService.MessageReceived += OnMessageReceived;
+            _roomService.AccelerateReceived += OnAccelerateReceived;
+            _roomService.AccelerateTurboReceived += OnAccelerateTurboReceived;
+            _roomService.DecelerateReceived += OnDecelerateReceived;
         }
 
         private void Unsubscribe()
         {
-            _roomService.MessageReceived -= OnMessageReceived;
+            _roomService.AccelerateReceived -= OnAccelerateReceived;
+            _roomService.AccelerateTurboReceived -= OnAccelerateTurboReceived;
+            _roomService.DecelerateReceived -= OnDecelerateReceived;
         }
 
-        private void OnMessageReceived(IP2PConnection _, string message)
+        private void OnAccelerateReceived(int id, long timestamp)
         {
-            
+            if (_carModel.NetId == id)
+            {
+                _carModel.Accelerate();
+            }
+        }
+
+        private void OnAccelerateTurboReceived(int id, long timestamp)
+        {
+            if (_carModel.NetId == id)
+            {
+                _carModel.AccelerateTurbo();
+            }
+        }
+
+        private void OnDecelerateReceived(int id, long timestamp)
+        {
+            if (_carModel.NetId == id)
+            {
+                _carModel.Decelerate();
+            }
         }
     }
 }

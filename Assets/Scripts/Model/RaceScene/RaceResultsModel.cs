@@ -11,9 +11,14 @@ namespace Model.RaceScene
         public int RightAnswersCount { get; private set; }
         public int WrongAnswersCount { get; private set; }
         public int TurboBoostsCount { get; private set; }
+        public float RaceTimeSec { get; private set; }
 
 
-        public void SetResults(CarModel playerCar, IEnumerable<CarModel> opponentCars, QuestionsModel questionsModel)
+        public void SetResults(
+            CarModel playerCar,
+            IEnumerable<CarModel> opponentCars,
+            QuestionsModel questionsModel,
+            float raceTimeSec)
         {
             PlayerSpeed = (int)playerCar.CurrentSpeedKmph;
             IsFirst = opponentCars.All(m => playerCar.PassedMeters > m.PassedMeters);
@@ -21,6 +26,7 @@ namespace Model.RaceScene
             RightAnswersCount = questionsModel.RightAnswersCountTotal;
             WrongAnswersCount = questionsModel.WrongAnswersCountTotal;
             TurboBoostsCount = questionsModel.TurboBoostsCount;
+            RaceTimeSec = raceTimeSec;
         }
     }
 }
