@@ -24,7 +24,7 @@ namespace Utils.P2PRoomLib
         private readonly CancellationTokenSource _disposeCts = new();
 
         private CancellationTokenSource _joiningLoopTcs;
-        private string _getReservedChannelsUrl;
+        private string _getConnectingChannelsUrl;
         private int _maxConnectionsCount;
         private bool _isJoinAllowed = true;
 
@@ -217,7 +217,7 @@ namespace Utils.P2PRoomLib
                     break;
                 }
 
-                var getJoiningResponse = await WebRequestsSender.GetAsync<P2PGetJoiningResponseDto>(_getReservedChannelsUrl);
+                var getJoiningResponse = await WebRequestsSender.GetAsync<P2PGetJoiningResponseDto>(_getConnectingChannelsUrl);
 
                 if (getJoiningResponse.IsSuccess
                     && stopToken.IsCancellationRequested == false)
@@ -270,7 +270,7 @@ namespace Utils.P2PRoomLib
         private void HandleRoomCreated(P2PCreateRoomResponseDto createRoomResponse)
         {
             RoomId = createRoomResponse.Data.RoomId;
-            _getReservedChannelsUrl = _serviceUrl + $"?command=get_reserved&room_id={RoomId}";
+            _getConnectingChannelsUrl = _serviceUrl + $"?command=get_connecting&room_id={RoomId}";
             
             RunCheckJoinLoop().Forget();
         }

@@ -38,6 +38,8 @@ namespace Utils.P2PLib
 
         public void HostComplete(string joinConnectionDescription)
         {
+            ConnectionState = P2PConnectionState.ConnectingPhase2;
+            
             P2PLibJsApi.CompleteHostConnection(joinConnectionDescription);
         }
 
@@ -76,6 +78,7 @@ namespace Utils.P2PLib
     {
         None = 0,
         Connecting,
+        ConnectingPhase2,
         Established,
         Closed,
     }
