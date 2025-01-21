@@ -1,6 +1,6 @@
 namespace Data.Dto.P2P
 {
-    public struct P2PSetTimeCommandBodyDto
+    public readonly struct P2PSetTimeCommandBodyDto
     {
         public readonly long HostTimeMs;
         public readonly int PingMs;

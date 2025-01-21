@@ -296,19 +296,19 @@ namespace Utils.P2PRoomLib
         private void SubscribeOnConnection(IP2PConnection connection)
         {
             UnsubscribeFromConnection(connection);
-            connection.ChanelOpened += OnConnectionChannelOpened;
-            connection.MessageReceived += OnConnectionChannelMessageReceived;
-            connection.ChanelClosed += OnConnectionChannelClosed;
+            connection.ConnectionOpened += OnConnectionOpened;
+            connection.MessageReceived += OnMessageReceived;
+            connection.ConnectionClosed += OnConnectionClosed;
         }
 
         private void UnsubscribeFromConnection(IP2PConnection connection)
         {
-            connection.ChanelOpened -= OnConnectionChannelOpened;
-            connection.MessageReceived -= OnConnectionChannelMessageReceived;
-            connection.ChanelClosed -= OnConnectionChannelClosed;
+            connection.ConnectionOpened -= OnConnectionOpened;
+            connection.MessageReceived -= OnMessageReceived;
+            connection.ConnectionClosed -= OnConnectionClosed;
         }
 
-        private void OnConnectionChannelOpened(P2PConnection connection)
+        private void OnConnectionOpened(P2PConnection connection)
         {
             _joiningConnections.Remove(connection);
             _hostedConnections.Remove(connection);
@@ -317,13 +317,13 @@ namespace Utils.P2PRoomLib
             PeerConnected?.Invoke(connection);
         }
 
-        private void OnConnectionChannelMessageReceived(P2PConnection connection, string message)
+        private void OnMessageReceived(P2PConnection connection, string message)
         {
             MessageReceived?.Invoke(message);
             MessageReceivedFrom?.Invoke(connection, message);
         }
 
-        private void OnConnectionChannelClosed(P2PConnection connection)
+        private void OnConnectionClosed(P2PConnection connection)
         {
             _activeConnections.Remove(connection);
             _closedConnections.Add(connection);

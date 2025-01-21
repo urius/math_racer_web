@@ -7,7 +7,7 @@ namespace Data
     {
         public readonly List<P2PPlayerData> AllPlayerDataList = new();
         public readonly Dictionary<IP2PConnection, P2PPlayerData> RemotePlayerDataByConnection = new();
-        public readonly Dictionary<IP2PConnection, int> PingByConnection = new();
+        public readonly Dictionary<IP2PConnection, P2PPingData> PingByConnection = new();
         
         private static int _lastCumulativeId = 0;
         
@@ -47,6 +47,7 @@ namespace Data
         
         public int PositionIndex;
         public CarKey CarKey;
+        public long InitCommandSendTimestamp;
 
         public P2PPlayerData(int id)
         {
@@ -55,16 +56,21 @@ namespace Data
 
         public bool IsReady { get; private set; } = false;
 
-        public P2PPlayerData(int id, CarKey carKey, int positionIndex)
-            : this(id)
-        {
-            CarKey = carKey;
-            PositionIndex = positionIndex;
-        }
-
         public void SetReady()
         {
             IsReady = true;
+        }
+    }
+
+    public struct P2PPingData
+    {
+        public readonly int PingMs;
+        public readonly long MeasureLocalTimeMs;
+
+        public P2PPingData(int pingMs, long measureLocalTimeMs)
+        {
+            PingMs = pingMs;
+            MeasureLocalTimeMs = measureLocalTimeMs;
         }
     }
 }

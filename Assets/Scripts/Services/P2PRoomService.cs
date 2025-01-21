@@ -35,6 +35,9 @@ namespace Services
         private const string CommandAccelerateTurbo = "accelerate_turbo";
         private const string CommandDecelerate = "decelerate";
         private const string CommandFinished = "finished";
+        private const string CommandPing1 = "ping1";
+        private const string CommandPing2 = "ping2";
+        private const string CommandPing3 = "ping3";
 
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
 
@@ -42,7 +45,7 @@ namespace Services
         private long _hostDeltaTimeMs;
         private bool _gameIsStarted;
 
-        private static long UtcTimestampMs => (long)DateTimeHelper.GetTotalMilliseconds(DateTime.Now);
+        private static long LocalUtcTimestampMs => (long)DateTimeHelper.GetTotalMilliseconds(DateTime.Now);
         
         public string RoomId => _p2pRoom?.RoomId.ToString() ?? "-";
         public bool HasRoom => _p2pRoom != null;
@@ -50,7 +53,7 @@ namespace Services
         public P2PPlayersData PlayersData { get; private set; }
 
         private PlayerModel PlayerModel => _modelsHolder.GetPlayerModel();
-        private long HostUtcTimestampMs => UtcTimestampMs + _hostDeltaTimeMs;
+        private long HostUtcTimestampMs => LocalUtcTimestampMs + _hostDeltaTimeMs;
         private int PlayerNetId => PlayersData.LocalPlayerData.Id;
 
         public bool IsJoinAllowed
@@ -77,6 +80,10 @@ namespace Services
             if (createRoomResult == false)
             {
                 DestroyCurrentRoom();
+            }
+            else
+            {
+                RunCheckPeersLoop().Forget();
             }
 
             return createRoomResult;
@@ -194,15 +201,23 @@ namespace Services
             
             if (_p2pRoom.IsHostRoom)
             {
-                var remotePlayerData = PlayersData.CreateRemotePlayerData(connection);
-                
-                var commandBody = new P2PInitCommandBodyDto(
-                    PlayersData.LocalPlayerData.Id,
-                    PlayerModel.CurrentCar,
-                    remotePlayerData.Id,
-                    UtcTimestampMs);
-                SendCommandTo(connection, CommandInit, commandBody.ToString());
+                PlayersData.CreateRemotePlayerData(connection);
+                SendInit(connection);
             }
+        }
+
+        private void SendInit(IP2PConnection connection)
+        {
+            var remotePlayerData = PlayersData.RemotePlayerDataByConnection[connection];
+            
+            var commandBody = new P2PInitCommandBodyDto(
+                PlayersData.LocalPlayerData.Id,
+                PlayerModel.CurrentCar,
+                remotePlayerData.Id,
+                LocalUtcTimestampMs);
+            SendCommandTo(connection, CommandInit, commandBody.ToString());
+
+            remotePlayerData.InitCommandSendTimestamp = LocalUtcTimestampMs;
         }
 
         private void SendCommandTo(IP2PConnection connection, string command, string data = null)
@@ -213,6 +228,20 @@ namespace Services
         private static string ToCommandFormat(string command, string data)
         {
             return data == null ? command : $"{command}{Constants.P2PCommandSeparator}{data}";
+        }
+
+        private void SendToReadyPlayers(string message)
+        {
+            if (_p2pRoom == null) return;
+            
+            foreach (var connection in _p2pRoom.ActiveConnections)
+            {
+                if (PlayersData.RemotePlayerDataByConnection.TryGetValue(connection, out var playerData)
+                    && playerData.IsReady)
+                {
+                    connection.SendMessage(message);
+                }
+            }
         }
 
         private void OnMessageReceivedFrom(IP2PConnection connection, string message)
@@ -238,6 +267,15 @@ namespace Services
                 case StartGameCommand:
                     ProcessStartGameCommand(connection, data);
                     break;
+                case CommandPing1:
+                    ProcessPing1Command(connection, data);
+                    break;
+                case CommandPing2:
+                    ProcessPing2Command(connection, data);
+                    break;
+                case CommandPing3:
+                    ProcessPing3Command(connection, data);
+                    break;
                 default:
                     if (_p2pRoom.IsHostRoom)
                     {
@@ -248,6 +286,28 @@ namespace Services
                     MessageReceived?.Invoke(connection, message);
                     break;
             }
+        }
+
+        private void ProcessPing1Command(IP2PConnection connection, string data)  // join side
+        {
+            var commandBody = P2PPingCommandBodyDto.Parse(data);
+            var commandBoyToSend = new P2PPingCommandBodyDto(commandBody.HostTimeMs, LocalUtcTimestampMs);
+            SendCommandTo(connection, CommandPing2, commandBoyToSend.ToString());
+        }
+
+        private void ProcessPing2Command(IP2PConnection connection, string data)  //host side
+        {
+            var commandBody = P2PPingCommandBodyDto.Parse(data);
+            UpdatePingForConnection(connection, commandBody.HostTimeMs);
+
+            var commandBoyToSend = new P2PPingCommandBodyDto(LocalUtcTimestampMs, commandBody.JoinTimeMs);
+            SendCommandTo(connection, CommandPing3, commandBoyToSend.ToString());
+        }
+
+        private void ProcessPing3Command(IP2PConnection connection, string data)  // join side
+        {
+            var commandBody = P2PPingCommandBodyDto.Parse(data);
+            UpdatePingForConnection(connection, commandBody.JoinTimeMs);
         }
 
         private void ProcessInitCommand(IP2PConnection connection, string body)  // join side
@@ -265,25 +325,20 @@ namespace Services
 
         private void ProcessInitResponseCommand(IP2PConnection connection, string body)  //host side
         {
-            var currentTimeMs = UtcTimestampMs;
             var commandBodyDto = P2PInitResponseCommandBodyDto.Parse(body);
 
-            var travelTimeMs = currentTimeMs - commandBodyDto.HostTimeMs;
-            var pingMs = (int)Math.Ceiling(travelTimeMs * 0.5f);
-            PlayersData.PingByConnection[connection] = pingMs;
+            var pingMs = UpdatePingForConnection(connection, commandBodyDto.HostTimeMs);
             
             var playerData = PlayersData.RemotePlayerDataByConnection[connection];
             playerData.CarKey = commandBodyDto.JoinedCarKey;
-
-            Debug.Log($"{connection.ChannelLabel} Ping: {pingMs} ms");
             
-            var setTimeCommandBodyDto = new P2PSetTimeCommandBodyDto(UtcTimestampMs, pingMs);
+            var setTimeCommandBodyDto = new P2PSetTimeCommandBodyDto(LocalUtcTimestampMs, pingMs);
             SendCommandTo(connection, CommandSetTime, setTimeCommandBodyDto.ToString());
         }
 
         private void ProcessSetTimeCommand(IP2PConnection connection, string body)  // join side
         {
-            var currentTimeMs = UtcTimestampMs;
+            var currentTimeMs = LocalUtcTimestampMs;
             
             var commandBodyDto = P2PSetTimeCommandBodyDto.Parse(body);
             _hostDeltaTimeMs = commandBodyDto.EstimatedJoinSideTimeMs - currentTimeMs;
@@ -336,7 +391,7 @@ namespace Services
             }
         }
 
-        private void DispatchCommonCommand(Action<int, long> eventToDispatch, string data)
+        private static void DispatchCommonCommand(Action<int, long> eventToDispatch, string data)
         {
             var bodyDto = P2PCommonRaceCommandBodyDto.Parse(data);
             eventToDispatch?.Invoke(bodyDto.Id, bodyDto.TimestampMs);
@@ -346,6 +401,17 @@ namespace Services
         {
             playerData.CarKey = netPlayerDataDto.CarKey;
             playerData.PositionIndex = netPlayerDataDto.PositionIndex;
+        }
+
+        private int UpdatePingForConnection(IP2PConnection connection, long receivedPrevLocalTimeMs)
+        {
+            var travelTimeMs = LocalUtcTimestampMs - receivedPrevLocalTimeMs;
+            var pingMs = (int)Math.Ceiling(travelTimeMs * 0.5f);
+            PlayersData.PingByConnection[connection] = new P2PPingData(pingMs, LocalUtcTimestampMs);
+
+            Debug.Log($"{connection.ChannelLabel} Ping: {pingMs} ms");
+
+            return pingMs;
         }
 
         private void OnPeerDisconnected(IP2PConnection connection)
@@ -366,6 +432,50 @@ namespace Services
                 else
                 {
                     playerData.PositionIndex = 0; //host player car always first
+                }
+            }
+        }
+
+        private async UniTaskVoid RunCheckPeersLoop()
+        {
+            const int millisecondsInSecond = 1000;
+            const int retryInitCommandTimeMs = 5 * millisecondsInSecond;
+            const int noRespondTimeForDisconnectMs = 15 * millisecondsInSecond;
+            
+            while (_p2pRoom != null && PlayersData != null)
+            {
+                await UniTask.Delay(millisecondsInSecond);
+
+                if (_p2pRoom == null || PlayersData == null) break;
+                
+                foreach (var connection in _p2pRoom.ActiveConnections)
+                {
+                    if (PlayersData.RemotePlayerDataByConnection.TryGetValue(connection, out var playerData))
+                    {
+                        var localTimeMs = LocalUtcTimestampMs;
+                        if (playerData.IsReady)
+                        {
+                            if (PlayersData.PingByConnection.TryGetValue(connection, out var pingData))
+                            {
+                                if (pingData.MeasureLocalTimeMs <= localTimeMs - millisecondsInSecond)
+                                {
+                                    if (pingData.MeasureLocalTimeMs <= localTimeMs - noRespondTimeForDisconnectMs)
+                                    {
+                                        connection.Close();
+                                    }
+                                    else
+                                    {
+                                        SendCommandTo(connection, CommandPing1,
+                                            new P2PPingCommandBodyDto(localTimeMs).ToString());
+                                    }
+                                }
+                            }
+                        }
+                        else if (playerData.InitCommandSendTimestamp <= localTimeMs - retryInitCommandTimeMs)
+                        {
+                            SendInit(connection);
+                        }
+                    }
                 }
             }
         }

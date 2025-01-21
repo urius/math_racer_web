@@ -122,7 +122,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
         private void ShowPlayersConnectedMessage()
         {
             var message = _localizationProvider.GetLocale(LocalizationKeys.HostPopupRoomConnectedPlayersMessage);
-            _popupView.SetMessageText(message + _p2pRoomService.ReadyPlayersCount);
+            _popupView.SetMessageText(message + (_p2pRoomService.ReadyPlayersCount - 1));
         }
 
         private void OnCloseButtonClicked()

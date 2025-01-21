@@ -5,8 +5,8 @@ namespace Utils.P2PLib
 {
     public class P2PConnection : IP2PHostSideConnection, IP2PJoinSideConnection
     {
-        public event Action<P2PConnection> ChanelOpened;
-        public event Action<P2PConnection> ChanelClosed;
+        public event Action<P2PConnection> ConnectionOpened;
+        public event Action<P2PConnection> ConnectionClosed;
         public event Action<P2PConnection, string> MessageReceived;
 
         private readonly UniTaskCompletionSource _connectionEstablishedTcs = new();
@@ -57,7 +57,7 @@ namespace Utils.P2PLib
         {
             ConnectionState = P2PConnectionState.Established;
             
-            ChanelOpened?.Invoke(this);
+            ConnectionOpened?.Invoke(this);
             _connectionEstablishedTcs.TrySetResult();
         }
 
@@ -65,7 +65,7 @@ namespace Utils.P2PLib
         {
             ConnectionState = P2PConnectionState.Closed;
             
-            ChanelClosed?.Invoke(this);
+            ConnectionClosed?.Invoke(this);
         }
 
         public void HandleMessageReceived(string msg)
@@ -86,8 +86,8 @@ namespace Utils.P2PLib
 
     public interface IP2PConnection
     {
-        public event Action<P2PConnection> ChanelOpened;
-        public event Action<P2PConnection> ChanelClosed;
+        public event Action<P2PConnection> ConnectionOpened;
+        public event Action<P2PConnection> ConnectionClosed;
         public event Action<P2PConnection, string> MessageReceived;
         
         public UniTask ConnectionEstablishedTask { get; }
