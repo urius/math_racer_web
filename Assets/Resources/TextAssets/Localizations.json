@@ -266,6 +266,11 @@
 			"ru": "Введите код подключения:"
 		},
 		{
+			"key": "join_popup_joining",
+			"en": "Joining...",
+			"ru": "Подключение..."
+		},
+		{
 			"key": "join_popup_error",
 			"en": "<color=red>Join rror</color>",
 			"ru": "<color=red>Ошибка подключения</color>"

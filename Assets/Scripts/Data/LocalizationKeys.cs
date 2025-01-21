@@ -35,9 +35,10 @@ namespace Data
         public const string HostPopupRoomConnectedPlayersMessage = "host_popup_room_connected_players";
         public const string HostPopupErrorMessage = "host_popup_room_error";
         public const string JoinPopupPreparingMessage = "join_popup_preparing";
+        public const string JoinPopupJoiningMessage = "join_popup_joining";
+        public const string JoinPopupWaitingStartMessage = "join_popup_waiting_start";
         public const string JoinPopupErrorMessage = "join_popup_error";
         public const string EnterJoinCode = "enter_join_code";
         public const string JoinButton = "join_button";
-        public const string JoinPopupWaitingStartMessage = "join_popup_waiting_start";
     }
 }

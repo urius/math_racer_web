@@ -34,7 +34,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             _popupView.SetRoomCodeVisibility(true);
             _popupView.ResetRoomCodeText();
             _popupView.JoinButton.SetText(_localizationProvider.GetLocale(LocalizationKeys.JoinButton));
-            _popupView.JoinButton.SetInteractable(false);
+            SetJoinButtonInteractable(false);
 
             _popupView.Appear2Async()
                 .ContinueWith(Subscribe);
@@ -74,11 +74,12 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             if (IsJoinCodeValid())
             {
                 _popupView.SetRoomCodeInteractable(false);
+                SetJoinButtonInteractable(false);
+                
+                _popupView.SetMessageText(
+                    _localizationProvider.GetLocale(LocalizationKeys.JoinPopupJoiningMessage));
 
                 var joinResult = await _p2pRoomService.JoinRoom(int.Parse(_popupView.JoinCodeText));
-                
-                UpdateJoinButtonState();
-                
                 if (joinResult)
                 {
                     _popupView.SetRoomCodeVisibility(false);
@@ -87,17 +88,16 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
                 }
                 else
                 {
-                    _popupView.SetRoomCodeInteractable(true);
-
                     var messageWithError = _localizationProvider.GetLocale(LocalizationKeys.JoinPopupErrorMessage) +
                                            "\n" + _localizationProvider.GetLocale(LocalizationKeys.JoinPopupPreparingMessage);
                     _popupView.SetMessageText(messageWithError);
+                    _popupView.SetRoomCodeInteractable(true);
                     
                     _p2pRoomService.DestroyCurrentRoom();
                 }
+                
+                UpdateJoinButtonState();
             }
-
-            UpdateJoinButtonState();
         }
 
         private void OnStartGameReceived()
@@ -125,7 +125,12 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
         private void UpdateJoinButtonState()
         {
-            _popupView.JoinButton.SetInteractable(IsJoinCodeValid() && _p2pRoomService.HasRoom == false);
+            SetJoinButtonInteractable(IsJoinCodeValid() && _p2pRoomService.HasRoom == false);
+        }
+
+        private void SetJoinButtonInteractable(bool isInteractable)
+        {
+            _popupView.JoinButton.SetInteractable(isInteractable);
         }
 
         private bool IsJoinCodeValid()
