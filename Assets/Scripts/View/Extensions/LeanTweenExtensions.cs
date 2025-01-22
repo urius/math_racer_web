@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace View.Extensions
@@ -26,10 +27,18 @@ namespace View.Extensions
 
             return ltDescr.ToUniTask();
         }
-        
+
         public static UniTask AnimateAlpha(this Image image, float to, float time)
         {
             return AnimateAlpha(image, to, time, out _);
+        }
+
+        public static UniTask AnimateAlpha(this CanvasGroup canvasGroup, float to, float time, out LTDescr ltDescr)
+        {
+            ltDescr = LeanTween
+                .value(canvasGroup.gameObject, canvasGroup.SetCanvasGroupAlpha, canvasGroup.alpha, to, time);
+
+            return ltDescr.ToUniTask();
         }
 
         public static UniTask ToUniTask(this LTDescr ltDescr)
@@ -52,6 +61,11 @@ namespace View.Extensions
             var textColor = text.color;
             textColor.a = alpha;
             text.color = textColor;
+        }
+        
+        private static void SetCanvasGroupAlpha(this CanvasGroup canvasGroup, float alpha)
+        {
+            canvasGroup.alpha = alpha;
         }
     }
 }

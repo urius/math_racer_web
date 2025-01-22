@@ -15,25 +15,27 @@ using static View.Helpers.RichTextHelper;
 
 namespace Controller.RaceScene
 {
-    public class RaceFinishOverlayViewController : ControllerBase
+    public abstract class RaceFinishOverlayViewControllerBase : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
         private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
-        
-        private readonly Transform _targetTransform;
-        
+
         private RaceModel _raceModel;
         private RaceResultsModel _raceResultsModel;
-        private UIRaceFinishOverlayView _finishOverlayView;
+        private UIRaceFinishOverlayViewBase _finishOverlayView;
         private PlayerModel _playerModel;
         private RaceRewardsModel _raceRewards;
 
-        public RaceFinishOverlayViewController(Transform targetTransform)
+        protected Transform TargetTransform { get; }
+
+        protected RaceFinishOverlayViewControllerBase(Transform targetTransform)
         {
-            _targetTransform = targetTransform;
+            TargetTransform = targetTransform;
         }
+
+        protected abstract UIRaceFinishOverlayViewBase InstantiateView();
 
         public override void Initialize()
         {
@@ -52,37 +54,22 @@ namespace Controller.RaceScene
 
         private async UniTaskVoid InitView()
         {
-            _finishOverlayView = Instantiate<UIRaceFinishOverlayView>(PrefabKey.UIFinishOverlay, _targetTransform);
+            _finishOverlayView = InstantiateView();
             
             SetupView();
 
-            _eventBus.Dispatch(new UIFinishOverlayInitEvent());
-            
+            _eventBus.Dispatch(new RequestFinishMusicEvent());
+
+            await UniTask.Delay(1000);
             await _finishOverlayView.AnimateShow(_raceResultsModel.IsFirst);
 
             Subscribe();
         }
 
-        private void SetupView()
+        protected virtual void SetupView()
         {
             _finishOverlayView.SetFinishText(GetLocale(LocalizationKeys.Finish));
             _finishOverlayView.SetPlaceText(GetLocale(LocalizationKeys.FirstPlace));
-            
-            var keysText =
-                $"{GetLocale(LocalizationKeys.Complexity)}:\n{GetLocale(LocalizationKeys.Distance)}:\n \n{GetLocale(LocalizationKeys.Accelerations)}:\n{GetLocale(LocalizationKeys.TurboBoosts)}:\n{GetLocale(LocalizationKeys.Brakings)}:\n{GetLocale(LocalizationKeys.Speed)}:";
-            _finishOverlayView.SetStatsKeysText(keysText);
-
-            var complexityPercentStr = FormatGreen($"{_playerModel.GetOverallComplexityPercent()} %");
-            var distanceStr = FormatGreen($"{_raceModel.DistanceMeters} {GetLocale(LocalizationKeys.MetersShort)}");
-            var turboBoostsText = _raceResultsModel.TurboBoostsCount <= 0
-                ? _raceResultsModel.TurboBoostsCount.ToString()
-                : FormatGreen($"{_raceResultsModel.TurboBoostsCount}");
-            var wrongAnswersText = _raceResultsModel.WrongAnswersCount <= 0
-                ? FormatGreen(_raceResultsModel.WrongAnswersCount)
-                : FormatRed(_raceResultsModel.WrongAnswersCount); 
-            var valuesText =
-                $"{complexityPercentStr}\n{distanceStr}\n \n{FormatGreen(_raceResultsModel.RightAnswersCount)}\n{turboBoostsText}\n{wrongAnswersText}\n{FormatGreen(_raceResultsModel.PlayerSpeed)} {FormatGreen(GetLocale(LocalizationKeys.KmH))}";
-            _finishOverlayView.SetStatsValuesText(valuesText);
 
             DisplayRewards();
             
@@ -90,7 +77,12 @@ namespace Controller.RaceScene
             _finishOverlayView.ContinueButtonView.SetText(GetLocale(LocalizationKeys.ContinueButton));
         }
 
-        private void DisplayRewards()
+        protected string GetLocale(string key)
+        {
+            return _localizationProvider.GetLocale(key);
+        }
+
+        protected void DisplayRewards()
         {
             var cashRewardAmountText = FormatGreen($"+{_raceRewards.CashReward}");
             var cashRewardText = $"{cashRewardAmountText} {Constants.TextSpriteCash}";
@@ -170,11 +162,6 @@ namespace Controller.RaceScene
             _audioPlayer.PlayButtonSound();
         }
 
-        private string GetLocale(string key)
-        {
-            return _localizationProvider.GetLocale(key);
-        }
-        
         private enum ProcessTakingRewardsResult
         {
             Default,

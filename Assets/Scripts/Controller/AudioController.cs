@@ -40,7 +40,7 @@ namespace Controller
             _eventBus.Subscribe<SceneLoadedEvent>(OnSceneLoadedEvent);
             
             _eventBus.Subscribe<RaceFinishingEvent>(OnRaceFinishingEvent);
-            _eventBus.Subscribe<UIFinishOverlayInitEvent>(OnUIFinishOverlayInitEvent);
+            _eventBus.Subscribe<RequestFinishMusicEvent>(OnRequestFinishMusicEvent);
         }
 
         private void Unsubscribe()
@@ -49,7 +49,7 @@ namespace Controller
             _eventBus.Unsubscribe<SceneLoadedEvent>(OnSceneLoadedEvent);
             
             _eventBus.Unsubscribe<RaceFinishingEvent>(OnRaceFinishingEvent);
-            _eventBus.Unsubscribe<UIFinishOverlayInitEvent>(OnUIFinishOverlayInitEvent);
+            _eventBus.Unsubscribe<RequestFinishMusicEvent>(OnRequestFinishMusicEvent);
         }
 
         private void OnStartUnloadCurrentSceneEvent(StartUnloadCurrentSceneEvent e)
@@ -69,7 +69,7 @@ namespace Controller
             _currentFadeOutMusicTask = _audioPlayer.FadeOutAndStopMusicAsync(CancellationToken.None, duration);
         }
 
-        private void OnUIFinishOverlayInitEvent(UIFinishOverlayInitEvent e)
+        private void OnRequestFinishMusicEvent(RequestFinishMusicEvent e)
         {
             _currentFadeOutMusicTask.ContinueWith(() => PlayMusic(MusicKey.FinishRace, 0.1f));
         }

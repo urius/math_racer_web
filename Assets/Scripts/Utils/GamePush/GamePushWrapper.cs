@@ -75,7 +75,7 @@ namespace Utils.GamePush
 
         public static string GetPlayerData(string fieldName)
         {
-#if !UNITY_STANDALONE_OSX
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
             if (IsGPInit && GP_Player.IsStub() == false)
             {
                 return GP_Player.GetString(fieldName);
@@ -109,7 +109,7 @@ namespace Utils.GamePush
 
         public static void SavePlayerData(string fieldName, string value, bool needSync = true)
         {
-#if !UNITY_STANDALONE_OSX
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
             if (IsGPInit)
             {
                 GP_Player.Set(fieldName, value);
@@ -132,7 +132,7 @@ namespace Utils.GamePush
 
         public static void SyncPlayerData()
         {
-#if !UNITY_STANDALONE_OSX
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
             if (IsGPInit)
             {
                 GP_Player.Sync();
@@ -142,7 +142,7 @@ namespace Utils.GamePush
 
         public static void ResetPlayer()
         {
-#if !UNITY_STANDALONE_OSX
+#if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
             if (IsGPInit)
             {
                 GP_Player.ResetPlayer();

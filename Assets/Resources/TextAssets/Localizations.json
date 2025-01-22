@@ -289,6 +289,26 @@
 			"key": "join_button",
 			"en": "Join",
 			"ru": "Подключиться"
+		},
+		{
+			"key": "title_name",
+			"en": "Name",
+			"ru": "Имя"
+		},
+		{
+			"key": "title_time",
+			"en": "Time",
+			"ru": "Время"
+		},
+		{
+			"key": "title_speed",
+			"en": "Speed",
+			"ru": "Скорость"
+		},
+		{
+			"key": "title_answers",
+			"en": "Answers",
+			"ru": "Ответы"
 		}
 	]
 }

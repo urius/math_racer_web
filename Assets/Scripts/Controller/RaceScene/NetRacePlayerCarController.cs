@@ -75,7 +75,11 @@ namespace Controller.RaceScene
             if (flagValue)
             {
                 var raceResultsModel = _raceModel.RaceResultsModel;
-                _roomService.SendFinished(raceResultsModel.PlayerSpeed, raceResultsModel.RaceTimeSec);
+                _roomService.SendFinished(
+                    raceResultsModel.PlayerSpeed,
+                    raceResultsModel.RaceTimeSec,
+                    raceResultsModel.RightAnswersCount,
+                    raceResultsModel.WrongAnswersCount);
             }
         }
     }

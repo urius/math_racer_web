@@ -288,11 +288,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerCarImage: {fileID: 1115214728}
   _playerCarRectTransform: {fileID: 1115214727}
-  _botCarImage: {fileID: 764578531}
   _opponentCarImages:
   - {fileID: 764578531}
   - {fileID: 840913257}
-  _botCarRectTransform: {fileID: 764578530}
   _distanceText: {fileID: 1134436884}
 --- !u!1 &233846833
 GameObject:

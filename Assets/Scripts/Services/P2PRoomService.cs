@@ -24,7 +24,7 @@ namespace Services
         public event Action<int, long> AccelerateReceived;
         public event Action<int, long> AccelerateTurboReceived;
         public event Action<int, long> DecelerateReceived;
-        public event Action<int, int, int> OpponentFinishedReceived;
+        public event Action<int, int, int, int, int> OpponentFinishedReceived;
         
         private const string CommandInit = "init";
         private const string CommandInitResponse = "init_response";
@@ -165,9 +165,14 @@ namespace Services
             SendToAll(CommandDecelerate, commandBody.ToString());
         }
 
-        public void SendFinished(int playerSpeed, float raceTimeSec)
+        public void SendFinished(int playerSpeed, float raceTimeSec, int rightAnswersCount, int wrongAnswersCount)
         {
-            var commandBody = new P2PPlayerFinishedCommandBodyDto(PlayerNetId, playerSpeed, (int)(raceTimeSec * 1000));
+            var commandBody = new P2PPlayerFinishedCommandBodyDto(
+                PlayerNetId,
+                playerSpeed,
+                (int)(raceTimeSec * 1000),
+                rightAnswersCount,
+                wrongAnswersCount);
             SendToAll(CommandFinished, commandBody.ToString());
         }
 
@@ -386,7 +391,12 @@ namespace Services
                     break;
                 case CommandFinished:
                     var bodyDto = P2PPlayerFinishedCommandBodyDto.Parse(data);
-                    OpponentFinishedReceived?.Invoke(bodyDto.NetId, bodyDto.Speed, bodyDto.RaceTimeMs);
+                    OpponentFinishedReceived?.Invoke(
+                        bodyDto.NetId,
+                        bodyDto.Speed,
+                        bodyDto.RaceTimeMs,
+                        bodyDto.RightAnswersCount,
+                        bodyDto.WrongAnswersCount);
                     break;
             }
         }
@@ -491,7 +501,7 @@ namespace Services
         public event Action<int, long> AccelerateReceived;
         public event Action<int, long> AccelerateTurboReceived;
         public event Action<int, long> DecelerateReceived;
-        public event Action<int, int, int> OpponentFinishedReceived;
+        public event Action<int, int, int, int, int> OpponentFinishedReceived;
         
         public string RoomId { get; }
         public bool HasRoom { get; }
@@ -507,6 +517,6 @@ namespace Services
         public void SendAccelerate();
         public void SendAccelerateTurbo();
         public void SendDecelerate();
-        public void SendFinished(int playerSpeed, float raceTimeSec);
+        public void SendFinished(int playerSpeed, float raceTimeSec, int rightAnswersCount, int wrongAnswersCount);
     }
 }

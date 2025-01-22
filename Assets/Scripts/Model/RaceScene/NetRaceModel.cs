@@ -22,11 +22,14 @@ namespace Model.RaceScene
         {
         }
 
+        public override bool IsSinglePlayerRace => false;
         public IReadOnlyDictionary<int, NetOpponentRaceResult> NetOpponentRaceResults => _netOpponentRaceResultById;
 
         public void SetOpponentResult(int id, NetOpponentRaceResult result)
         {
             _netOpponentRaceResultById[id] = result;
+
+            RaceResultsModel.ConsiderOpponentResult(result.RaceTimeMs);
             
             NetOpponentResultAdded?.Invoke(id);
         }

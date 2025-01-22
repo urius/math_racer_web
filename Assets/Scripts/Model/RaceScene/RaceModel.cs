@@ -26,11 +26,12 @@ namespace Model.RaceScene
             RaceResultsModel = new RaceResultsModel();
         }
 
+        public virtual bool IsSinglePlayerRace => true;
         public QuestionsModel QuestionsModel { get; }
         public CarModel PlayerCar { get; }
         public CarModel[] OpponentCarModels { get; }
         public RaceResultsModel RaceResultsModel { get; }
-        public RaceRewardsModel RaceRewards { get; private set; }
+        public RaceRewardsModel RaceRewards => RaceResultsModel.RaceRewards;
         public bool IsFinishing { get; private set; }
         public bool IsFinished { get; private set; }
         public float PlayerCarDistanceToFinish => DistanceMeters - PlayerCar.PassedMeters;
@@ -59,8 +60,7 @@ namespace Model.RaceScene
             {
                 var raceTimeSec = Time.realtimeSinceStartup - _startRaceTime;
                 IsFinished = true;
-                RaceResultsModel.SetResults(PlayerCar, OpponentCarModels, QuestionsModel, raceTimeSec);
-                RaceRewards = new RaceRewardsModel(DistanceMeters, RaceResultsModel, _complexityData);
+                RaceResultsModel.SetResults(PlayerCar, OpponentCarModels, QuestionsModel, raceTimeSec, DistanceMeters, _complexityData);
                 IsFinishedFlagChanged?.Invoke(IsFinished);
             }
         }

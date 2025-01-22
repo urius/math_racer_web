@@ -22,6 +22,16 @@ namespace View.Helpers
             return FormatColor(text, "green");
         }
         
+        public static string FormatYellow(int textInt)
+        {
+            return FormatYellow(textInt.ToString());
+        }
+
+        public static string FormatYellow(string text)
+        {
+            return FormatColor(text, "yellow");
+        }
+        
         public static string FormatBlue(int textInt)
         {
             return FormatBlue(textInt.ToString());

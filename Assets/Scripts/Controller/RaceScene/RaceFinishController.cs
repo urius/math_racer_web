@@ -67,7 +67,14 @@ namespace Controller.RaceScene
         {
             if (isFinished)
             {
-                InitChildController(new RaceFinishOverlayViewController(_rootCanvasView.transform));
+                if (_raceModel.IsSinglePlayerRace)
+                {
+                    InitChildController(new SingleRaceFinishOverlayViewController(_rootCanvasView.transform));
+                }
+                else
+                {
+                    InitChildController(new NetRaceFinishOverlayViewController(_rootCanvasView.transform));
+                }
             }
         }
 
