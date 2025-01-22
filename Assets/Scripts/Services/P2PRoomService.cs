@@ -288,28 +288,6 @@ namespace Services
             }
         }
 
-        private void ProcessPing1Command(IP2PConnection connection, string data)  // join side
-        {
-            var commandBody = P2PPingCommandBodyDto.Parse(data);
-            var commandBoyToSend = new P2PPingCommandBodyDto(commandBody.HostTimeMs, LocalUtcTimestampMs);
-            SendCommandTo(connection, CommandPing2, commandBoyToSend.ToString());
-        }
-
-        private void ProcessPing2Command(IP2PConnection connection, string data)  //host side
-        {
-            var commandBody = P2PPingCommandBodyDto.Parse(data);
-            UpdatePingForConnection(connection, commandBody.HostTimeMs);
-
-            var commandBoyToSend = new P2PPingCommandBodyDto(LocalUtcTimestampMs, commandBody.JoinTimeMs);
-            SendCommandTo(connection, CommandPing3, commandBoyToSend.ToString());
-        }
-
-        private void ProcessPing3Command(IP2PConnection connection, string data)  // join side
-        {
-            var commandBody = P2PPingCommandBodyDto.Parse(data);
-            UpdatePingForConnection(connection, commandBody.JoinTimeMs);
-        }
-
         private void ProcessInitCommand(IP2PConnection connection, string body)  // join side
         {
             var commandBodyDto = P2PInitCommandBodyDto.Parse(body);
@@ -369,6 +347,28 @@ namespace Services
             }
             
             StartGameReceived?.Invoke();
+        }
+
+        private void ProcessPing1Command(IP2PConnection connection, string data)  // join side
+        {
+            var commandBody = P2PPingCommandBodyDto.Parse(data);
+            var commandBoyToSend = new P2PPingCommandBodyDto(commandBody.HostTimeMs, LocalUtcTimestampMs);
+            SendCommandTo(connection, CommandPing2, commandBoyToSend.ToString());
+        }
+
+        private void ProcessPing2Command(IP2PConnection connection, string data)  //host side
+        {
+            var commandBody = P2PPingCommandBodyDto.Parse(data);
+            UpdatePingForConnection(connection, commandBody.HostTimeMs);
+
+            var commandBoyToSend = new P2PPingCommandBodyDto(LocalUtcTimestampMs, commandBody.JoinTimeMs);
+            SendCommandTo(connection, CommandPing3, commandBoyToSend.ToString());
+        }
+
+        private void ProcessPing3Command(IP2PConnection connection, string data)  // join side
+        {
+            var commandBody = P2PPingCommandBodyDto.Parse(data);
+            UpdatePingForConnection(connection, commandBody.JoinTimeMs);
         }
 
         private void HandleCommonMessage(string command, string data)
