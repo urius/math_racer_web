@@ -30,7 +30,7 @@ namespace View.UI.RaceScene
 
         public void SetTimeText(int timeMs, bool isBestTime)
         {
-            var timeStr = FormattingHelper.ToTimeFormatMinSec((int)(timeMs * 0.001));
+            var timeStr = FormattingHelper.ToTimeFormatMinSecMs(timeMs);
             _timeText.SetText(isBestTime ? RichTextHelper.FormatGreen(timeStr) : timeStr);
         }
 

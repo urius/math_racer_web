@@ -25,9 +25,11 @@ namespace Controller.RaceScene
             _roomService.OpponentFinishedReceived -= OnOpponentFinishedReceived;
         }
 
-        private void OnOpponentFinishedReceived(int id, int speed, int raceTimeMs, int rightAnswersCount, int wrongAnswersCount)
+        private void OnOpponentFinishedReceived(OpponentFinishedReceivedEventPayload payload)
         {
-            _netRaceModel.SetOpponentResult(id, new NetOpponentRaceResult(speed, raceTimeMs, rightAnswersCount, wrongAnswersCount));
+            _netRaceModel.SetOpponentResult(payload.NetId,
+                new NetOpponentRaceResult(
+                    payload.Speed, payload.RaceTimeMs, payload.RightAnswersCount, payload.WrongAnswersCount));
         }
     }
 }

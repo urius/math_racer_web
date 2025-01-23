@@ -309,6 +309,11 @@
 			"key": "title_answers",
 			"en": "Answers",
 			"ru": "Ответы"
+		},
+		{
+			"key": "button_copy",
+			"en": "Copy",
+			"ru": "Скопировать"
 		}
 	]
 }

@@ -24,7 +24,7 @@ namespace Services
         public event Action<int, long> AccelerateReceived;
         public event Action<int, long> AccelerateTurboReceived;
         public event Action<int, long> DecelerateReceived;
-        public event Action<int, int, int, int, int> OpponentFinishedReceived;
+        public event Action<OpponentFinishedReceivedEventPayload> OpponentFinishedReceived;
         
         private const string CommandInit = "init";
         private const string CommandInitResponse = "init_response";
@@ -392,11 +392,13 @@ namespace Services
                 case CommandFinished:
                     var bodyDto = P2PPlayerFinishedCommandBodyDto.Parse(data);
                     OpponentFinishedReceived?.Invoke(
-                        bodyDto.NetId,
-                        bodyDto.Speed,
-                        bodyDto.RaceTimeMs,
-                        bodyDto.RightAnswersCount,
-                        bodyDto.WrongAnswersCount);
+                        new OpponentFinishedReceivedEventPayload(
+                            bodyDto.NetId,
+                            bodyDto.Speed,
+                            bodyDto.RaceTimeMs,
+                            bodyDto.RightAnswersCount,
+                            bodyDto.WrongAnswersCount)
+                    );
                     break;
             }
         }
@@ -501,7 +503,7 @@ namespace Services
         public event Action<int, long> AccelerateReceived;
         public event Action<int, long> AccelerateTurboReceived;
         public event Action<int, long> DecelerateReceived;
-        public event Action<int, int, int, int, int> OpponentFinishedReceived;
+        public event Action<OpponentFinishedReceivedEventPayload> OpponentFinishedReceived;
         
         public string RoomId { get; }
         public bool HasRoom { get; }
@@ -518,5 +520,23 @@ namespace Services
         public void SendAccelerateTurbo();
         public void SendDecelerate();
         public void SendFinished(int playerSpeed, float raceTimeSec, int rightAnswersCount, int wrongAnswersCount);
+    }
+
+    public struct OpponentFinishedReceivedEventPayload
+    {
+        public readonly int NetId;
+        public readonly int Speed;
+        public readonly int RaceTimeMs;
+        public readonly int RightAnswersCount;
+        public readonly int WrongAnswersCount;
+
+        public OpponentFinishedReceivedEventPayload(int netId, int speed, int raceTimeMs, int rightAnswersCount, int wrongAnswersCount)
+        {
+            NetId = netId;
+            Speed = speed;
+            RaceTimeMs = raceTimeMs;
+            RightAnswersCount = rightAnswersCount;
+            WrongAnswersCount = wrongAnswersCount;
+        }
     }
 }

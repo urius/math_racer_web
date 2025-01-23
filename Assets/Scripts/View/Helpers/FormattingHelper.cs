@@ -26,10 +26,22 @@ namespace Utils
         {
             var minutes = seconds / 60;
             var remainingSeconds = seconds % 60;
-            
+
             var formattedTime = $"{minutes:D2}:{remainingSeconds:D2}";
-            
-             return formattedTime;
+
+            return formattedTime;
+        }
+        
+        public static string ToTimeFormatMinSecMs(int milliseconds)
+        {
+            var totalSeconds = milliseconds / 1000;
+            var minutes = totalSeconds / 60;
+            var remainingSeconds = totalSeconds % 60;
+            var remainingMilliseconds = milliseconds % 1000;
+
+            var formattedTime = $"{minutes:D2}:{remainingSeconds:D2}:{remainingMilliseconds:D3}";
+
+            return formattedTime;
         }
     }
 }

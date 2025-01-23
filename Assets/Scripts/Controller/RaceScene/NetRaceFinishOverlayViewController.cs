@@ -4,6 +4,7 @@ using Infra.Instance;
 using Model.RaceScene;
 using Providers;
 using Providers.LocalizationProvider;
+using Services;
 using UnityEngine;
 using View.UI.RaceScene;
 
@@ -13,6 +14,7 @@ namespace Controller.RaceScene
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
+        private readonly IP2PRoomService _roomService = Instance.Get<IP2PRoomService>();
         
         private UINetRaceFinishOverlayView _finishOverlayView;
         private NetRaceModel _netRaceModel;
@@ -28,6 +30,20 @@ namespace Controller.RaceScene
             base.Initialize();
         }
 
+        protected override void Subscribe()
+        {
+            base.Subscribe();
+
+            _roomService.OpponentFinishedReceived += OnOpponentFinishedReceived;
+        }
+
+        protected override void Unsubscribe()
+        {
+            _roomService.OpponentFinishedReceived -= OnOpponentFinishedReceived;
+            
+            base.Unsubscribe();
+        }
+
         protected override UIRaceFinishOverlayViewBase InstantiateView()
         {
             _finishOverlayView = Instantiate<UINetRaceFinishOverlayView>(PrefabKey.UINetFinishOverlay, TargetTransform);
@@ -39,6 +55,11 @@ namespace Controller.RaceScene
         {
             base.SetupView();
 
+            UpdateResultViews();
+        }
+
+        private void OnOpponentFinishedReceived(OpponentFinishedReceivedEventPayload payload)
+        {
             UpdateResultViews();
         }
 

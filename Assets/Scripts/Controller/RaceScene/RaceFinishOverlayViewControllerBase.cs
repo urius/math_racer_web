@@ -96,13 +96,13 @@ namespace Controller.RaceScene
             _finishOverlayView.SetRewardTexts($"{cashRewardText}  {goldRewardText}");
         }
 
-        private void Subscribe()
+        protected virtual void Subscribe()
         {
             _finishOverlayView.ContinueButtonView.ButtonClicked += OnContinueClicked;
             _finishOverlayView.DoubleRewardsButtonView.ButtonClicked += OnDoubleRewardsClicked;
         }
 
-        private void Unsubscribe()
+        protected virtual void Unsubscribe()
         {
             _finishOverlayView.ContinueButtonView.ButtonClicked -= OnContinueClicked;
             _finishOverlayView.DoubleRewardsButtonView.ButtonClicked -= OnDoubleRewardsClicked;
