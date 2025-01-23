@@ -23,7 +23,8 @@ namespace View.UI.RaceScene
 
         public void SetPlaceAndName(int place, string playerName, bool isLocalPLayer)
         {
-            _placeText.SetText(isLocalPLayer ? RichTextHelper.FormatYellow(place) : place.ToString());
+            var placeStr = isLocalPLayer ? RichTextHelper.FormatYellow(place) : place.ToString();
+            _placeText.SetText($"#{placeStr}");
             _nameText.SetText(isLocalPLayer ? RichTextHelper.FormatYellow(playerName) : playerName);
         }
 

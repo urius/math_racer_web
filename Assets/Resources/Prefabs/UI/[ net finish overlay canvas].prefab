@@ -240,6 +240,7 @@ MonoBehaviour:
   _rewardsText: {fileID: 4366551438911634994}
   _doubleRewardsButtonView: {fileID: 7221181801144283049}
   _continueButtonView: {fileID: 9212939622782412636}
+  _itemCaptionsCanvasGroup: {fileID: 1109110807618368694}
   _raceResultItems:
   - {fileID: 4266365562556414296}
   - {fileID: 1202081744607528265}
