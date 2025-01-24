@@ -53,6 +53,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             _popupView.CloseButtonClicked += OnCloseButtonClicked;
             _popupView.JoinCodeValueChanged += OnJoinCodeValueChanged;
             _popupView.JoinButton.ButtonClicked += OnJoinButtonClicked;
+            _popupView.PasteButton.ButtonClicked += OnPasteButtonClicked;
         }
 
         private void Unsubscribe()
@@ -62,6 +63,18 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             _popupView.CloseButtonClicked -= OnCloseButtonClicked;
             _popupView.JoinCodeValueChanged -= OnJoinCodeValueChanged;
             _popupView.JoinButton.ButtonClicked -= OnJoinButtonClicked;
+            _popupView.PasteButton.ButtonClicked -= OnPasteButtonClicked;
+        }
+
+        private void OnPasteButtonClicked()
+        {
+            PasteRoomCode().Forget();
+        }
+
+        private async UniTaskVoid PasteRoomCode()
+        {
+            var bufferString = await WebGLCopyAndPasteAPI.GetBufferString();
+            _popupView.SetRoomCodeText(bufferString);
         }
 
         private void OnJoinButtonClicked()

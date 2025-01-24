@@ -314,6 +314,11 @@
 			"key": "button_copy",
 			"en": "Copy",
 			"ru": "Скопировать"
+		},
+		{
+			"key": "button_paste",
+			"en": "Paste",
+			"ru": "Вставить"
 		}
 	]
 }

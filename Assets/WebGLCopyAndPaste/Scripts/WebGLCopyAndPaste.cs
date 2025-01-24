@@ -32,6 +32,7 @@
 // #define WEBGL_COPY_AND_PASTE_SUPPORT_TEXTMESH_PRO
 
 using System.Runtime.InteropServices;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Scripting;
@@ -48,12 +49,25 @@ public class WebGLCopyAndPasteAPI
     private static extern void passCopyToBrowser(string str);
     [DllImport("__Internal")]
     private static extern void writeToClipboard(string str);
+    [DllImport("__Internal")]
+    private static extern string readFromClipboard(StringCallback readFromClipboardCallback);
+
+    private static UniTaskCompletionSource<string> _readFromClipboardTcs;
 
     delegate void StringCallback( string content );
 
     public static void CopyString(string str)
     {
         writeToClipboard(str);
+    }
+
+    public static UniTask<string> GetBufferString()
+    {
+        _readFromClipboardTcs = new UniTaskCompletionSource<string>();
+        
+        readFromClipboard(ReadFromClipboardCallback);
+        
+        return _readFromClipboardTcs.Task;
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
@@ -131,6 +145,12 @@ public class WebGLCopyAndPasteAPI
         GUIUtility.systemCopyBuffer = str;
         SendKey("v", true);
         GUIUtility.systemCopyBuffer = null;
+      }
+      
+      [AOT.MonoPInvokeCallback( typeof(StringCallback) )]
+      private static void ReadFromClipboardCallback(string text)
+      {
+          _readFromClipboardTcs.TrySetResult(text);
       }
 
 #endif

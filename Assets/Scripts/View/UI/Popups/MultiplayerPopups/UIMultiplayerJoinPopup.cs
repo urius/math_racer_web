@@ -14,8 +14,10 @@ namespace View.UI.Popups.MultiplayerPopups
         [SerializeField] private InputField _roomCodeText;
         [SerializeField] private Text _roomPlaceholderText;
         [SerializeField] private UITextButtonView _joinButton;
+        [SerializeField] private UITextButtonView _pasteButton;
 
         public UITextButtonView JoinButton => _joinButton;
+        public UITextButtonView PasteButton => _pasteButton;
         
         public string JoinCodeText => _roomCodeText.text;
 
@@ -46,9 +48,14 @@ namespace View.UI.Popups.MultiplayerPopups
             _roomCodeText.interactable = isInteractable;
         }
 
+        public void SetRoomCodeText(string text)
+        {
+            _roomCodeText.text = text;
+        }
+
         public void ResetRoomCodeText()
         {
-            _roomCodeText.text = string.Empty;
+            SetRoomCodeText(string.Empty);
         }
 
         private void OnCodeValueChanged(string value)
