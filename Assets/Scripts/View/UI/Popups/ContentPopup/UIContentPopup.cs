@@ -29,18 +29,17 @@ namespace View.UI.Popups.ContentPopup
 
         private void Update()
         {
-            var newContentPosition = _contentTransform.anchoredPosition;
+            var prevContentTransformPosition = _contentTransformPosition;
+            _contentTransformPosition = _contentTransform.anchoredPosition;
 
-            if (newContentPosition.y < _contentTransformPosition.y)
+            if (_contentTransformPosition.y < prevContentTransformPosition.y)
             {
                 ProcessScrollForward();
             }
-            else if (newContentPosition.y > _contentTransformPosition.y)
+            else if (_contentTransformPosition.y > prevContentTransformPosition.y)
             {
                 ProcessScrollBackward();
             }
-
-            _contentTransformPosition = newContentPosition;
         }
 
         public void Setup(int columnsCount, int popupWidth, int popupHeight)
@@ -66,9 +65,9 @@ namespace View.UI.Popups.ContentPopup
                 SetContentHeight(-itemData.EndCoord);
             }
 
-            _displayedItems.AddLast(new ItemData(item));
+            _hiddenItemsTail.AddLast(new ItemData(item));
 
-            TryHideTailItem();
+            TryShowTailHiddenItem();
         }
 
         public void ClearContent()
