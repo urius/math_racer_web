@@ -37,7 +37,7 @@ namespace View
             _wheelRotationMultiplier = 360 / (_wheelRadius * (float)Math.PI * 2);
         }
 
-        public void RotateWheels(float degrees)
+        public virtual void RotateWheels(float degrees)
         {
             _wheelBack.Rotate(0, 0, -degrees);
             _wheelFront.Rotate(0, 0, -degrees);

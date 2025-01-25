@@ -53,7 +53,6 @@ MonoBehaviour:
   _wheelBack: {fileID: 6072916502137470123}
   _wheelFront: {fileID: 192433355620555683}
   _boosterContainer: {fileID: 6711535521174073562}
-  _boosterPrefab: {fileID: 4805281740419894079, guid: ed6761a1d76f84277ab80c9cfd2fab65, type: 3}
   _bodyRotationMin: -5
   _bodyRotationMax: 5
 --- !u!114 &1267169178693934567
@@ -71,7 +70,7 @@ MonoBehaviour:
   _acceleration: 19
   _maxSpeed: 180
   _iconSprite: {fileID: 21300000, guid: 02f628211fae146a682adb4363089250, type: 3}
-  _price: -3
+  _price: -15
   _unlockLevel: 2
 --- !u!1 &2692939218463098067
 GameObject:
