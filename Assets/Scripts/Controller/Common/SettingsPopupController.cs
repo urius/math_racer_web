@@ -41,10 +41,14 @@ namespace Controller.Common
             Subscribe();
 
             _popupView.Appear2Async().Forget();
+            
+            _eventBus.Dispatch(new UISettingsPopupOpenedEvent());
         }
 
         public override void DisposeInternal()
         {
+            _eventBus.Dispatch(new UISettingsPopupClosedEvent());
+            
             Unsubscribe();
             
             Destroy(_popupView);

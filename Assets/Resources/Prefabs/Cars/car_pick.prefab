@@ -238,7 +238,7 @@ MonoBehaviour:
   _acceleration: 20
   _maxSpeed: 195
   _iconSprite: {fileID: 21300000, guid: 19c6ed9201f734c739984d05b20e45de, type: 3}
-  _price: 95000
+  _price: 78000
   _unlockLevel: 21
 --- !u!1 &7668724296526352630
 GameObject:

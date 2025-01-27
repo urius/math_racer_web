@@ -61,6 +61,8 @@ namespace Controller.MenuScene
             _rootCanvasView.SettingsButtonClicked += OnSettingsButtonClicked;
             
             _eventBus.Subscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
+            _eventBus.Subscribe<UISettingsPopupOpenedEvent>(OnUISettingsPopupOpenedEvent);
+            _eventBus.Subscribe<UISettingsPopupClosedEvent>(OnUISettingsPopupClosedEvent);
         }
 
         private void Unsubscribe()
@@ -71,6 +73,18 @@ namespace Controller.MenuScene
             _rootCanvasView.SettingsButtonClicked -= OnSettingsButtonClicked;
             
             _eventBus.Unsubscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
+            _eventBus.Unsubscribe<UISettingsPopupOpenedEvent>(OnUISettingsPopupOpenedEvent);
+            _eventBus.Unsubscribe<UISettingsPopupClosedEvent>(OnUISettingsPopupClosedEvent);
+        }
+
+        private void OnUISettingsPopupOpenedEvent(UISettingsPopupOpenedEvent e)
+        {
+            _rootCanvasView.SetSettingsButtonInteractable(false);
+        }
+
+        private void OnUISettingsPopupClosedEvent(UISettingsPopupClosedEvent e)
+        {
+            _rootCanvasView.SetSettingsButtonInteractable(true);
         }
 
         private void OnPlayButtonClicked()

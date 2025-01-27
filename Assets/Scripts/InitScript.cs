@@ -3,6 +3,7 @@ using Controller;
 using Controller.Commands;
 using Cysharp.Threading.Tasks;
 using Data;
+using GamePush;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
@@ -64,6 +65,7 @@ public class InitScript : MonoBehaviour
         if (initSuccess)
         {
             Debug.Log("GP player id: " + GamePushWrapper.GetPlayerId());
+            Debug.Log("GP language: " + GP_Language.Current());
 
             _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());
         }
