@@ -1,6 +1,7 @@
 using Infra.Instance;
 using Model.RaceScene;
 using Services;
+using UnityEngine;
 
 namespace Controller.RaceScene
 {
@@ -27,6 +28,8 @@ namespace Controller.RaceScene
 
         private void OnOpponentFinishedReceived(OpponentFinishedReceivedEventPayload payload)
         {
+            Debug.Log("OnOpponentFinishedReceived");
+            
             _netRaceModel.SetOpponentResult(payload.NetId,
                 new NetOpponentRaceResult(
                     payload.Speed, payload.RaceTimeMs, payload.RightAnswersCount, payload.WrongAnswersCount));

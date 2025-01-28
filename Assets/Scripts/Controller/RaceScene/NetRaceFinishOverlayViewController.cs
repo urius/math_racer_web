@@ -61,7 +61,7 @@ namespace Controller.RaceScene
             UpdateResultViews();
         }
 
-        private void OnNetOpponentResultAdded(int opponentIndex)
+        private void OnNetOpponentResultAdded(int opponentId)
         {
             UpdateResultViews();
         }

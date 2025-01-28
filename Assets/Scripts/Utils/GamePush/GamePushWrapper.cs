@@ -100,13 +100,18 @@ namespace Utils.GamePush
         
         public static string GetPlayerName()
         {
-            
             Debug.Log("GetPlayerName, IsGPInit:" + IsGPInit);
             
 #if !UNITY_STANDALONE_OSX
             if (IsGPInit)
             {
-                return GP_Player.GetName();
+                var name = GP_Player.GetName();
+                if (string.IsNullOrEmpty(name))
+                {
+                    name = "Empty player name";
+                }
+
+                return name;
             }
 #endif
 
@@ -447,11 +452,15 @@ namespace Utils.GamePush
         {
             var result = PlayerPrefs.GetString(playerPrefsKey);
             
+            Debug.Log("GetPlayerName, result1:" + result);
+            
             if (string.IsNullOrEmpty(result))
             {
                 result = defaultValue;
                 PlayerPrefs.SetString(playerPrefsKey, result);
             }
+            
+            Debug.Log("GetPlayerName, result2:" + result);
             
             return result;
         }

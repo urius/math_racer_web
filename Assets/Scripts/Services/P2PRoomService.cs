@@ -392,6 +392,8 @@ namespace Services
                     DispatchCommonCommand(DecelerateReceived, data);
                     break;
                 case CommandFinished:
+                    Debug.Log("HandleCommonMessage CommandFinished, data: " + data);
+                    
                     var bodyDto = P2PPlayerFinishedCommandBodyDto.Parse(data);
                     OpponentFinishedReceived?.Invoke(
                         new OpponentFinishedReceivedEventPayload(

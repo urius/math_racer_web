@@ -42,7 +42,7 @@ namespace Controller.RaceScene
             _playerModel = _modelsHolder.GetPlayerModel();
             _raceModel = _modelsHolder.GetRaceModel();
             _raceResultsModel = _raceModel.RaceResultsModel;
-            _raceRewards = _raceModel.RaceRewards; 
+            _raceRewards = _raceModel.RaceRewards;
             
             InitView().Forget();
         }
@@ -55,6 +55,8 @@ namespace Controller.RaceScene
         private async UniTaskVoid InitView()
         {
             _finishOverlayView = InstantiateView();
+
+            Subscribe();
             
             SetupView();
 
@@ -62,8 +64,6 @@ namespace Controller.RaceScene
 
             await UniTask.Delay(1000);
             await _finishOverlayView.AnimateShow(_raceResultsModel.IsFirst);
-
-            Subscribe();
         }
 
         protected virtual void SetupView()
