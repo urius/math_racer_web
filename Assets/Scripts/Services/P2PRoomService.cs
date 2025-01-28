@@ -72,7 +72,7 @@ namespace Services
         {
             _p2pRoom = CreateRoomInstance();
             PlayersData = new P2PPlayersData();
-            PlayersData.CreateLocalPlayerData(PlayerModel.CurrentCar);
+            PlayersData.CreateLocalPlayerData(PlayerModel.PlayerName, PlayerModel.CurrentCar);
             PlayersData.LocalPlayerData.PositionIndex = 0;
 
             var createRoomResult = await _p2pRoom.Create(2);
@@ -217,7 +217,6 @@ namespace Services
             
             var commandBody = new P2PInitCommandBodyDto(
                 PlayersData.LocalPlayerData.Id,
-                PlayerModel.CurrentCar,
                 remotePlayerData.Id,
                 LocalUtcTimestampMs);
             SendCommandTo(connection, CommandInit, commandBody.ToString());
@@ -251,6 +250,8 @@ namespace Services
 
         private void OnMessageReceivedFrom(IP2PConnection connection, string message)
         {
+            Debug.Log("OnMessageReceivedFrom: " + message);
+            
             var splitted = message.Split(Constants.P2PCommandSeparator);
             var command = splitted[0];
             var data = splitted[1];
@@ -296,13 +297,13 @@ namespace Services
         private void ProcessInitCommand(IP2PConnection connection, string body)  // join side
         {
             var commandBodyDto = P2PInitCommandBodyDto.Parse(body);
-            
-            PlayersData.CreateLocalPlayerData(PlayerModel.CurrentCar, commandBodyDto.JoinId);
-            
-            var hostPlayerData = PlayersData.CreateRemotePlayerData(connection, commandBodyDto.HostId);
-            hostPlayerData.CarKey = commandBodyDto.HostCarKey;
 
-            var initResponseCommandBodyDto = new P2PInitResponseCommandBodyDto(PlayersData.LocalPlayerData.CarKey, commandBodyDto.HostTimeMs);
+            PlayersData.CreateLocalPlayerData(PlayerModel.PlayerName, PlayerModel.CurrentCar, commandBodyDto.JoinId);
+            PlayersData.CreateRemotePlayerData(connection, commandBodyDto.HostId);
+
+            var localPlayerData = PlayersData.LocalPlayerData;
+            var initResponseCommandBodyDto = new P2PInitResponseCommandBodyDto(
+                localPlayerData.PlayerName, localPlayerData.CarKey, commandBodyDto.HostTimeMs);
             SendCommandTo(connection, CommandInitResponse, initResponseCommandBodyDto.ToString());
         }
 
@@ -314,6 +315,7 @@ namespace Services
             
             var playerData = PlayersData.RemotePlayerDataByConnection[connection];
             playerData.CarKey = commandBodyDto.JoinedCarKey;
+            playerData.PlayerName = commandBodyDto.JoinedPlayerName;
             
             var setTimeCommandBodyDto = new P2PSetTimeCommandBodyDto(LocalUtcTimestampMs, pingMs);
             SendCommandTo(connection, CommandSetTime, setTimeCommandBodyDto.ToString());
@@ -411,6 +413,7 @@ namespace Services
 
         private static void FillPLayerData(P2PPlayerData playerData, P2PPlayerDataDto netPlayerDataDto)
         {
+            playerData.PlayerName = netPlayerDataDto.Name;
             playerData.CarKey = netPlayerDataDto.CarKey;
             playerData.PositionIndex = netPlayerDataDto.PositionIndex;
         }
@@ -513,7 +516,7 @@ namespace Services
 
         public UniTask<bool> HostNewRoom();
         public void DestroyCurrentRoom();
-        UniTask<bool> JoinRoom(int parse);
+        UniTask<bool> JoinRoom(int roomId);
         public void SendStartToReadyPlayers();
         public void SendToAll(string command, string data = null);
         public void SendAccelerate();

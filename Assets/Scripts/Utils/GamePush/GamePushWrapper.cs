@@ -4,6 +4,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using GamePush;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Utils.GamePush
 {
@@ -11,6 +12,8 @@ namespace Utils.GamePush
     {
         public static readonly GamePushWrapper Instance = new GamePushWrapper();
 
+        private const string PlayerFallbackNameFieldKey = "player_name_fallback";
+            
         private readonly UniTaskCompletionSource<bool> _initTcs = new();
 
         private UniTaskCompletionSource<bool> _rewardedAdsTcs;
@@ -93,6 +96,21 @@ namespace Utils.GamePush
             }
 #endif
             return "undefined_id";
+        }
+        
+        public static string GetPlayerName()
+        {
+            
+            Debug.Log("GetPlayerName, IsGPInit:" + IsGPInit);
+            
+#if !UNITY_STANDALONE_OSX
+            if (IsGPInit)
+            {
+                return GP_Player.GetName();
+            }
+#endif
+
+            return GetOrCreatePlayerPref(PlayerFallbackNameFieldKey, "Player_" + (int)(Random.value * 1000));
         }
 
         public static string GetLanguageShortDescription()
@@ -211,7 +229,7 @@ namespace Utils.GamePush
 
             return Instance.FetchProductsInternal();
         }
-        
+
         public static async UniTask<bool> PurchaseProduct(string idOrTag)
         {
             RequestPause(true);
@@ -222,7 +240,7 @@ namespace Utils.GamePush
 
             return purchaseResult;
         }
-        
+
         public static UniTask<bool> ConsumeProduct(string idOrTag)
         {
             return Instance.ConsumeProductInternal(idOrTag);
@@ -322,7 +340,7 @@ namespace Utils.GamePush
             
             return true;
         }
-        
+
         private async UniTask<bool> ShowPreloaderAdsInternal()
         {
 #if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
@@ -423,6 +441,19 @@ namespace Utils.GamePush
         private static string GetLogMessageFormat(string message)
         {
             return $"[{nameof(GamePushWrapper)}]: {message}";
+        }
+
+        private static string GetOrCreatePlayerPref(string playerPrefsKey, string defaultValue)
+        {
+            var result = PlayerPrefs.GetString(playerPrefsKey);
+            
+            if (string.IsNullOrEmpty(result))
+            {
+                result = defaultValue;
+                PlayerPrefs.SetString(playerPrefsKey, result);
+            }
+            
+            return result;
         }
     }
 }

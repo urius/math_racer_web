@@ -32,33 +32,37 @@ namespace Data.Dto.P2P
     public readonly struct P2PPlayerDataDto
     {
         public readonly int Id;
+        public readonly string Name;
         public readonly CarKey CarKey;
         public readonly int PositionIndex;
 
         private const string Separator = Constants.P2PBodyParamsSeparator2;
 
-        public P2PPlayerDataDto(int id, CarKey carKey, int positionIndex)
+        public P2PPlayerDataDto(int id, CarKey carKey, int positionIndex, string name)
         {
             Id = id;
             CarKey = carKey;
             PositionIndex = positionIndex;
+            Name = name;
         }
         
         public static P2PPlayerDataDto FromP2PPlayerData(P2PPlayerData playerData)
         {
-            return new P2PPlayerDataDto(playerData.Id, playerData.CarKey, playerData.PositionIndex);
+            return new P2PPlayerDataDto(playerData.Id, playerData.CarKey, playerData.PositionIndex, playerData.PlayerName);
         }
         
         public static P2PPlayerDataDto Parse(string body)
         {
             var splitted = body.Split(Separator);
 
-            return new P2PPlayerDataDto(int.Parse(splitted[0]), (CarKey)int.Parse(splitted[1]), int.Parse(splitted[2]));
+            return new P2PPlayerDataDto(
+                int.Parse(splitted[0]), (CarKey)int.Parse(splitted[1]), int.Parse(splitted[2]), splitted[3]);
         }
 
         public override string ToString()
         {
-            return $"{Id}{Separator}{(int)CarKey}{Separator}{PositionIndex}";
+            return string.Join(Separator,
+                Id, ((int)CarKey).ToString(), PositionIndex.ToString(), Name);
         }
     }
 }

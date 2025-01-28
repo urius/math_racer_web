@@ -319,6 +319,11 @@
 			"key": "button_paste",
 			"en": "Paste",
 			"ru": "Вставить"
+		},
+		{
+			"key": "opponent",
+			"en": "Opponent",
+			"ru": "Соперник"
 		}
 	]
 }

@@ -23,6 +23,7 @@ namespace Controller.Commands
             var playerDataDto = string.IsNullOrEmpty(playerDataStrLoaded) ? PlayerDataDto.FromDefault() : ConvertToDto(playerDataStrLoaded);
 
             var playerModel = PlayerDataConverter.ToPlayerModel(playerDataDto);
+            playerModel.SetSocialData(GamePushWrapper.GetPlayerName());
             modelsHolder.SetPlayerModel(playerModel);
             
             return UniTask.CompletedTask;

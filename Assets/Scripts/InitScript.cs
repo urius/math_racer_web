@@ -65,6 +65,7 @@ public class InitScript : MonoBehaviour
         if (initSuccess)
         {
             Debug.Log("GP player id: " + GamePushWrapper.GetPlayerId());
+            Debug.Log("GP player Name: " + GamePushWrapper.GetPlayerName());
             Debug.Log("GP language: " + GP_Language.Current());
 
             _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());

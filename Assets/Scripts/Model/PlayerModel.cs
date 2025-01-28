@@ -52,16 +52,21 @@ namespace Model
             get => _cashAmountCrypto.Value;
             private set => _cashAmountCrypto.Value = value;
         }
-
         public int GoldAmount
         {
             get => _goldAmountCrypto.Value;
             private set => _goldAmountCrypto.Value = value;
         }
-
         public int CrystalsAmount => GoldAmount;
         public CarKey CurrentCar { get; private set; }
         public IReadOnlyList<CarKey> BoughtCars => _boughtCars;
+        public PlayerSocialData SocialData { get; private set; }
+        public string PlayerName => SocialData.Name;
+
+        public void SetSocialData(string name)
+        {
+            SocialData = new PlayerSocialData(name);
+        }
 
         public bool TrySpend(int moneyAmount)
         {

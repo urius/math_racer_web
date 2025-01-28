@@ -40,5 +40,6 @@ namespace Data
         public const string JoinPopupErrorMessage = "join_popup_error";
         public const string EnterJoinCode = "enter_join_code";
         public const string JoinButton = "join_button";
+        public const string Opponent = "opponent";
     }
 }

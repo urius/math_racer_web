@@ -43,9 +43,9 @@ namespace Data
         public const string ProductTypeCash = "cash";
         public const string ProductTypeGold = "gold";
         
-        public const string P2PCommandSeparator = "|";
-        public const string P2PBodyParamsSeparator = ",";
-        public const string P2PBodyParamsSeparator2 = "_";
-        public const string P2PBodyArraySeparator = ";";
+        public const string P2PCommandSeparator = " || ";
+        public const string P2PBodyParamsSeparator = " | ";
+        public const string P2PBodyParamsSeparator2 = " , ";
+        public const string P2PBodyArraySeparator = " ; ";
     }
 }

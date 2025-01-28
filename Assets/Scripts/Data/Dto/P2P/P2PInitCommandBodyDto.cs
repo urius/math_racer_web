@@ -3,14 +3,12 @@ namespace Data.Dto.P2P
     public readonly struct P2PInitCommandBodyDto
     {
         public readonly int HostId;
-        public readonly CarKey HostCarKey;
         public readonly int JoinId;
         public readonly long HostTimeMs;
 
-        public P2PInitCommandBodyDto(int hostId, CarKey hostCarKey, int joinId, long hostTimeMs)
+        public P2PInitCommandBodyDto(int hostId, int joinId, long hostTimeMs)
         {
             HostId = hostId;
-            HostCarKey = hostCarKey;
             JoinId = joinId;
             HostTimeMs = hostTimeMs;
         }
@@ -21,16 +19,14 @@ namespace Data.Dto.P2P
 
             return new P2PInitCommandBodyDto(
                 int.Parse(splitted[0]),
-                (CarKey)int.Parse(splitted[1]),
-                int.Parse(splitted[2]),
-                long.Parse(splitted[3]));
+                int.Parse(splitted[1]),
+                long.Parse(splitted[2]));
         }
 
         public override string ToString()
         {
-            const string sep = Constants.P2PBodyParamsSeparator;
-            
-            return $"{HostId}{sep}{(int)HostCarKey}{sep}{JoinId}{sep}{HostTimeMs.ToString()}";
+            return string.Join(Constants.P2PBodyParamsSeparator,
+                HostId, JoinId, HostTimeMs);
         }
     }
 }

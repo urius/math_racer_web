@@ -1,6 +1,7 @@
 using System.Linq;
 using Data;
 using Infra.Instance;
+using Model;
 using Model.RaceScene;
 using Providers;
 using Providers.LocalizationProvider;
@@ -17,6 +18,7 @@ namespace Controller.RaceScene
         private readonly IP2PRoomService _roomService = Instance.Get<IP2PRoomService>();
         
         private UINetRaceFinishOverlayView _finishOverlayView;
+        private PlayerModel _playerModel;
         private NetRaceModel _netRaceModel;
 
         public NetRaceFinishOverlayViewController(Transform targetTransform) : base(targetTransform)
@@ -25,6 +27,7 @@ namespace Controller.RaceScene
 
         public override void Initialize()
         {
+            _playerModel = _modelsHolder.GetPlayerModel();
             _netRaceModel = (NetRaceModel)_modelsHolder.GetRaceModel();
             
             base.Initialize();
@@ -34,12 +37,12 @@ namespace Controller.RaceScene
         {
             base.Subscribe();
 
-            _roomService.OpponentFinishedReceived += OnOpponentFinishedReceived;
+            _netRaceModel.NetOpponentResultAdded += OnNetOpponentResultAdded;
         }
 
         protected override void Unsubscribe()
         {
-            _roomService.OpponentFinishedReceived -= OnOpponentFinishedReceived;
+            _netRaceModel.NetOpponentResultAdded -= OnNetOpponentResultAdded;
             
             base.Unsubscribe();
         }
@@ -58,18 +61,18 @@ namespace Controller.RaceScene
             UpdateResultViews();
         }
 
-        private void OnOpponentFinishedReceived(OpponentFinishedReceivedEventPayload payload)
+        private void OnNetOpponentResultAdded(int opponentIndex)
         {
             UpdateResultViews();
         }
 
         private void UpdateResultViews()
         {
-            var selfResultsData = ResultViewItemData.FromSelfRaceResults("You", _netRaceModel.RaceResultsModel);
+            var selfResultsData = ResultViewItemData.FromSelfRaceResults( _playerModel.PlayerName, _netRaceModel.RaceResultsModel);
 
             var allResultsData =
                 _netRaceModel.NetOpponentRaceResults
-                    .Select(pair => ResultViewItemData.FromOpponentRaceResults("Opponent " + pair.Key, pair.Value))
+                    .Select(pair => ResultViewItemData.FromOpponentRaceResults(GetOpponentNameById(pair.Key), pair.Value))
                     .Concat(new[] { selfResultsData })
                     .OrderBy(d => d.RaceTimeMs)
                     .ToArray();
@@ -97,6 +100,21 @@ namespace Controller.RaceScene
                 resultView.SetAnswers(resultData.RightAnswers, resultData.WrongAnswers,
                     resultData.RightAnswers >= maxRightAnswers);
             }
+        }
+
+        private string GetOpponentNameById(int id)
+        {
+            var result = _roomService.PlayersData.AllPlayerDataList
+                .FirstOrDefault(d => d.Id == id)?.PlayerName;
+
+            if (result == null)
+            {
+                var opponentText = _localizationProvider.GetLocale(LocalizationKeys.Opponent);
+
+                result = $"{opponentText} {id}";
+            }
+
+            return result;
         }
 
         private struct ResultViewItemData

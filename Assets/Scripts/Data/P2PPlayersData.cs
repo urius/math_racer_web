@@ -29,10 +29,11 @@ namespace Data
             return result;
         }
 
-        public void CreateLocalPlayerData(CarKey carKey, int id = -1)
+        public void CreateLocalPlayerData(string playerName, CarKey carKey,  int id = -1)
         {
             LocalPlayerData = CreatePlayerData(id);
             LocalPlayerData.CarKey = carKey;
+            LocalPlayerData.PlayerName = playerName;
         }
 
         private static int GetNextId()
@@ -44,7 +45,8 @@ namespace Data
     public class P2PPlayerData
     {
         public readonly int Id;
-        
+
+        public string PlayerName;
         public int PositionIndex;
         public CarKey CarKey;
         public long InitCommandSendTimestamp;
