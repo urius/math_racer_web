@@ -10,6 +10,7 @@ using Providers;
 using Providers.LocalizationProvider;
 using UnityEngine;
 using Utils.AudioManager;
+using Utils.GamePush;
 using View.UI.RaceScene;
 using static View.Helpers.RichTextHelper;
 
@@ -72,6 +73,8 @@ namespace Controller.RaceScene
             _finishOverlayView.SetPlaceText(GetLocale(LocalizationKeys.FirstPlace));
 
             DisplayRewards();
+
+            _finishOverlayView.DoubleRewardsButtonView.SetVisibility(GamePushWrapper.CanShowRewardedAds());
             
             _finishOverlayView.DoubleRewardsButtonView.SetText($"{Constants.TextSpriteAds} {GetLocale(LocalizationKeys.DoubleTheRewardButton)}");
             _finishOverlayView.ContinueButtonView.SetText(GetLocale(LocalizationKeys.ContinueButton));
@@ -158,8 +161,28 @@ namespace Controller.RaceScene
 
         private void OnDoubleRewardsClicked()
         {
-            //show ads
             _audioPlayer.PlayButtonSound();
+
+            ProcessShowAds().Forget();
+        }
+
+        private async UniTaskVoid ProcessShowAds()
+        {
+            if (GamePushWrapper.IsRewardedAdsShowInProgress) return;
+            
+            _finishOverlayView.DoubleRewardsButtonView.SetInteractable(false);
+            
+            var showRewardedAdsResult = await GamePushWrapper.ShowRewardedAds();
+            
+            if (showRewardedAdsResult)
+            {
+                //_finishOverlayView.DoubleRewardsButtonView.SetVisibility(false);
+                
+                _raceModel.RaceRewards.EnableDoubleRewards();
+                DisplayRewards();
+            }
+            
+            _finishOverlayView.DoubleRewardsButtonView.SetInteractable(!showRewardedAdsResult);
         }
 
         private enum ProcessTakingRewardsResult

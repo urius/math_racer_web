@@ -28,6 +28,7 @@ namespace Utils.GamePush
             Instance._fetchPurchasesTcs?.Task ?? UniTask.FromResult(Array.Empty<FetchPurchaseData>());
 
         public static bool IsGPInit => GP_Init.isReady;
+        public static bool IsRewardedAdsShowInProgress => Instance._rewardedAdsTcs != null;
 
         public static UniTask<bool> Init(Action<bool> requestPauseAction)
         {
@@ -335,15 +336,22 @@ namespace Utils.GamePush
 
         private async UniTask<bool> ShowRewardedAdsInternal()
         {
+            if (_rewardedAdsTcs == null)
+            {
+                _rewardedAdsTcs = new UniTaskCompletionSource<bool>();
 #if !UNITY_STANDALONE_OSX && !UNITY_EDITOR
-            _rewardedAdsTcs = new UniTaskCompletionSource<bool>();
-            GP_Ads.ShowRewarded(onRewardedReward:RewardedAdsRewardedResultHandler, onRewardedClose:RewardedAdsClosedResultHandler);
-
-            return await _rewardedAdsTcs.Task;
+                GP_Ads.ShowRewarded(onRewardedReward:RewardedAdsRewardedResultHandler, onRewardedClose:RewardedAdsClosedResultHandler);
+#else
+                await UniTask.Delay(500, DelayType.UnscaledDeltaTime);
+                _rewardedAdsTcs.TrySetResult(true);
 #endif
-            await UniTask.Delay(500, DelayType.UnscaledDeltaTime);
+            }
+
+            var result = await _rewardedAdsTcs.Task;
             
-            return true;
+            _rewardedAdsTcs = null;
+            
+            return result;
         }
 
         private async UniTask<bool> ShowPreloaderAdsInternal()
