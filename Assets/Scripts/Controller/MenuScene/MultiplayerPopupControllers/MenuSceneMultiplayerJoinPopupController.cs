@@ -53,28 +53,17 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             _popupView.CloseButtonClicked += OnCloseButtonClicked;
             _popupView.JoinCodeValueChanged += OnJoinCodeValueChanged;
             _popupView.JoinButton.ButtonClicked += OnJoinButtonClicked;
-            _popupView.PasteButton.ButtonClicked += OnPasteButtonClicked;
+            //_popupView.PasteButton.ButtonClicked += OnPasteButtonClicked;
         }
 
         private void Unsubscribe()
         {
             _p2pRoomService.StartGameReceived -= OnStartGameReceived;
-            
+
             _popupView.CloseButtonClicked -= OnCloseButtonClicked;
             _popupView.JoinCodeValueChanged -= OnJoinCodeValueChanged;
             _popupView.JoinButton.ButtonClicked -= OnJoinButtonClicked;
-            _popupView.PasteButton.ButtonClicked -= OnPasteButtonClicked;
-        }
-
-        private void OnPasteButtonClicked()
-        {
-            PasteRoomCode().Forget();
-        }
-
-        private async UniTaskVoid PasteRoomCode()
-        {
-            var bufferString = await WebGLCopyAndPasteAPI.GetBufferString();
-            _popupView.SetRoomCodeText(bufferString);
+            //_popupView.PasteButton.ButtonClicked -= OnPasteButtonClicked;
         }
 
         private void OnJoinButtonClicked()

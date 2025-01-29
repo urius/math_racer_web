@@ -81,7 +81,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
 
             _popupView.StartGameButton.ButtonClicked += OnStartGameButtonClicked;
             _popupView.CloseButtonClicked += OnCloseButtonClicked;
-            _popupView.CopyButton.ButtonClicked += OnCopyButtonClicked;
+            //_popupView.CopyButton.ButtonClicked += OnCopyButtonClicked;
         }
 
         private void Unsubscribe()
@@ -91,14 +91,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
             
             _popupView.StartGameButton.ButtonClicked -= OnStartGameButtonClicked;
             _popupView.CloseButtonClicked -= OnCloseButtonClicked;
-            _popupView.CopyButton.ButtonClicked -= OnCopyButtonClicked;
-        }
-
-        private void OnCopyButtonClicked()
-        {
-            Debug.Log("OnCopyButtonClicked, _popupView.RoomCodeStr: " + _popupView.RoomCodeStr);
-
-            WebGLCopyAndPasteAPI.CopyString(_popupView.RoomCodeStr);
+            //_popupView.CopyButton.ButtonClicked -= OnCopyButtonClicked;
         }
 
         private void OnStartGameButtonClicked()
