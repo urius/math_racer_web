@@ -3,11 +3,11 @@
 #endif
 
 #if TMP_WEBGL_SUPPORT
-using System;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 using WebGLSupport.Detail;
+using UnityEngine.UI;
+using System;
 
 namespace WebGLSupport
 {

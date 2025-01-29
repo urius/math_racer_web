@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using AOT;
 using UnityEngine;
 using UnityEngine.EventSystems;
-// for DllImport
+using System.Runtime.InteropServices; // for DllImport
+using AOT;
+using System;
 
 namespace WebGLSupport
 {

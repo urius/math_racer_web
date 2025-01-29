@@ -1,7 +1,7 @@
 ﻿using System;
 using AOT;
+using System.Runtime.InteropServices; // for DllImport
 using UnityEngine;
-// for DllImport
 
 namespace WebGLSupport
 {
