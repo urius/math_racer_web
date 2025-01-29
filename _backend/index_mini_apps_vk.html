@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    
+    <meta charset="utf-8" />   
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> 
+    <link rel="stylesheet" href="../TemplateData/style.css">
+  </head>
+  <body>
+    <div id="unity-container" class="unity-mobile">
+      <canvas id="unity-canvas"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+    <script src="controller_main.js?v=10"  type="text/javascript"></script>
+
+    <script>
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var mobileWarning = document.querySelector("#unity-mobile-warning");
+      
+      window.addEventListener('resize', function(event) {
+          canvas.style.height = window.innerHeight + "px";
+      }, true);
+      canvas.style.height = window.innerHeight + "px";
+
+      loadingBar.style.display = "block";
+
+      var script = document.createElement('script');
+      script.onload = beginLoadUnityInstance;
+      script.src = "active_build_data.js?rnd=" + new Date().getTime();
+      document.head.appendChild(script);
+
+      function beginLoadUnityInstance() {
+            var buildMetaData = getActiveBuildMetaData();
+            var loaderUrl = buildMetaData.loaderUrl;
+            var config = buildMetaData.config;
+
+            var script = document.createElement("script");
+            script.src = loaderUrl;
+            script.onload = () => {
+              createUnityInstance(canvas, config, (progress) => {
+                progressBarFull.style.width = 100 * progress + "%";
+              }).then((unityInstance) => {
+                onUnityInstanceLoaded(unityInstance);
+
+                loadingBar.style.display = "none";
+              }).catch((message) => {
+                alert(message);
+              });
+            };
+            document.body.appendChild(script);
+      }  
+    </script>
+  </body>
+</html>
