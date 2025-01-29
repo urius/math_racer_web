@@ -14,6 +14,7 @@ namespace Data.Dto
         public int currentCar;
         public int[] boughtCars;
         public AudioSettingsDto audioSettings;
+        public int lastActiveDaysConsecutiveOnBonusTake;
 
         public PlayerDataDto(int expAmount,
             int complexityLevel,
@@ -21,7 +22,8 @@ namespace Data.Dto
             int goldAmount,
             int currentCar,
             int[] boughtCars,
-            AudioSettingsDto audioSettings)
+            AudioSettingsDto audioSettings,
+            int lastActiveDaysConsecutiveOnBonusTake)
         {
             this.expAmount = expAmount;
             this.complexityLevel = complexityLevel;
@@ -30,6 +32,7 @@ namespace Data.Dto
             this.currentCar = currentCar;
             this.boughtCars = boughtCars;
             this.audioSettings = audioSettings;
+            this.lastActiveDaysConsecutiveOnBonusTake = lastActiveDaysConsecutiveOnBonusTake;
         }
 
         public static PlayerDataDto FromDefault()
@@ -44,7 +47,8 @@ namespace Data.Dto
                 {
                     (int)CarKey.Bug
                 },
-                AudioSettingsDto.FromDefault());
+                AudioSettingsDto.FromDefault(),
+                -1);
         }
     }
 }

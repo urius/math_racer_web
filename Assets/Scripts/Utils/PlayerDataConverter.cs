@@ -15,7 +15,8 @@ namespace Utils
                 playerDataDto.goldAmount,
                 playerDataDto.currentCar,
                 playerDataDto.boughtCars,
-                ToAudioSettingsModel(playerDataDto.audioSettings));
+                ToAudioSettingsModel(playerDataDto.audioSettings),
+                playerDataDto.lastActiveDaysConsecutiveOnBonusTake);
         }
 
         public static PlayerDataDto ToPlayerDataDto(PlayerModel playerModel)
@@ -27,7 +28,8 @@ namespace Utils
                 playerModel.GoldAmount,
                 (int)playerModel.CurrentCar,
                 playerModel.BoughtCars.Select(c => (int)c).ToArray(),
-                ToAudioSettingsDto(playerModel.AudioSettingsModel));
+                ToAudioSettingsDto(playerModel.AudioSettingsModel),
+                playerModel.LastActiveDaysConsecutiveOnBonusTake);
         }
 
         private static AudioSettingsModel ToAudioSettingsModel(AudioSettingsDto dto)

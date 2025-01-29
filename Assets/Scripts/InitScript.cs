@@ -4,6 +4,7 @@ using Controller.Commands;
 using Cysharp.Threading.Tasks;
 using Data;
 using GamePush;
+using Helpers;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
@@ -13,6 +14,7 @@ using Services;
 using UnityEngine;
 using Utils.AudioManager;
 using Utils.GamePush;
+using Utils.JSBridge;
 using View.UI;
 
 public class InitScript : MonoBehaviour
@@ -23,6 +25,7 @@ public class InitScript : MonoBehaviour
     [SerializeField] private LocalizationsHolderSo _localizationHolderSo;
     [SerializeField] private AudioManager _audioManager;
     [SerializeField] private AudioClipsProviderSo _audioClipsProviderSo;
+    [SerializeField] private JsBridge _jsBridge;
 
     private RootController _rootController;
     private UniTask<bool> _gpInitTask;
@@ -30,6 +33,7 @@ public class InitScript : MonoBehaviour
     private void Awake()
     {
         //LevelPointsHelper.TestLevelPointsHelper();
+        Subscribe();
         
         Application.targetFrameRate = Constants.FPS;
         
@@ -60,6 +64,18 @@ public class InitScript : MonoBehaviour
         }
     }
 
+    private void OnJsIncomingMessage(string message)
+    {
+        Debug.Log("OnJsIncomingMessage, message: " + message);
+
+        var messageDto = JsonUtility.FromJson<JsToUnityCommonCommandDto>(message);
+        if (messageDto.command == "SetHost")
+        {
+            var setHostDto = JsonUtility.FromJson<SetHostJsCommandDto>(message);
+            Urls.SetHostUrl(setHostDto.HostUrl);
+        }
+    }
+
     private void OnGPReady(bool initSuccess)
     {
         if (initSuccess)
@@ -67,6 +83,7 @@ public class InitScript : MonoBehaviour
             Debug.Log("GP player id: " + GamePushWrapper.GetPlayerId());
             Debug.Log("GP player Name: " + GamePushWrapper.GetPlayerName());
             Debug.Log("GP language: " + GP_Language.Current());
+            Debug.Log("GetActiveDaysConsecutive: " + GP_Player.GetActiveDaysConsecutive());
 
             _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());
         }
@@ -136,5 +153,18 @@ public class InitScript : MonoBehaviour
     private static void RequestPauseDelegate(bool needPause)
     {
         Instance.Get<ICommandExecutor>().Execute<PerformGamePauseCommand, bool>(needPause);
+    }
+
+    private void Subscribe()
+    {
+        _jsBridge.JsIncomingMessage += OnJsIncomingMessage;
+    }
+    
+    [Serializable]
+    private struct SetHostJsCommandDto
+    {
+        public string data;
+
+        public string HostUrl => data;
     }
 }

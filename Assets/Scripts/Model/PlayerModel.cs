@@ -25,20 +25,21 @@ namespace Model
         private readonly CryptoInt _cashAmountCrypto = new();
         private readonly CryptoInt _goldAmountCrypto = new();
 
-        public PlayerModel(
-            int expAmount,
+        public PlayerModel(int expAmount,
             int complexityLevel,
             int cashAmount,
             int goldAmount,
             int currentCar,
             IEnumerable<int> boughtCars,
-            AudioSettingsModel audioSettingsModel)
+            AudioSettingsModel audioSettingsModel,
+            int lastActiveDaysConsecutiveOnBonusTake)
         {
             AudioSettingsModel = audioSettingsModel;
             SetExpAmount(expAmount);
             ComplexityLevel = complexityLevel;
             CashAmount = cashAmount;
             GoldAmount = goldAmount;
+            LastActiveDaysConsecutiveOnBonusTake = lastActiveDaysConsecutiveOnBonusTake;
             CurrentCar = (CarKey)currentCar;
             
             _boughtCars = boughtCars.Select(c => (CarKey)c).ToList();
@@ -57,6 +58,8 @@ namespace Model
             get => _goldAmountCrypto.Value;
             private set => _goldAmountCrypto.Value = value;
         }
+
+        public int LastActiveDaysConsecutiveOnBonusTake { get; private set; }
         public int CrystalsAmount => GoldAmount;
         public CarKey CurrentCar { get; private set; }
         public IReadOnlyList<CarKey> BoughtCars => _boughtCars;
@@ -137,6 +140,11 @@ namespace Model
 
         public void DecreaseComplexityLevel()
         {
+            if (ComplexityLevel <= 0)
+            {
+                ComplexityLevel = 0;
+                return;
+            }
             ComplexityLevel--;
         }
 
