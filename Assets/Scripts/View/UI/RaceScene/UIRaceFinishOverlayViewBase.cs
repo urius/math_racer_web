@@ -51,8 +51,8 @@ namespace View.UI.RaceScene
             _placeText.SetAlpha(0);
             _rewardsText.SetAlpha(0);
             
-            _doubleRewardsButtonView.SetVisibility(false);
-            _continueButtonView.SetVisibility(false);
+            _doubleRewardsButtonView.SetAnchoredPosition(new Vector2(_doubleRewardsButtonTargetPos.x, -100));
+            _continueButtonView.SetAnchoredPosition(new Vector2(_continueButtonTargetPos.x, -100));
         }
 
         protected abstract void AnimateShowResultsPhase();
@@ -122,9 +122,6 @@ namespace View.UI.RaceScene
 
         private void AnimateShowButtonsPhase()
         {
-            _doubleRewardsButtonView.SetAnchoredPosition(new Vector2(_doubleRewardsButtonTargetPos.x, -100));
-            _continueButtonView.SetAnchoredPosition(new Vector2(_continueButtonTargetPos.x, -100));
-            
             _doubleRewardsButtonView.SetVisibility(true);
             _continueButtonView.SetVisibility(true);
 
