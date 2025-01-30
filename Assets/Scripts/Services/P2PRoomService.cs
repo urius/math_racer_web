@@ -53,6 +53,7 @@ namespace Services
         public P2PPlayersData PlayersData { get; private set; }
 
         private PlayerModel PlayerModel => _modelsHolder.GetPlayerModel();
+        private string PlayerName => _modelsHolder.GetSessionDataModel().SocialData.Name;
         private long HostUtcTimestampMs => LocalUtcTimestampMs + _hostDeltaTimeMs;
         private int PlayerNetId => PlayersData.LocalPlayerData.Id;
 
@@ -72,7 +73,7 @@ namespace Services
         {
             _p2pRoom = CreateRoomInstance();
             PlayersData = new P2PPlayersData();
-            PlayersData.CreateLocalPlayerData(PlayerModel.PlayerName, PlayerModel.CurrentCar);
+            PlayersData.CreateLocalPlayerData(PlayerName, PlayerModel.CurrentCar);
             PlayersData.LocalPlayerData.PositionIndex = 0;
 
             var createRoomResult = await _p2pRoom.Create(2);
@@ -298,7 +299,7 @@ namespace Services
         {
             var commandBodyDto = P2PInitCommandBodyDto.Parse(body);
 
-            PlayersData.CreateLocalPlayerData(PlayerModel.PlayerName, PlayerModel.CurrentCar, commandBodyDto.JoinId);
+            PlayersData.CreateLocalPlayerData(PlayerName, PlayerModel.CurrentCar, commandBodyDto.JoinId);
             PlayersData.CreateRemotePlayerData(connection, commandBodyDto.HostId);
 
             var localPlayerData = PlayersData.LocalPlayerData;

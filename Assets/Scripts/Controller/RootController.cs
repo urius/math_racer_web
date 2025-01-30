@@ -2,6 +2,7 @@ using System;
 using Controller.Commands;
 using Controller.MenuScene;
 using Controller.NewLevelScene;
+using Controller.PlatformSpecific;
 using Controller.RaceScene;
 using Cysharp.Threading.Tasks;
 using Data;
@@ -37,6 +38,7 @@ namespace Controller
         public override async void Initialize()
         {
             _sessionDataModel = _modelsHolder.GetSessionDataModel();
+            InitSocialData();
             
             _commandExecutor.ExecuteAsync<InitBankProductsCommand>().Forget();
             
@@ -49,6 +51,11 @@ namespace Controller
             LoadScene(Constants.MenuSceneName).Forget();
 
             Subscribe();
+        }
+
+        private void InitSocialData()
+        {
+            _sessionDataModel.SocialData.SetName(GamePushWrapper.GetPlayerName());
         }
 
         private async UniTask ProcessRestorePurchases()
@@ -70,6 +77,16 @@ namespace Controller
         {
             InitChildController(new SaveDataController());
             InitChildController(new AudioController());
+            
+            InitPlatformSpecificLogicController();
+        }
+
+        private void InitPlatformSpecificLogicController()
+        {
+            if (GamePushWrapper.IsVKPlatform)
+            {
+                InitChildController(new PlatformVKSpecificLogicController());
+            }
         }
 
         private UniTask InitPlayerModel()

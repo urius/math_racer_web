@@ -20,6 +20,7 @@ namespace Controller.RaceScene
         private UINetRaceFinishOverlayView _finishOverlayView;
         private PlayerModel _playerModel;
         private NetRaceModel _netRaceModel;
+        private PlayerSocialData _socialData;
 
         public NetRaceFinishOverlayViewController(Transform targetTransform) : base(targetTransform)
         {
@@ -29,6 +30,7 @@ namespace Controller.RaceScene
         {
             _playerModel = _modelsHolder.GetPlayerModel();
             _netRaceModel = (NetRaceModel)_modelsHolder.GetRaceModel();
+            _socialData = _modelsHolder.GetSessionDataModel().SocialData;
             
             base.Initialize();
         }
@@ -68,7 +70,8 @@ namespace Controller.RaceScene
 
         private void UpdateResultViews()
         {
-            var selfResultsData = ResultViewItemData.FromSelfRaceResults( _playerModel.PlayerName, _netRaceModel.RaceResultsModel);
+            var selfResultsData =
+                ResultViewItemData.FromSelfRaceResults(_socialData.SocialId, _netRaceModel.RaceResultsModel);
 
             var allResultsData =
                 _netRaceModel.NetOpponentRaceResults

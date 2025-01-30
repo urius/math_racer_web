@@ -63,13 +63,6 @@ namespace Model
         public int CrystalsAmount => GoldAmount;
         public CarKey CurrentCar { get; private set; }
         public IReadOnlyList<CarKey> BoughtCars => _boughtCars;
-        public PlayerSocialData SocialData { get; private set; }
-        public string PlayerName => SocialData.Name;
-
-        public void SetSocialData(string name)
-        {
-            SocialData = new PlayerSocialData(name);
-        }
 
         public bool TrySpend(int moneyAmount)
         {

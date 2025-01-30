@@ -4,7 +4,6 @@ using Controller.Commands;
 using Cysharp.Threading.Tasks;
 using Data;
 using GamePush;
-using Helpers;
 using Infra.CommandExecutor;
 using Infra.EventBus;
 using Infra.Instance;
@@ -69,10 +68,21 @@ public class InitScript : MonoBehaviour
         Debug.Log("OnJsIncomingMessage, message: " + message);
 
         var messageDto = JsonUtility.FromJson<JsToUnityCommonCommandDto>(message);
-        if (messageDto.command == "SetHost")
+        switch (messageDto.command)
         {
-            var setHostDto = JsonUtility.FromJson<SetHostJsCommandDto>(message);
-            Urls.SetHostUrl(setHostDto.HostUrl);
+            case "SetHost":
+            {
+                var setHostDto = JsonUtility.FromJson<SetHostJsCommandDto>(message);
+                Urls.SetHostUrl(setHostDto.HostUrl);
+                break;
+            }
+            case "SetUserId":
+            {
+                var setUserIdDto = JsonUtility.FromJson<SetUserIdJsCommandDto>(message);
+                var sessionDataModel = Instance.Get<IModelsHolder>().GetSessionDataModel();
+                sessionDataModel.SocialData.SetSocialId(setUserIdDto.UserId);
+                break;
+            }
         }
     }
 
@@ -84,6 +94,8 @@ public class InitScript : MonoBehaviour
             Debug.Log("GP player Name: " + GamePushWrapper.GetPlayerName());
             Debug.Log("GP language: " + GP_Language.Current());
             Debug.Log("GetActiveDaysConsecutive: " + GP_Player.GetActiveDaysConsecutive());
+            Debug.Log("GetSharePlayerID: " + GP_Socials.GetSharePlayerID());
+            
 
             _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());
         }
@@ -166,5 +178,13 @@ public class InitScript : MonoBehaviour
         public string data;
 
         public string HostUrl => data;
+    }
+    
+    [Serializable]
+    private struct SetUserIdJsCommandDto
+    {
+        public string data;
+
+        public string UserId => data;
     }
 }
