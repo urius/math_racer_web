@@ -29,7 +29,9 @@ namespace Utils.GamePush
 
         public static bool IsGPInit => GP_Init.isReady;
         public static bool IsRewardedAdsShowInProgress => Instance._rewardedAdsTcs != null;
-        public static bool IsVKPlatform => GP_Platform.Type() == Platform.VK;
+        public static bool IsVKPlatform => PlatformType == Platform.VK;
+
+        private static Platform PlatformType => IsGPInit ? GP_Platform.Type() : Platform.NONE;
 
         public static UniTask<bool> Init(Action<bool> requestPauseAction)
         {

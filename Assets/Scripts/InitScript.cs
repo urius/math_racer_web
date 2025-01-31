@@ -94,8 +94,6 @@ public class InitScript : MonoBehaviour
             Debug.Log("GP player Name: " + GamePushWrapper.GetPlayerName());
             Debug.Log("GP language: " + GP_Language.Current());
             Debug.Log("GetActiveDaysConsecutive: " + GP_Player.GetActiveDaysConsecutive());
-            Debug.Log("GetSharePlayerID: " + GP_Socials.GetSharePlayerID());
-            
 
             _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());
         }
