@@ -16,7 +16,10 @@ namespace Utils
                 playerDataDto.currentCar,
                 playerDataDto.boughtCars,
                 ToAudioSettingsModel(playerDataDto.audioSettings),
-                playerDataDto.lastActiveDaysConsecutiveOnBonusTake);
+                playerDataDto.previousStartUtcTimestamp,
+                playerDataDto.currentStartUtcTimestamp,
+                playerDataDto.sequentialDaysPlaying
+                );
         }
 
         public static PlayerDataDto ToPlayerDataDto(PlayerModel playerModel)
@@ -29,7 +32,9 @@ namespace Utils
                 (int)playerModel.CurrentCar,
                 playerModel.BoughtCars.Select(c => (int)c).ToArray(),
                 ToAudioSettingsDto(playerModel.AudioSettingsModel),
-                playerModel.LastActiveDaysConsecutiveOnBonusTake);
+                playerModel.PreviousStartUtcTimestamp,
+                playerModel.CurrentStartUtcTimestamp,
+                playerModel.SequentialDaysPlaying);
         }
 
         private static AudioSettingsModel ToAudioSettingsModel(AudioSettingsDto dto)

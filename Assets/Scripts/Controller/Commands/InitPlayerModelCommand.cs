@@ -3,8 +3,10 @@ using System.Text;
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Dto;
+using Helpers;
 using Infra.CommandExecutor;
 using Infra.Instance;
+using Model;
 using Providers;
 using UnityEngine;
 using Utils;
@@ -23,9 +25,31 @@ namespace Controller.Commands
             var playerDataDto = string.IsNullOrEmpty(playerDataStrLoaded) ? PlayerDataDto.FromDefault() : ConvertToDto(playerDataStrLoaded);
 
             var playerModel = PlayerDataConverter.ToPlayerModel(playerDataDto);
+
+            UpdateTime(playerModel);
+            
             modelsHolder.SetPlayerModel(playerModel);
             
             return UniTask.CompletedTask;
+        }
+
+        private static void UpdateTime(PlayerModel playerModel)
+        {
+            playerModel.SetCurrentStartTimestamp(DateTimeHelper.GetUtcNowTimestamp());
+            
+            var prevTs = playerModel.PreviousStartUtcTimestamp;
+            var currentTs = playerModel.CurrentStartUtcTimestamp;
+
+            if (DateTimeHelper.IsSameDays(prevTs, currentTs)) return;
+            
+            if (DateTimeHelper.IsNextDay(prevTs, currentTs))
+            {
+                playerModel.IncrementSequentialDaysPlaying();
+            }
+            else
+            {
+                playerModel.ResetSequentialDaysPlaying();
+            }
         }
 
         private PlayerDataDto ConvertToDto(string playerDataStr)

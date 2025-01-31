@@ -32,16 +32,20 @@ namespace Model
             int currentCar,
             IEnumerable<int> boughtCars,
             AudioSettingsModel audioSettingsModel,
-            int lastActiveDaysConsecutiveOnBonusTake)
+            int previousStartUtcTimestamp,
+            int currentStartUtcTimestamp,
+            int sequentialDaysPlaying)
         {
             AudioSettingsModel = audioSettingsModel;
             SetExpAmount(expAmount);
             ComplexityLevel = complexityLevel;
             CashAmount = cashAmount;
             GoldAmount = goldAmount;
-            LastActiveDaysConsecutiveOnBonusTake = lastActiveDaysConsecutiveOnBonusTake;
             CurrentCar = (CarKey)currentCar;
-            
+            PreviousStartUtcTimestamp = previousStartUtcTimestamp;
+            CurrentStartUtcTimestamp = currentStartUtcTimestamp;
+            SequentialDaysPlaying = sequentialDaysPlaying;
+
             _boughtCars = boughtCars.Select(c => (CarKey)c).ToList();
         }
 
@@ -59,7 +63,10 @@ namespace Model
             private set => _goldAmountCrypto.Value = value;
         }
 
-        public int LastActiveDaysConsecutiveOnBonusTake { get; private set; }
+        public int PreviousStartUtcTimestamp { get; private set; }
+        public int CurrentStartUtcTimestamp { get; private set; }
+        public int SequentialDaysPlaying { get; private set; }
+
         public int CrystalsAmount => GoldAmount;
         public CarKey CurrentCar { get; private set; }
         public IReadOnlyList<CarKey> BoughtCars => _boughtCars;
@@ -176,6 +183,22 @@ namespace Model
             Level = LevelPointsHelper.GetLevelByExpPointsAmount(expAmount);
             
             ExpAmountChanged?.Invoke(delta);
+        }
+
+        public void SetCurrentStartTimestamp(int timestamp)
+        {
+            PreviousStartUtcTimestamp = CurrentStartUtcTimestamp;
+            CurrentStartUtcTimestamp = timestamp;
+        }
+
+        public void IncrementSequentialDaysPlaying()
+        {
+            SequentialDaysPlaying++;
+        }
+
+        public void ResetSequentialDaysPlaying()
+        {
+            SequentialDaysPlaying = 1;
         }
     }
 }

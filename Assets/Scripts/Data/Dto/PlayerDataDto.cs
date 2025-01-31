@@ -1,6 +1,7 @@
 // ReSharper disable InconsistentNaming
 
 using System;
+using UnityEngine.Serialization;
 
 namespace Data.Dto
 {
@@ -14,7 +15,9 @@ namespace Data.Dto
         public int currentCar;
         public int[] boughtCars;
         public AudioSettingsDto audioSettings;
-        public int lastActiveDaysConsecutiveOnBonusTake;
+        public int previousStartUtcTimestamp;
+        public int currentStartUtcTimestamp;
+        public int sequentialDaysPlaying;
 
         public PlayerDataDto(int expAmount,
             int complexityLevel,
@@ -23,7 +26,9 @@ namespace Data.Dto
             int currentCar,
             int[] boughtCars,
             AudioSettingsDto audioSettings,
-            int lastActiveDaysConsecutiveOnBonusTake)
+            int previousStartUtcTimestamp,
+            int currentStartUtcTimestamp,
+            int sequentialDaysPlaying)
         {
             this.expAmount = expAmount;
             this.complexityLevel = complexityLevel;
@@ -32,7 +37,9 @@ namespace Data.Dto
             this.currentCar = currentCar;
             this.boughtCars = boughtCars;
             this.audioSettings = audioSettings;
-            this.lastActiveDaysConsecutiveOnBonusTake = lastActiveDaysConsecutiveOnBonusTake;
+            this.previousStartUtcTimestamp = previousStartUtcTimestamp;
+            this.currentStartUtcTimestamp = currentStartUtcTimestamp;
+            this.sequentialDaysPlaying = sequentialDaysPlaying;
         }
 
         public static PlayerDataDto FromDefault()
@@ -48,7 +55,9 @@ namespace Data.Dto
                     (int)CarKey.Bug
                 },
                 AudioSettingsDto.FromDefault(),
-                -1);
+                0,
+                0,
+                1);
         }
     }
 }
