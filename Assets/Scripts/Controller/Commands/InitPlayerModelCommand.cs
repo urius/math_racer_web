@@ -41,7 +41,8 @@ namespace Controller.Commands
             var currentTs = playerModel.CurrentStartUtcTimestamp;
 
             if (DateTimeHelper.IsSameDays(prevTs, currentTs)) return;
-            
+
+            playerModel.ResetDailyGiftTakenFlag();
             if (DateTimeHelper.IsNextDay(prevTs, currentTs))
             {
                 playerModel.IncrementSequentialDaysPlaying();

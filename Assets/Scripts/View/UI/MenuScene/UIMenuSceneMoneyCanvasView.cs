@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utils.LeanTweenHelper;
 using View.Extensions;
+using Random = UnityEngine.Random;
 
 namespace View.UI.MenuScene
 {
@@ -14,11 +15,13 @@ namespace View.UI.MenuScene
         
         private const float AnimationDurationSec = 0.4f;
         private const float BlinkDurationSec = 0.8f;
-            
+        
         [SerializeField] private TMP_Text _cashText;
         [SerializeField] private TMP_Text _goldText;
         [SerializeField] private Button[] _openBankButtons;
         [SerializeField] private CanvasGroup[] _bankButtonsCanvasGroups;
+        [SerializeField] private GameObject _moneyIconPrefab;
+        [SerializeField] private GameObject _crystalIconPrefab;
         
         private int _currentCashAmount;
         private int _currentGoldAmount;
@@ -188,6 +191,34 @@ namespace View.UI.MenuScene
         private static void AnimateBounce(RectTransform rectTransform)
         {
             LeanTweenHelper.BounceYAsync(rectTransform, -30);
+        }
+
+        public void AnimateFlyingCash(int cashAmount, Vector3 startWorldPosition)
+        {
+            for (var i = 0; i < Math.Clamp(cashAmount/20, 5, 25); i++)
+            {
+                LeanTweenHelper.FlyImagePrefabTo(_moneyIconPrefab, transform,
+                    startWorldPosition + Random.insideUnitSphere * 0.6f,
+                    targetWorldPosition: _cashText.transform.position,
+                    duration: 0.7f,
+                    needAlphaFadeIn: true,
+                    needAlphaFadeOut: false,
+                    delay: i * 0.03f);
+            }
+        }
+
+        public void AnimateFlyingGold(int goldAmount, Vector3 startWorldPosition)
+        {
+            for (var i = 0; i < Math.Clamp(goldAmount, 1, 10); i++)
+            {
+                LeanTweenHelper.FlyImagePrefabTo(_crystalIconPrefab, transform,
+                    startWorldPosition + Random.insideUnitSphere * 0.6f,
+                    targetWorldPosition: _goldText.transform.position,
+                    duration: 0.7f,
+                    needAlphaFadeIn: true,
+                    needAlphaFadeOut: false,
+                    delay: i * 0.03f);
+            }
         }
     }
 }

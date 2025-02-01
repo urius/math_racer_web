@@ -1,7 +1,6 @@
 // ReSharper disable InconsistentNaming
 
 using System;
-using UnityEngine.Serialization;
 
 namespace Data.Dto
 {
@@ -18,6 +17,7 @@ namespace Data.Dto
         public int previousStartUtcTimestamp;
         public int currentStartUtcTimestamp;
         public int sequentialDaysPlaying;
+        public bool dailyGiftTakenFlag;
 
         public PlayerDataDto(int expAmount,
             int complexityLevel,
@@ -28,7 +28,8 @@ namespace Data.Dto
             AudioSettingsDto audioSettings,
             int previousStartUtcTimestamp,
             int currentStartUtcTimestamp,
-            int sequentialDaysPlaying)
+            int sequentialDaysPlaying, 
+            bool dailyGiftTakenFlag)
         {
             this.expAmount = expAmount;
             this.complexityLevel = complexityLevel;
@@ -40,6 +41,7 @@ namespace Data.Dto
             this.previousStartUtcTimestamp = previousStartUtcTimestamp;
             this.currentStartUtcTimestamp = currentStartUtcTimestamp;
             this.sequentialDaysPlaying = sequentialDaysPlaying;
+            this.dailyGiftTakenFlag = dailyGiftTakenFlag;
         }
 
         public static PlayerDataDto FromDefault()
@@ -57,7 +59,8 @@ namespace Data.Dto
                 AudioSettingsDto.FromDefault(),
                 0,
                 0,
-                1);
+                1,
+                false);
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Data
         public const string Speed = "speed";
         public const string KmH = "km_h";
         public const string DoubleTheRewardButton = "double_reward_button";
+        public const string DoubleButton = "double_button";
         public const string ContinueButton = "continue_button";
         public const string CarItemLockedText = "car_item_locked_text";
         public const string Choose = "choose";
@@ -41,5 +42,6 @@ namespace Data
         public const string EnterJoinCode = "enter_join_code";
         public const string JoinButton = "join_button";
         public const string Opponent = "opponent";
+        public const string Day = "day";
     }
 }

@@ -18,7 +18,8 @@ namespace Utils
                 ToAudioSettingsModel(playerDataDto.audioSettings),
                 playerDataDto.previousStartUtcTimestamp,
                 playerDataDto.currentStartUtcTimestamp,
-                playerDataDto.sequentialDaysPlaying
+                playerDataDto.sequentialDaysPlaying,
+                playerDataDto.dailyGiftTakenFlag
                 );
         }
 
@@ -34,7 +35,9 @@ namespace Utils
                 ToAudioSettingsDto(playerModel.AudioSettingsModel),
                 playerModel.PreviousStartUtcTimestamp,
                 playerModel.CurrentStartUtcTimestamp,
-                playerModel.SequentialDaysPlaying);
+                playerModel.SequentialDaysPlaying,
+                playerModel.IsDailyGiftTaken
+                );
         }
 
         private static AudioSettingsModel ToAudioSettingsModel(AudioSettingsDto dto)

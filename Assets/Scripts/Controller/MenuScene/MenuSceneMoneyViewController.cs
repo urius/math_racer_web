@@ -48,6 +48,8 @@ namespace Controller.MenuScene
             _playerModel.InsufficientGold += OnInsufficientGold;
             _playerModel.InsufficientCash += OnInsufficientCash;
             _sessionDataModel.IsBankPopupOpened.ValueChanged += OnBankPopupOpenedValueChanged;
+            
+            _eventBus.Subscribe<UIRequestMoneyFlyAnimationEvent>(OnRequestMoneyFlyAnimationEvent);
 
             _moneyCanvasView.OpenBankButtonClicked += OnOpenBankButtonClicked;
         }
@@ -60,7 +62,22 @@ namespace Controller.MenuScene
             _playerModel.InsufficientCash -= OnInsufficientCash;
             _sessionDataModel.IsBankPopupOpened.ValueChanged -= OnBankPopupOpenedValueChanged;
             
+            _eventBus.Unsubscribe<UIRequestMoneyFlyAnimationEvent>(OnRequestMoneyFlyAnimationEvent);
+            
             _moneyCanvasView.OpenBankButtonClicked -= OnOpenBankButtonClicked;
+        }
+
+        private void OnRequestMoneyFlyAnimationEvent(UIRequestMoneyFlyAnimationEvent e)
+        {
+            if (e.CashRewardAmount > 0)
+            {
+                _moneyCanvasView.AnimateFlyingCash(e.CashRewardAmount, e.ItemWorldPosition);
+            }
+
+            if (e.GoldRewardAmount > 0)
+            {
+                _moneyCanvasView.AnimateFlyingGold(e.GoldRewardAmount, e.ItemWorldPosition);
+            }
         }
 
         private void OnBankPopupOpenedValueChanged(bool value, bool _)

@@ -5,6 +5,7 @@ using Data;
 using Helpers;
 using UnityEngine;
 using Utils.CryptoValue;
+using Utils.ReactiveValue;
 
 namespace Model
 {
@@ -16,6 +17,7 @@ namespace Model
         public event Action<int> GoldAmountChanged;
         public event Action<int> InsufficientGold;
         public event Action<int> ExpAmountChanged;
+        public event Action DailyGiftTaken;
         
         public readonly AudioSettingsModel AudioSettingsModel;
         
@@ -34,7 +36,8 @@ namespace Model
             AudioSettingsModel audioSettingsModel,
             int previousStartUtcTimestamp,
             int currentStartUtcTimestamp,
-            int sequentialDaysPlaying)
+            int sequentialDaysPlaying,
+            bool isDailyGiftTaken)
         {
             AudioSettingsModel = audioSettingsModel;
             SetExpAmount(expAmount);
@@ -45,6 +48,7 @@ namespace Model
             PreviousStartUtcTimestamp = previousStartUtcTimestamp;
             CurrentStartUtcTimestamp = currentStartUtcTimestamp;
             SequentialDaysPlaying = sequentialDaysPlaying;
+            IsDailyGiftTaken = isDailyGiftTaken;
 
             _boughtCars = boughtCars.Select(c => (CarKey)c).ToList();
         }
@@ -66,6 +70,7 @@ namespace Model
         public int PreviousStartUtcTimestamp { get; private set; }
         public int CurrentStartUtcTimestamp { get; private set; }
         public int SequentialDaysPlaying { get; private set; }
+        public bool IsDailyGiftTaken { get; private set; }
 
         public int CrystalsAmount => GoldAmount;
         public CarKey CurrentCar { get; private set; }
@@ -199,6 +204,17 @@ namespace Model
         public void ResetSequentialDaysPlaying()
         {
             SequentialDaysPlaying = 1;
+        }
+
+        public void ResetDailyGiftTakenFlag()
+        {
+            IsDailyGiftTaken = false;
+        }
+
+        public void SetDailyGiftTaken()
+        {
+            IsDailyGiftTaken = true;
+            DailyGiftTaken?.Invoke();
         }
     }
 }

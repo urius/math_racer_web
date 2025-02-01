@@ -27,7 +27,7 @@ namespace View.UI.MenuScene
             add => _settingsButton.onClick.AddListener(value.Invoke);
             remove => _settingsButton.onClick.RemoveListener(value.Invoke);
         }
-        
+
         [SerializeField] private UITextButtonView _playButton;
         [SerializeField] private UITextButtonView _multiplayerButton;
         [SerializeField] private UITextButtonView _carsButton;
@@ -35,10 +35,12 @@ namespace View.UI.MenuScene
         [SerializeField] private UIMenuSceneMoneyCanvasView _moneyCanvasView;
         [SerializeField] private UIMenuSceneLevelCanvasView _levelCanvasView;
         [SerializeField] private Button _settingsButton;
+        [SerializeField] private UIMenuSceneDailyGiftButtonView _dailyGiftButton;
         
         public RectTransform PopupsCanvasTransform => _popupsCanvasTransform;
         public UIMenuSceneMoneyCanvasView MoneyCanvasView => _moneyCanvasView;
         public UIMenuSceneLevelCanvasView LevelCanvasView => _levelCanvasView;
+        public UIMenuSceneDailyGiftButtonView DailyGiftButton => _dailyGiftButton;
 
         private void OnDestroy()
         {
@@ -58,6 +60,11 @@ namespace View.UI.MenuScene
         public void SetCarsButtonText(string text)
         {
             _carsButton.SetText(text);
+        }
+
+        public void SetDailyGiftButtonVisibility(bool isVisible)
+        {
+            _dailyGiftButton.gameObject.SetActive(isVisible);
         }
     }
 }

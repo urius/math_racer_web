@@ -91,6 +91,11 @@
 			"ru": "УДВОИТЬ НАГРАДУ"
 		},
 		{
+			"key": "double_button",
+			"en": "Double",
+			"ru": "Удвоить"
+		},
+		{
 			"key": "continue_button",
 			"en": "CONTINUE",
 			"ru": "ПРОДОЛЖИТЬ"
@@ -324,6 +329,21 @@
 			"key": "opponent",
 			"en": "Opponent",
 			"ru": "Соперник"
+		},
+		{
+			"key": "day",
+			"en": "Day",
+			"ru": "День"
+		},
+		{
+			"key": "daily_gift_popup_title",
+			"en": "Daily Gift",
+			"ru": "Ежедневный Бонус"
+		},
+		{
+			"key": "take_gift",
+			"en": "Take Gift",
+			"ru": "Забрать Награду"
 		}
 	]
 }

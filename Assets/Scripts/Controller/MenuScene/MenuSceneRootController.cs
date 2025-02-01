@@ -51,6 +51,7 @@ namespace Controller.MenuScene
             //UI
             InitChildController(new MenuSceneMoneyViewController(_rootCanvasView.MoneyCanvasView));
             InitChildController(new MenuSceneLevelViewController(_rootCanvasView.LevelCanvasView));
+            InitChildController(new MenuSceneDailyGiftButtonController(_rootCanvasView.DailyGiftButton));
         }
 
         private void Subscribe()
@@ -63,6 +64,7 @@ namespace Controller.MenuScene
             _eventBus.Subscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
             _eventBus.Subscribe<UISettingsPopupOpenedEvent>(OnUISettingsPopupOpenedEvent);
             _eventBus.Subscribe<UISettingsPopupClosedEvent>(OnUISettingsPopupClosedEvent);
+            _eventBus.Subscribe<UIRequestDailyGiftPopupEvent>(OnUiRequestDailyGiftPopupEvent);
         }
 
         private void Unsubscribe()
@@ -75,6 +77,7 @@ namespace Controller.MenuScene
             _eventBus.Unsubscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
             _eventBus.Unsubscribe<UISettingsPopupOpenedEvent>(OnUISettingsPopupOpenedEvent);
             _eventBus.Unsubscribe<UISettingsPopupClosedEvent>(OnUISettingsPopupClosedEvent);
+            _eventBus.Unsubscribe<UIRequestDailyGiftPopupEvent>(OnUiRequestDailyGiftPopupEvent);
         }
 
         private void OnUISettingsPopupOpenedEvent(UISettingsPopupOpenedEvent e)
@@ -123,6 +126,14 @@ namespace Controller.MenuScene
             
             var carsPopupController = new MenuSceneBankPopupController(_rootCanvasView.PopupsCanvasTransform);
             InitChildController(carsPopupController);
+        }
+
+        
+
+        private void OnUiRequestDailyGiftPopupEvent(UIRequestDailyGiftPopupEvent e)
+        {
+            var dailyGiftPopupController = new MenuSceneDailyGiftPopupController(_rootCanvasView.PopupsCanvasTransform);
+            InitChildController(dailyGiftPopupController);
         }
     }
 }

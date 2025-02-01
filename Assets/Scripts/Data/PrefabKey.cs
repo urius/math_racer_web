@@ -12,6 +12,7 @@ namespace Data
         UIHostPopup,
         UIJoinPopup,
         UINetFinishOverlay,
+        UIDailyGiftPopup,
         CarBug = CarKey.Bug + Constants.PrefabCarsOffset,
         CarCharger = CarKey.Charger + Constants.PrefabCarsOffset,
         CarCoupe = CarKey.Coupe + Constants.PrefabCarsOffset,
