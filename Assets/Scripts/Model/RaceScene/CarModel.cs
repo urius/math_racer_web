@@ -17,6 +17,7 @@ namespace Model.RaceScene
 
         private readonly int _maxSpeed;
         private readonly int _acceleration;
+        private readonly int _deceleration;
         
         private float _targetBodyRotation;
         private float _turboTargetSpeed;
@@ -32,6 +33,7 @@ namespace Model.RaceScene
             
             _maxSpeed = carRaceData.MaxSpeed;
             _acceleration = carRaceData.Acceleration;
+            _deceleration = (int)(_acceleration * 0.3f);
         }
 
         public float CurrentSpeedKmph { get; private set; }
@@ -70,7 +72,7 @@ namespace Model.RaceScene
         {
             StopTurbo();
             
-            TargetSpeedKmph -= 5;
+            TargetSpeedKmph -= _deceleration;
             if (TargetSpeedKmph < 0)
             {
                 TargetSpeedKmph = 0;
@@ -130,7 +132,7 @@ namespace Model.RaceScene
 
         private void AdjustSpeed(float deltaTime)
         {
-            var deltaSpeed = deltaTime * 6;
+            var deltaSpeed = deltaTime * _acceleration;
             
             if (CurrentSpeedKmph < TargetSpeedKmph)
             {

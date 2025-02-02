@@ -8,7 +8,7 @@ namespace Helpers
 {
     public static class LevelPointsHelper
     {
-        private const int MinLevelPoints = 300;
+        private const int MinLevelPoints = 500;
         
         public static int GetExpPointsForLevel(int targetLevel)
         {
@@ -19,9 +19,8 @@ namespace Helpers
                 return 0;
             }
 
-            const int firstTerm = MinLevelPoints;
-            var lastTerm = firstTerm + (targetLevelIndex - 1) * 100;
-            var totalPoints = targetLevelIndex * (firstTerm + lastTerm) / 2;
+            var lastTerm = MinLevelPoints + (targetLevelIndex - 1) * 300;
+            var totalPoints = targetLevelIndex * (MinLevelPoints + lastTerm) / 2;
 
             return totalPoints;
         }
@@ -35,7 +34,7 @@ namespace Helpers
 
             const int startLevelToCheck = 1;
 
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 5000; i++)
             {
                 var levelToCheck = startLevelToCheck + i;
                 var expPointsForLevel = GetExpPointsForLevel(levelToCheck);
