@@ -21,6 +21,7 @@ namespace View.UI.Popups
         [SerializeField] private Button _closeButton;
 
         protected RectTransform PopupTransform => _popupTransform;
+        protected Vector2 PopupBodyTargetPosition = Vector2.zero;
         
         protected virtual void Awake()
         {
@@ -41,6 +42,12 @@ namespace View.UI.Popups
         {
             _popupTransform.sizeDelta = new Vector2(width, height);
         }
+
+        public void SetPopupBodyPosition(Vector2Int position)
+        {
+            PopupBodyTargetPosition = position;
+            _popupTransform.anchoredPosition = PopupBodyTargetPosition;
+        }
         
         public UniTask AppearAsync()
         {
@@ -48,7 +55,7 @@ namespace View.UI.Popups
             _popupBodyCanvasGroup.alpha = 0;
             LeanTween.value(gameObject, a => _popupBodyCanvasGroup.alpha = a, 0, 1, 0.5f * AppearDurationSec)
                 .setIgnoreTimeScale(true);
-            LeanTween.value(gameObject, p => _popupTransform.anchoredPosition = p, new Vector2(0, -300), Vector2.zero,
+            LeanTween.value(gameObject, p => _popupTransform.anchoredPosition = p, new Vector2(0, -300), PopupBodyTargetPosition,
                     AppearDurationSec)
                 .setEaseOutBack()
                 .setOnComplete(() => tcs.TrySetResult())
@@ -63,7 +70,7 @@ namespace View.UI.Popups
             _blockRaycastsImage.SetAlpha(0);
             LeanTween.value(gameObject, a => _popupBodyCanvasGroup.alpha = a, 1, 0, DisappearDurationSec)
                 .setIgnoreTimeScale(true);;
-            LeanTween.value(gameObject, p => _popupTransform.anchoredPosition = p, Vector2.zero, new Vector2(0, 300),
+            LeanTween.value(gameObject, p => _popupTransform.anchoredPosition = p, PopupBodyTargetPosition, new Vector2(0, 300),
                     DisappearDurationSec)
                 .setEaseInBack()
                 .setOnComplete(() => tcs.TrySetResult())

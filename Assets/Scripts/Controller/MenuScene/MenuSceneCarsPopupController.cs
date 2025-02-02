@@ -38,7 +38,7 @@ namespace Controller.MenuScene
             
             _popupView = Instantiate<UIContentPopup>(PrefabKey.UIContentPopup, _targetTransform);
             _popupView.SetTitleText(_localizationProvider.GetLocale(LocalizationKeys.CarsPopupTitle));
-            _popupView.Setup(1, 800, 670);
+            _popupView.Setup(1, 800, 645, new Vector2Int(0, -25));
 
             SetupContent();
             SetupContentPosition();

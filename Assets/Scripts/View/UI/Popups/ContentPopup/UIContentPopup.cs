@@ -42,12 +42,13 @@ namespace View.UI.Popups.ContentPopup
             }
         }
 
-        public void Setup(int columnsCount, int popupWidth, int popupHeight)
+        public void Setup(int columnsCount, int popupWidth, int popupHeight, Vector2Int bodyOffset = default)
         {
             _viewPortSize = _viewportTransform.rect.size;
-
+            
             _columnsCount = columnsCount;
             SetPopupSize(popupWidth, popupHeight);
+            SetPopupBodyPosition(bodyOffset);
         }
 
         public void AddItem(IUIContentPopupItem item)
