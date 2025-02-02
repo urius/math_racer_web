@@ -11,6 +11,7 @@ namespace View.UI.Popups.BankPopup
         
         [SerializeField] private TMP_Text _amountText;
         [SerializeField] private UITextButtonView _buyButton;
+        [SerializeField] private UICounterView _counterView;
 
         public UITextButtonView BuyButton => _buyButton;
 
@@ -24,14 +25,20 @@ namespace View.UI.Popups.BankPopup
             _buyButton.ButtonClicked -= OnBuyButtonClicked;
         }
 
-        private void OnBuyButtonClicked()
+        public void SetCounter(int amount)
         {
-            BuyButtonClicked?.Invoke(this);
+            _counterView.SetVisibility(amount > 0);
+            _counterView.SetCounterText(amount.ToString());
         }
 
         public void SetAmountText(string text)
         {
             _amountText.text = text;
+        }
+
+        private void OnBuyButtonClicked()
+        {
+            BuyButtonClicked?.Invoke(this);
         }
     }
 }

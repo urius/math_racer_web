@@ -26,9 +26,9 @@ namespace View.UI.Popups.BankPopup
             base.OnDestroy();
         }
 
-        public void SetupGoldItem(int index, string amountText, string buyButtonText)
+        public void SetupGoldItem(int index, string amountText, string buyButtonText, int counterAmount)
         {
-            SetupItem(_goldItems[index], amountText, buyButtonText);
+            SetupItem(_goldItems[index], amountText, buyButtonText, counterAmount);
         }
 
         public void SetGoldItemInteractable(int index, bool isInteractable)
@@ -36,9 +36,9 @@ namespace View.UI.Popups.BankPopup
             _goldItems[index].BuyButton.SetInteractable(isInteractable);
         }
         
-        public void SetupCashItem(int index, string amountText, string buyButtonText)
+        public void SetupCashItem(int index, string amountText, string buyButtonText, int counterAmount)
         {
-            SetupItem(_cashItems[index], amountText, buyButtonText);
+            SetupItem(_cashItems[index], amountText, buyButtonText, counterAmount);
         }
 
         public void SetCashItemInteractable(int index, bool isInteractable)
@@ -46,10 +46,11 @@ namespace View.UI.Popups.BankPopup
             _cashItems[index].BuyButton.SetInteractable(isInteractable);
         }
 
-        private void SetupItem(UIBankPopupItemView itemView, string amountText, string buyButtonText)
+        private void SetupItem(UIBankPopupItemView itemView, string amountText, string buyButtonText, int counterAmount)
         {
             itemView.SetAmountText(amountText);
             itemView.BuyButton.SetText(buyButtonText);
+            itemView.SetCounter(counterAmount);
         }
 
         private void Subscribe()

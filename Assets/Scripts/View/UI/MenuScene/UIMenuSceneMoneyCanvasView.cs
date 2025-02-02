@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utils.LeanTweenHelper;
 using View.Extensions;
+using View.UI.Common;
 using Random = UnityEngine.Random;
 
 namespace View.UI.MenuScene
@@ -22,6 +23,8 @@ namespace View.UI.MenuScene
         [SerializeField] private CanvasGroup[] _bankButtonsCanvasGroups;
         [SerializeField] private GameObject _moneyIconPrefab;
         [SerializeField] private GameObject _crystalIconPrefab;
+        [SerializeField] private UICounterView _addCashButtonCounterView;
+        [SerializeField] private UICounterView _addGoldButtonBankCounterView;
         
         private int _currentCashAmount;
         private int _currentGoldAmount;
@@ -29,6 +32,9 @@ namespace View.UI.MenuScene
         private Vector2 _defaultGoldTextPosition;
         private Color _defaultCashTextColor;
         private Vector2 _defaultCashTextPosition;
+        
+        public UICounterView AddCashButtonCounterView => _addCashButtonCounterView;
+        public UICounterView AddGoldButtonBankCounterView => _addGoldButtonBankCounterView;
 
         private void Awake()
         {
@@ -41,6 +47,9 @@ namespace View.UI.MenuScene
             {
                 openBankButton.onClick.AddListener(OnOpenBankClicked);
             }
+            
+            _addCashButtonCounterView.SetVisibility(false);
+            _addGoldButtonBankCounterView.SetVisibility(false);
         }
 
         private void OnDestroy()

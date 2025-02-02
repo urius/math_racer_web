@@ -20,6 +20,7 @@ namespace Controller.MenuScene
         
         private PlayerModel _playerModel;
         private SessionDataModel _sessionDataModel;
+        private BankAdWatchesModel _bankAdWatchesModel;
 
         public MenuSceneMoneyViewController(UIMenuSceneMoneyCanvasView moneyCanvasView)
         {
@@ -30,8 +31,10 @@ namespace Controller.MenuScene
         {
             _sessionDataModel = _modelsHolder.GetSessionDataModel();
             _playerModel = _modelsHolder.GetPlayerModel();
+            _bankAdWatchesModel = _sessionDataModel.BankAdWatches;
 
             SetupMoneyAmount();
+            UpdateCounterViews();
 
             Subscribe();
         }
@@ -47,24 +50,45 @@ namespace Controller.MenuScene
             _playerModel.GoldAmountChanged += OnGoldAmountChanged;
             _playerModel.InsufficientGold += OnInsufficientGold;
             _playerModel.InsufficientCash += OnInsufficientCash;
+            _bankAdWatchesModel.AvailableWatchesCountUpdated += OnAvailableWatchesCountUpdated;
             _sessionDataModel.IsBankPopupOpened.ValueChanged += OnBankPopupOpenedValueChanged;
             
             _eventBus.Subscribe<UIRequestMoneyFlyAnimationEvent>(OnRequestMoneyFlyAnimationEvent);
 
             _moneyCanvasView.OpenBankButtonClicked += OnOpenBankButtonClicked;
         }
-        
+
         private void Unsubscribe()
         {
             _playerModel.CashAmountChanged -= OnCashAmountChanged;
             _playerModel.GoldAmountChanged -= OnGoldAmountChanged;
             _playerModel.InsufficientGold -= OnInsufficientGold;
             _playerModel.InsufficientCash -= OnInsufficientCash;
+            _bankAdWatchesModel.AvailableWatchesCountUpdated -= OnAvailableWatchesCountUpdated;
             _sessionDataModel.IsBankPopupOpened.ValueChanged -= OnBankPopupOpenedValueChanged;
             
             _eventBus.Unsubscribe<UIRequestMoneyFlyAnimationEvent>(OnRequestMoneyFlyAnimationEvent);
             
             _moneyCanvasView.OpenBankButtonClicked -= OnOpenBankButtonClicked;
+        }
+
+        private void OnAvailableWatchesCountUpdated()
+        {
+            UpdateCounterViews();
+        }
+
+        private void UpdateCounterViews()
+        {
+            var haveAdWatches = _bankAdWatchesModel.AdWatchesRest > 0;
+            _moneyCanvasView.AddCashButtonCounterView.SetVisibility(haveAdWatches);
+            _moneyCanvasView.AddGoldButtonBankCounterView.SetVisibility(haveAdWatches);
+            
+            if (haveAdWatches)
+            {
+                var counterStr = _bankAdWatchesModel.AdWatchesRest.ToString();
+                _moneyCanvasView.AddCashButtonCounterView.SetCounterText(counterStr);
+                _moneyCanvasView.AddGoldButtonBankCounterView.SetCounterText(counterStr);
+            }
         }
 
         private void OnRequestMoneyFlyAnimationEvent(UIRequestMoneyFlyAnimationEvent e)

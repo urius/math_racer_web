@@ -47,6 +47,7 @@ namespace Controller.MenuScene
 
         private void InitChildControllers()
         {
+            InitChildController(new ProcessBankWatchAdsLimitsController(_sessionDataModel.BankAdWatches));
             InitChildController(new MenuSceneRootViewController(_rootView));
             //UI
             InitChildController(new MenuSceneMoneyViewController(_rootCanvasView.MoneyCanvasView));

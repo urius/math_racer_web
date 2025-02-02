@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Controller.Commands;
 using Cysharp.Threading.Tasks;
 using Data;
@@ -8,6 +10,7 @@ using Model;
 using Providers;
 using Providers.LocalizationProvider;
 using UnityEngine;
+using Utils;
 using Utils.GamePush;
 using View.UI.Popups.BankPopup;
 
@@ -18,14 +21,16 @@ namespace Controller.MenuScene
         private const int ColumnsAmount = 3;
         
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
-        private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
         private readonly ICommandExecutor _commandExecutor = Instance.Get<ICommandExecutor>();
+        private readonly IUpdatesProvider _updatesProvider = Instance.Get<IUpdatesProvider>();
+        private readonly ILocalizationProvider _localizationProvider = Instance.Get<ILocalizationProvider>();
 
         private readonly PlayerModel _playerModel;
         private readonly SessionDataModel _sessionDataModel;
         private readonly RectTransform _targetTransform;
         private readonly List<ProductItemViewModelBase> _goldItemViewModels = new();
         private readonly List<ProductItemViewModelBase> _cashItemViewModels = new();
+        private readonly BankAdWatchesModel _bankAdWatchesModel;
 
         private UIBankPopup _bankPopup;
 
@@ -34,9 +39,26 @@ namespace Controller.MenuScene
             _targetTransform = targetTransform;
             
             _sessionDataModel = _modelsHolder.GetSessionDataModel();
+            _bankAdWatchesModel = _sessionDataModel.BankAdWatches;
             _playerModel = _modelsHolder.GetPlayerModel();
         }
         
+        private IEnumerable<ProductItemViewModelBase> AllItemViewModels
+        {
+            get
+            {
+                foreach (var itemViewModel in _cashItemViewModels)
+                {
+                    yield return itemViewModel;
+                }
+
+                foreach (var itemViewModel in _goldItemViewModels)
+                {
+                    yield return itemViewModel;
+                }
+            }
+        }
+
         public override void Initialize()
         {
             _sessionDataModel.IsBankPopupOpened.Value = true;
@@ -45,7 +67,7 @@ namespace Controller.MenuScene
             
             _bankPopup.SetTitleText(_localizationProvider.GetLocale(LocalizationKeys.BankPopupTitle));
             _bankPopup.Setup(ColumnsAmount, 840, 670);
-
+            
             SetupViewModels();
             SetupContent();
 
@@ -62,8 +84,8 @@ namespace Controller.MenuScene
             {
                 if (i == 0 && isRewardedAdsAvailable)
                 {
-                    _goldItemViewModels.Add(new AdvertProductItemViewModel(Constants.ProductTypeGold));
-                    _cashItemViewModels.Add(new AdvertProductItemViewModel(Constants.ProductTypeCash));
+                    _goldItemViewModels.Add(new AdvertProductItemViewModel(Constants.ProductTypeGold, _bankAdWatchesModel));
+                    _cashItemViewModels.Add(new AdvertProductItemViewModel(Constants.ProductTypeCash, _bankAdWatchesModel));
                 }
                 else
                 {
@@ -105,11 +127,12 @@ namespace Controller.MenuScene
             {
                 var itemViewModel = _goldItemViewModels[itemIndex];
                 var texts = GetTexts(itemViewModel);
-                _bankPopup.SetupGoldItem(itemIndex, texts.AmountText, texts.BuyButtonText);
+                _bankPopup.SetupGoldItem(itemIndex, texts.AmountText, texts.BuyButtonText, GetCounter(itemViewModel));
+                _bankPopup.SetGoldItemInteractable(itemIndex, itemViewModel.IsInteractable);
             }
             else
             {
-                _bankPopup.SetupGoldItem(itemIndex, "-", _localizationProvider.GetLocale(LocalizationKeys.Unavailable));
+                _bankPopup.SetupGoldItem(itemIndex, "-", _localizationProvider.GetLocale(LocalizationKeys.Unavailable),0);
                 _bankPopup.SetGoldItemInteractable(itemIndex, isInteractable: false);
             }
         }
@@ -120,11 +143,12 @@ namespace Controller.MenuScene
             {
                 var itemViewModel = _cashItemViewModels[itemIndex];
                 var texts = GetTexts(itemViewModel);
-                _bankPopup.SetupCashItem(itemIndex, texts.AmountText, texts.BuyButtonText);
+                _bankPopup.SetupCashItem(itemIndex, texts.AmountText, texts.BuyButtonText, GetCounter(itemViewModel));
+                _bankPopup.SetCashItemInteractable(itemIndex, itemViewModel.IsInteractable);
             }
             else
             {
-                _bankPopup.SetupCashItem(itemIndex, "-", _localizationProvider.GetLocale(LocalizationKeys.Unavailable));
+                _bankPopup.SetupCashItem(itemIndex, "-", _localizationProvider.GetLocale(LocalizationKeys.Unavailable), 0);
                 _bankPopup.SetCashItemInteractable(itemIndex, isInteractable: false);
             }
         }
@@ -139,8 +163,9 @@ namespace Controller.MenuScene
             if (isAdvert)
             {
                 amountText = GetAdvertAmountText(itemViewModel);
-                buyButtonText =
-                    $"{Constants.TextSpriteAds} {_localizationProvider.GetLocale(LocalizationKeys.WatchAd)}";
+                buyButtonText = _bankAdWatchesModel.AdWatchesRest > 0
+                    ? $"{Constants.TextSpriteAds} {_localizationProvider.GetLocale(LocalizationKeys.WatchAd)}"
+                    : GetAdCooldownTimeRestText();
             }
             else
             {
@@ -153,9 +178,21 @@ namespace Controller.MenuScene
             return (amountText, buyButtonText);
         }
 
+        private int GetCounter(ProductItemViewModelBase itemViewModel)
+        {
+            var isAdvert = itemViewModel.PurchaseType == ProductItemPurchaseType.Advert;
+
+            return isAdvert ? ((AdvertProductItemViewModel)itemViewModel).AdWatchesRest : -1;
+        }
+
+        private string GetAdCooldownTimeRestText()
+        {
+            return FormattingHelper.ToTimeFormatMinSec(Math.Max(0, _bankAdWatchesModel.AdWatchCooldownSecondsRest));
+        }
+
         private string GetAdvertAmountText(ProductItemViewModelBase itemViewModel)
         {
-            var gameCurrencyText  =itemViewModel.ProductType == Constants.ProductTypeGold
+            var gameCurrencyText = itemViewModel.ProductType == Constants.ProductTypeGold
                 ? _localizationProvider.GetLocale(LocalizationKeys.Crystal)
                 : _localizationProvider.GetLocale(LocalizationKeys.Cash);
             
@@ -167,6 +204,9 @@ namespace Controller.MenuScene
             _bankPopup.CloseButtonClicked += OnCloseClicked;
             _bankPopup.GoldItemBuyClicked += OnGoldItemBuyClicked;
             _bankPopup.CashItemBuyClicked += OnCashItemBuyClicked;
+            
+            _updatesProvider.GameplaySecondPassed += OnGameplaySecondPassed;
+            _bankAdWatchesModel.AvailableWatchesCountUpdated += OnAvailableWatchesCountUpdated;
         }
 
         private void Unsubscribe()
@@ -174,6 +214,41 @@ namespace Controller.MenuScene
             _bankPopup.CloseButtonClicked -= OnCloseClicked;
             _bankPopup.GoldItemBuyClicked -= OnGoldItemBuyClicked;
             _bankPopup.CashItemBuyClicked -= OnCashItemBuyClicked;
+            
+            _updatesProvider.GameplaySecondPassed -= OnGameplaySecondPassed;
+            _bankAdWatchesModel.AvailableWatchesCountUpdated -= OnAvailableWatchesCountUpdated;
+        }
+
+        private void OnAvailableWatchesCountUpdated()
+        {
+            UpdateAdItemViews();
+        }
+
+        private void OnGameplaySecondPassed()
+        {
+            if (_bankAdWatchesModel.AdWatchesRest <= 0)
+            {
+                UpdateAdItemViews();
+            }
+        }
+
+        private void UpdateAdItemViews()
+        {
+            for (var i = 0; i < _goldItemViewModels.Count; i++)
+            {
+                if (_goldItemViewModels[i].PurchaseType == ProductItemPurchaseType.Advert)
+                {
+                    SetupGoldItemView(i);
+                }
+            }
+            
+            for (var i = 0; i < _cashItemViewModels.Count; i++)
+            {
+                if (_cashItemViewModels[i].PurchaseType == ProductItemPurchaseType.Advert)
+                {
+                    SetupCashItemView(i);
+                }
+            }
         }
 
         private void OnGoldItemBuyClicked(int index)
@@ -192,6 +267,8 @@ namespace Controller.MenuScene
         {
             if (itemViewModel.PurchaseType == ProductItemPurchaseType.Advert)
             {
+                if (GamePushWrapper.IsRewardedAdsShowInProgress) return;
+                
                 var showAdsSuccess = await GamePushWrapper.ShowRewardedAds();
                 if (showAdsSuccess)
                 {
@@ -203,6 +280,8 @@ namespace Controller.MenuScene
                     {
                         _playerModel.AddCash(itemViewModel.ProductAmount);
                     }
+
+                    _bankAdWatchesModel.HandleAdWatched();
                 }
             }
             else if (itemViewModel.PurchaseType == ProductItemPurchaseType.Purchase)
@@ -244,16 +323,22 @@ namespace Controller.MenuScene
             }
 
             public abstract ProductItemPurchaseType PurchaseType { get; }
+            public abstract bool IsInteractable { get; }
         }
         
         private class AdvertProductItemViewModel : ProductItemViewModelBase
         {
-            public AdvertProductItemViewModel(string productType)
+            private readonly BankAdWatchesModel _bankAdWatchesModel;
+
+            public AdvertProductItemViewModel(string productType, BankAdWatchesModel bankAdWatchesModel)
                 : base(productType == Constants.ProductTypeCash ? 100 : 1, productType)
             {
+                _bankAdWatchesModel = bankAdWatchesModel;
             }
 
             public override ProductItemPurchaseType PurchaseType => ProductItemPurchaseType.Advert;
+            public override bool IsInteractable => AdWatchesRest > 0;
+            public int AdWatchesRest => _bankAdWatchesModel.AdWatchesRest;
         }
         
         private class PurchaseProductItemViewModel : ProductItemViewModelBase
@@ -267,6 +352,7 @@ namespace Controller.MenuScene
             }
 
             public override ProductItemPurchaseType PurchaseType => ProductItemPurchaseType.Purchase;
+            public override bool IsInteractable => true;
 
             public int Id => _bankProductData.Id;
             public string Tag => _bankProductData.Tag;

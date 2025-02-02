@@ -8,6 +8,7 @@ namespace Model
         public readonly ReactiveFlag IsBankPopupOpened = new();
         public readonly ReactiveValue<BankProductsData> BankProductsData = new();
         public readonly PlayerSocialData SocialData = new();
+        public readonly BankAdWatchesModel BankAdWatches = new();
 
         public RequestSceneParamsBase RequestSceneParams;
     }
