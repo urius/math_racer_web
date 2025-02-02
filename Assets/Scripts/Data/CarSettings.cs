@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Data
 {
-    public struct CarData
+    public struct CarSettings
     {
         public readonly CarKey CarKey;
         public readonly Sprite IconSprite;
@@ -13,7 +13,7 @@ namespace Data
         public readonly int MaxSpeed;
         public readonly float MaxSpeedPercent;
 
-        public CarData(CarKey carKey, Sprite iconSprite, int price, int unlockLevel, int acceleration, int maxSpeed)
+        public CarSettings(CarKey carKey, Sprite iconSprite, int price, int unlockLevel, int acceleration, int maxSpeed)
         {
             CarKey = carKey;
             IconSprite = iconSprite;

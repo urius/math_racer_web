@@ -10,12 +10,13 @@ namespace Model.RaceScene
         public event Action AccelerateHappened;
         public event Action DecelerateHappened;
         
-        public const int MaxSpeed = 250;
-        
         public readonly int NetId;
         public readonly CarKey CarKey;
         public readonly int PositionIndex;
         public readonly ReactiveFlag TurboFlag = new(initialValue: false);
+
+        private readonly int _maxSpeed;
+        private readonly int _acceleration;
         
         private float _targetBodyRotation;
         private float _turboTargetSpeed;
@@ -23,11 +24,14 @@ namespace Model.RaceScene
         private float _distanceToPlayerCar;
         private float _xOffsetLocal;
 
-        public CarModel(CarRaceModelData carRaceModelData)
+        public CarModel(CarRaceData carRaceData)
         {
-            CarKey = carRaceModelData.CarKey;
-            PositionIndex = carRaceModelData.CarPositionIndex;
-            NetId = carRaceModelData.Id;
+            CarKey = carRaceData.CarKey;
+            PositionIndex = carRaceData.CarPositionIndex;
+            NetId = carRaceData.Id;
+            
+            _maxSpeed = carRaceData.MaxSpeed;
+            _acceleration = carRaceData.Acceleration;
         }
 
         public float CurrentSpeedKmph { get; private set; }
@@ -41,9 +45,9 @@ namespace Model.RaceScene
         public void Accelerate()
         {
             TargetSpeedKmph += GetAcceleration();
-            if (TargetSpeedKmph > MaxSpeed)
+            if (TargetSpeedKmph > _maxSpeed)
             {
-                TargetSpeedKmph = MaxSpeed;
+                TargetSpeedKmph = _maxSpeed;
             }
 
             UpdateTargetBodyRotation();
@@ -157,7 +161,7 @@ namespace Model.RaceScene
 
         private int GetAcceleration()
         {
-            return (TargetSpeedKmph <= 0 ? 15 : 10);
+            return TargetSpeedKmph <= 0 ? (int)(_acceleration * 1.5f) : _acceleration;
         }
 
         private void UpdateTargetBodyRotation()

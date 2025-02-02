@@ -8,22 +8,22 @@ namespace Providers
 {
     public class CarDataProvider : ICarDataProvider
     {
-        private readonly Dictionary<CarKey, CarData> _carDataByKey = new();
-        private readonly List<CarData> _carDataList = new();
+        private readonly Dictionary<CarKey, CarSettings> _carDataByKey = new();
+        private readonly List<CarSettings> _carDataList = new();
 
         public CarDataProvider(IPrefabHolder prefabHolder)
         {
             CollectCarsData(prefabHolder);
         }
 
-        public IReadOnlyList<CarData> CarDataList => _carDataList;
+        public IReadOnlyList<CarSettings> CarDataList => _carDataList;
         
-        public CarData GetCarData(CarKey carKey)
+        public CarSettings GetCarData(CarKey carKey)
         {
             return _carDataByKey[carKey];
         }
 
-        public IReadOnlyList<CarData> GetUnlockedCarsByLevel(int targetLevel)
+        public IReadOnlyList<CarSettings> GetUnlockedCarsByLevel(int targetLevel)
         {
             return CarDataList
                 .Where(c => c.UnlockLevel <= targetLevel)
@@ -54,7 +54,7 @@ namespace Providers
                 var prefab = prefabHolder.GetPrefabByKey(carPrefabKey);
                 var mbData = prefab.GetComponent<CarMonoBehaviourData>();
 
-                var carData = new CarData(
+                var carData = new CarSettings(
                     carKey,
                     mbData.IconSprite,
                     mbData.Price,
@@ -70,8 +70,8 @@ namespace Providers
 
     public interface ICarDataProvider
     {
-        public IReadOnlyList<CarData> CarDataList { get; }
-        public CarData GetCarData(CarKey carKey);
-        public IReadOnlyList<CarData> GetUnlockedCarsByLevel(int level);
+        public IReadOnlyList<CarSettings> CarDataList { get; }
+        public CarSettings GetCarData(CarKey carKey);
+        public IReadOnlyList<CarSettings> GetUnlockedCarsByLevel(int level);
     }
 }

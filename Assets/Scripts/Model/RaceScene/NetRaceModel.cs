@@ -11,14 +11,14 @@ namespace Model.RaceScene
         private readonly Dictionary<int, NetOpponentRaceResult> _netOpponentRaceResultById = new();
         
         public NetRaceModel(
-            CarRaceModelData playerCarModelData,
+            CarRaceData playerCarData,
             ComplexityData complexityData,
-            CarRaceModelData opponent1CarModelData,
-            CarRaceModelData opponent2CarModelData = null)
-            : base(playerCarModelData,
+            CarRaceData opponent1CarData,
+            CarRaceData opponent2CarData = null)
+            : base(playerCarData,
             complexityData,
-            opponent1CarModelData,
-            opponent2CarModelData)
+            opponent1CarData,
+            opponent2CarData)
         {
         }
 

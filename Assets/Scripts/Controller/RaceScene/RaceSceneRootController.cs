@@ -77,9 +77,9 @@ namespace Controller.RaceScene
                 var opponentCarKey = unlockedCars[_random.Next(unlockedCars.Count)].CarKey;
 
                 _raceModel = new RaceModel(
-                    new CarRaceModelData(_playerModel.CurrentCar, carPositionIndex: 0, id: 1),
+                    new CarRaceData(_carDataProvider.GetCarData(_playerModel.CurrentCar), carPositionIndex: 0, id: 1),
                     complexityData,
-                    new CarRaceModelData(opponentCarKey, carPositionIndex: 1, id: 2));
+                    new CarRaceData(_carDataProvider.GetCarData(opponentCarKey), carPositionIndex: 1, id: 2));
             }
             else
             {
@@ -103,9 +103,10 @@ namespace Controller.RaceScene
             _modelsHolder.SetRaceModel(_raceModel);
         }
 
-        private CarRaceModelData ToCarRaceModelData(P2PPlayerData p2pPlayerData)
+        private CarRaceData ToCarRaceModelData(P2PPlayerData p2pPlayerData)
         {
-            return new CarRaceModelData(p2pPlayerData.CarKey, p2pPlayerData.PositionIndex, p2pPlayerData.Id);
+            var carData = _carDataProvider.GetCarData(p2pPlayerData.CarKey);
+            return new CarRaceData(carData, p2pPlayerData.PositionIndex, p2pPlayerData.Id);
         }
 
         private void InitView()

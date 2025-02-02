@@ -22,7 +22,7 @@ namespace Controller.MenuScene
         private readonly IAudioPlayer _audioPlayer = Instance.Get<IAudioPlayer>();
         
         private readonly RectTransform _targetTransform;
-        private readonly Dictionary<UICarsPopupItemView, CarData> _carDataByItemView = new();
+        private readonly Dictionary<UICarsPopupItemView, CarSettings> _carDataByItemView = new();
         
         private UIContentPopup _popupView;
         private PlayerModel _playerModel;
@@ -84,26 +84,26 @@ namespace Controller.MenuScene
             }
         }
 
-        private void SetupItemView(UICarsPopupItemView itemView, CarData carData)
+        private void SetupItemView(UICarsPopupItemView itemView, CarSettings carSettings)
         {
-            var isLocked = _playerModel.Level < carData.UnlockLevel;
+            var isLocked = _playerModel.Level < carSettings.UnlockLevel;
             
             itemView.SetLockedState(isLocked);
-            itemView.SetCarIconSprite(carData.IconSprite);
+            itemView.SetCarIconSprite(carSettings.IconSprite);
 
             if (isLocked == false)
             {
-                itemView.SetSelectedState(_playerModel.CurrentCar == carData.CarKey);
+                itemView.SetSelectedState(_playerModel.CurrentCar == carSettings.CarKey);
                 itemView.SetParameterTexts(
                     _localizationProvider.GetLocale(LocalizationKeys.AccelerationParameter),
                     _localizationProvider.GetLocale(LocalizationKeys.MaxSpeedParameter));
-                itemView.SetFirstParameterPercent(carData.AccelerationPercent);
-                itemView.SetSecondParameterPercent(carData.MaxSpeedPercent);
+                itemView.SetFirstParameterPercent(carSettings.AccelerationPercent);
+                itemView.SetSecondParameterPercent(carSettings.MaxSpeedPercent);
 
                 itemView.SetButtonPriceText(
-                    IsCarBought(carData)
+                    IsCarBought(carSettings)
                         ? _localizationProvider.GetLocale(LocalizationKeys.Choose)
-                        : carData.Price.ToPriceView());
+                        : carSettings.Price.ToPriceView());
             }
             else
             {
@@ -111,9 +111,9 @@ namespace Controller.MenuScene
             }
         }
 
-        private bool IsCarBought(CarData carData)
+        private bool IsCarBought(CarSettings carSettings)
         {
-            return _playerModel.IsCarBought(carData.CarKey);
+            return _playerModel.IsCarBought(carSettings.CarKey);
         }
 
         private void SubscribeOnItem(UICarsPopupItemView itemView)

@@ -15,14 +15,14 @@ namespace Model.RaceScene
         
         private float _startRaceTime;
 
-        public RaceModel(CarRaceModelData playerCarModelData, ComplexityData complexityData, CarRaceModelData opponent1CarModelData, CarRaceModelData opponent2CarModelData = null)
+        public RaceModel(CarRaceData playerCarData, ComplexityData complexityData, CarRaceData opponent1CarData, CarRaceData opponent2CarData = null)
         {
             _complexityData = complexityData;
             QuestionsModel = new QuestionsModel(complexityData);
-            PlayerCar = new CarModel(playerCarModelData);
-            OpponentCarModels = opponent2CarModelData != null
-                ? new[] { new CarModel(opponent1CarModelData), new CarModel(opponent2CarModelData) }
-                : new[] { new CarModel(opponent1CarModelData) };
+            PlayerCar = new CarModel(playerCarData);
+            OpponentCarModels = opponent2CarData != null
+                ? new[] { new CarModel(opponent1CarData), new CarModel(opponent2CarData) }
+                : new[] { new CarModel(opponent1CarData) };
             RaceResultsModel = new RaceResultsModel();
         }
 
@@ -69,20 +69,6 @@ namespace Model.RaceScene
         {
             carModel.Update(deltaTime);
             carModel.SetDistanceToPlayerCar(PlayerCar.PassedMeters - carModel.PassedMeters);
-        }
-    }
-
-    public class CarRaceModelData
-    {
-        public readonly int Id;
-        public readonly CarKey CarKey;
-        public readonly int CarPositionIndex;
-
-        public CarRaceModelData(CarKey carKey, int carPositionIndex, int id)
-        {
-            CarKey = carKey;
-            CarPositionIndex = carPositionIndex;
-            Id = id;
         }
     }
 }
