@@ -23,6 +23,7 @@ namespace Utils.GamePush
         private UniTaskCompletionSource<FetchPurchaseData[]> _fetchPurchasesTcs;
         private UniTaskCompletionSource<bool> _purchaseTcs;
         private UniTaskCompletionSource<bool> _consumeTcs;
+        private UniTaskCompletionSource<bool> _inviteTcs;
 
         public static UniTask<FetchPurchaseData[]> FetchPurchasesTask =>
             Instance._fetchPurchasesTcs?.Task ?? UniTask.FromResult(Array.Empty<FetchPurchaseData>());
@@ -253,6 +254,38 @@ namespace Utils.GamePush
         public static UniTask<bool> ConsumeProduct(string idOrTag)
         {
             return Instance.ConsumeProductInternal(idOrTag);
+        }
+
+        public static UniTask<bool> Invite()
+        {
+            return Instance.InviteInternal();
+        }
+
+        public static bool IsInviteAvailable()
+        {
+            return IsGPInit && GP_Socials.IsSupportsNativeInvite();
+        }
+
+        private UniTask<bool> InviteInternal()
+        {
+            _inviteTcs?.TrySetResult(false);
+            _inviteTcs = new UniTaskCompletionSource<bool>();
+
+            GP_Socials.OnInvite -= OnInvite;
+            GP_Socials.OnInvite += OnInvite;
+            
+            GP_Socials.Invite();
+
+            return _inviteTcs.Task;
+        }
+
+        private void OnInvite(bool isSuccess)
+        {
+            if (_inviteTcs != null)
+            {
+                _inviteTcs.TrySetResult(isSuccess);
+                _inviteTcs = null;
+            }
         }
 
         private UniTask<bool> ConsumeProductInternal(string idOrTag)

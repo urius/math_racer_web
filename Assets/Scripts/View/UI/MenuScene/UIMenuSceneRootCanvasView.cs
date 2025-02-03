@@ -27,6 +27,11 @@ namespace View.UI.MenuScene
             add => _settingsButton.onClick.AddListener(value.Invoke);
             remove => _settingsButton.onClick.RemoveListener(value.Invoke);
         }
+        public event Action InviteButtonClicked
+        {
+            add => _inviteButton.onClick.AddListener(value.Invoke);
+            remove => _inviteButton.onClick.RemoveListener(value.Invoke);
+        }
 
         [SerializeField] private UITextButtonView _playButton;
         [SerializeField] private UITextButtonView _multiplayerButton;
@@ -36,15 +41,22 @@ namespace View.UI.MenuScene
         [SerializeField] private UIMenuSceneLevelCanvasView _levelCanvasView;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private UIMenuSceneDailyGiftButtonView _dailyGiftButton;
+        [SerializeField] private Button _inviteButton;
         
         public RectTransform PopupsCanvasTransform => _popupsCanvasTransform;
         public UIMenuSceneMoneyCanvasView MoneyCanvasView => _moneyCanvasView;
         public UIMenuSceneLevelCanvasView LevelCanvasView => _levelCanvasView;
         public UIMenuSceneDailyGiftButtonView DailyGiftButton => _dailyGiftButton;
+        public Button InviteButton => _inviteButton;
 
         private void OnDestroy()
         {
             _settingsButton.onClick.RemoveAllListeners();
+        }
+
+        public void SetInviteButtonVisibility(bool isVisible)
+        {
+            _inviteButton.gameObject.SetActive(isVisible);
         }
 
         public void SetSettingsButtonInteractable(bool isInteractable)

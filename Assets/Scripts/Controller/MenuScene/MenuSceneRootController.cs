@@ -1,5 +1,6 @@
 using Controller.Common;
 using Controller.MenuScene.MultiplayerPopupControllers;
+using Cysharp.Threading.Tasks;
 using Events;
 using Extensions;
 using Infra.EventBus;
@@ -9,6 +10,7 @@ using Providers;
 using Services;
 using UnityEngine;
 using Utils.AudioManager;
+using Utils.GamePush;
 using View.UI.MenuScene;
 
 namespace Controller.MenuScene
@@ -32,6 +34,8 @@ namespace Controller.MenuScene
             
             _rootCanvasView = Object.FindObjectOfType<UIMenuSceneRootCanvasView>();
             _rootView = Object.FindObjectOfType<UIMenuSceneRootView>();
+
+            UpdateInviteButtonView();
             
             InitChildControllers();
             
@@ -48,7 +52,7 @@ namespace Controller.MenuScene
         private void InitChildControllers()
         {
             InitChildController(new ProcessBankWatchAdsLimitsController(_sessionDataModel.BankAdWatches));
-            InitChildController(new MenuSceneRootViewController(_rootView));
+            InitChildController(new MenuSceneBackgroundViewController(_rootView));
             //UI
             InitChildController(new MenuSceneMoneyViewController(_rootCanvasView.MoneyCanvasView));
             InitChildController(new MenuSceneLevelViewController(_rootCanvasView.LevelCanvasView));
@@ -61,6 +65,7 @@ namespace Controller.MenuScene
             _rootCanvasView.MultiplayerButtonClicked += OnMultiplayerButtonClicked;
             _rootCanvasView.CarsButtonClicked += OnCarsButtonClicked;
             _rootCanvasView.SettingsButtonClicked += OnSettingsButtonClicked;
+            _rootCanvasView.InviteButtonClicked += OnInviteButtonClicked;
             
             _eventBus.Subscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
             _eventBus.Subscribe<UISettingsPopupOpenedEvent>(OnUISettingsPopupOpenedEvent);
@@ -74,11 +79,22 @@ namespace Controller.MenuScene
             _rootCanvasView.MultiplayerButtonClicked -= OnMultiplayerButtonClicked;
             _rootCanvasView.CarsButtonClicked -= OnCarsButtonClicked;
             _rootCanvasView.SettingsButtonClicked -= OnSettingsButtonClicked;
+            _rootCanvasView.InviteButtonClicked -= OnInviteButtonClicked;
             
             _eventBus.Unsubscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
             _eventBus.Unsubscribe<UISettingsPopupOpenedEvent>(OnUISettingsPopupOpenedEvent);
             _eventBus.Unsubscribe<UISettingsPopupClosedEvent>(OnUISettingsPopupClosedEvent);
             _eventBus.Unsubscribe<UIRequestDailyGiftPopupEvent>(OnUiRequestDailyGiftPopupEvent);
+        }
+
+        private void UpdateInviteButtonView()
+        {
+            _rootCanvasView.SetInviteButtonVisibility(GamePushWrapper.IsInviteAvailable());
+        }
+
+        private void OnInviteButtonClicked()
+        {
+            GamePushWrapper.Invite().Forget();
         }
 
         private void OnUISettingsPopupOpenedEvent(UISettingsPopupOpenedEvent e)

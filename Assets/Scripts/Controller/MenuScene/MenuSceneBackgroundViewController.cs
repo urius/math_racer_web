@@ -8,7 +8,7 @@ using View.UI.MenuScene;
 
 namespace Controller.MenuScene
 {
-    public class MenuSceneRootViewController : ControllerBase
+    public class MenuSceneBackgroundViewController : ControllerBase
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         
@@ -17,7 +17,7 @@ namespace Controller.MenuScene
         private PlayerModel _playerModel;
         private CarView _carView;
 
-        public MenuSceneRootViewController(UIMenuSceneRootView rootView)
+        public MenuSceneBackgroundViewController(UIMenuSceneRootView rootView)
         {
             _rootView = rootView;
         }
