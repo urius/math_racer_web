@@ -520,8 +520,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ba462a421c841e0b1d63887170892c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _acceleration: 21
+  _acceleration: 18
   _maxSpeed: 250
   _iconSprite: {fileID: 21300000, guid: 153c0da2ccc0541fe8212dc954e42f8a, type: 3}
-  _price: 95000
+  _price: 75000
   _unlockLevel: 25

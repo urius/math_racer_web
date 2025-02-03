@@ -307,8 +307,6 @@ MonoBehaviour:
   _wheelBack: {fileID: 9127999915118237497}
   _wheelFront: {fileID: 1904341342118399847}
   _boosterContainer: {fileID: 3995287358069835860}
-  _boosterPrefab: {fileID: 4805281740419894079, guid: ed6761a1d76f84277ab80c9cfd2fab65, type: 3}
-  _exhaustPrefab: {fileID: 4805281740419894079, guid: 9b6e95426e9134d9b9989b379d76b417, type: 3}
   _bodyRotationMin: -5
   _bodyRotationMax: 5
 --- !u!114 &7018753438659648363
@@ -323,7 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ba462a421c841e0b1d63887170892c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _acceleration: 14
+  _acceleration: 9
   _maxSpeed: 185
   _iconSprite: {fileID: 21300000, guid: eb982491a65d442afaf06a46c3467d20, type: 3}
   _price: 150

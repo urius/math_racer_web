@@ -128,7 +128,7 @@ namespace Controller.RaceScene
             var rndValue = Random.value;
             var totalAnswersCount = _raceResultsModel.RightAnswersCount + _raceResultsModel.WrongAnswersCount;
 
-            var downThreshold = (float)_raceResultsModel.WrongAnswersCount / totalAnswersCount;
+            var downThreshold = (float)(3 * _raceResultsModel.WrongAnswersCount) / totalAnswersCount;
             var upThreshold = (float)_raceResultsModel.RightAnswersCount / totalAnswersCount - downThreshold;
 
             if (rndValue <= upThreshold)

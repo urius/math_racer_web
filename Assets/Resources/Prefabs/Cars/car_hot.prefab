@@ -405,7 +405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ba462a421c841e0b1d63887170892c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _acceleration: 17
+  _acceleration: 11
   _maxSpeed: 180
   _iconSprite: {fileID: 21300000, guid: 36459e5a6e5084df282f3d9d0c3494cf, type: 3}
   _price: 1700

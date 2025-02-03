@@ -1037,7 +1037,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ba462a421c841e0b1d63887170892c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _acceleration: 8
+  _acceleration: 3
   _maxSpeed: 70
   _iconSprite: {fileID: 21300000, guid: 75547385d68f44ef2adf58cf041fe2bd, type: 3}
   _price: -1000
