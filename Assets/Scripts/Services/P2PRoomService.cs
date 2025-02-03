@@ -76,7 +76,7 @@ namespace Services
             PlayersData.CreateLocalPlayerData(PlayerName, PlayerModel.CurrentCar);
             PlayersData.LocalPlayerData.PositionIndex = 0;
 
-            var createRoomResult = await _p2pRoom.Create(2);
+            var createRoomResult = await _p2pRoom.Create(3);
 
             if (createRoomResult == false)
             {

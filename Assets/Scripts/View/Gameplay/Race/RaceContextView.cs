@@ -7,8 +7,6 @@ namespace View.Gameplay.Race
     public class RaceContextView : MonoBehaviour
     {
         [SerializeField] private Transform _playerCarTargetTransform;
-        [SerializeField] private Transform _opponentCarTargetTransform;
-        [SerializeField] private Transform _opponent2CarTargetTransform;
         [SerializeField] private Transform[] _carContainerTransforms;
         [SerializeField] private Transform _startLineTransform;
         [SerializeField] private Transform _finishLineTransform;
@@ -18,8 +16,6 @@ namespace View.Gameplay.Race
         [SerializeField] private TrafficLightView _trafficLightView;
 
         public Transform PlayerCarTargetTransform => _playerCarTargetTransform;
-        public Transform OpponentCarTargetTransform => _opponentCarTargetTransform;
-        public Transform Opponent2CarTargetTransform => _opponent2CarTargetTransform;
         public IReadOnlyList<Transform> CarContainerTransforms => _carContainerTransforms;
         public Transform StartLineTransform => _startLineTransform;
         public Transform FinishLineTransform => _finishLineTransform;

@@ -18,7 +18,6 @@ namespace Controller.RaceScene
         private readonly IP2PRoomService _roomService = Instance.Get<IP2PRoomService>();
         
         private UINetRaceFinishOverlayView _finishOverlayView;
-        private PlayerModel _playerModel;
         private NetRaceModel _netRaceModel;
         private PlayerSocialData _socialData;
 
@@ -28,7 +27,6 @@ namespace Controller.RaceScene
 
         public override void Initialize()
         {
-            _playerModel = _modelsHolder.GetPlayerModel();
             _netRaceModel = (NetRaceModel)_modelsHolder.GetRaceModel();
             _socialData = _modelsHolder.GetSessionDataModel().SocialData;
             

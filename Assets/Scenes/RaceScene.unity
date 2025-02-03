@@ -734,6 +734,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &368289603
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 368289605}
+  - component: {fileID: 368289604}
+  m_Layer: 0
+  m_Name: -- car 4 container
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!210 &368289604
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368289603}
+  m_Enabled: 1
+  m_SortingLayerID: 535136467
+  m_SortingLayer: 3
+  m_SortingOrder: 1
+  m_SortAtRoot: 0
+--- !u!4 &368289605
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368289603}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5, y: -4.015, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &434764054
 GameObject:
   m_ObjectHideFlags: 0
@@ -996,7 +1040,7 @@ Transform:
   m_GameObject: {fileID: 517049304}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: -3.3, z: 0}
+  m_LocalPosition: {x: 5, y: -3.671, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1816,12 +1860,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerCarTargetTransform: {fileID: 320082737}
-  _opponentCarTargetTransform: {fileID: 517049305}
-  _opponent2CarTargetTransform: {fileID: 2113049782}
   _carContainerTransforms:
   - {fileID: 320082737}
   - {fileID: 2113049782}
   - {fileID: 517049305}
+  - {fileID: 368289605}
   _startLineTransform: {fileID: 1482853982}
   _finishLineTransform: {fileID: 329100267}
   _rootCanvasView: {fileID: 696670403}
@@ -5751,7 +5794,7 @@ Transform:
   m_GameObject: {fileID: 2113049780}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: -3.85, z: 0}
+  m_LocalPosition: {x: 5, y: -3.353, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5980,6 +6023,7 @@ SceneRoots:
   - {fileID: 799033573}
   - {fileID: 656845072}
   - {fileID: 696670399}
+  - {fileID: 368289605}
   - {fileID: 517049305}
   - {fileID: 2113049782}
   - {fileID: 320082737}
