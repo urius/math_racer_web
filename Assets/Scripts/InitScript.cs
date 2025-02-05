@@ -95,7 +95,11 @@ public class InitScript : MonoBehaviour
             Debug.Log("GP language: " + GP_Language.Current());
             Debug.Log("GetActiveDaysConsecutive: " + GP_Player.GetActiveDaysConsecutive());
 
+#if UNITY_EDITOR
+            _localizationHolderSo.SetLocaleLang("ru");
+#else
             _localizationHolderSo.SetLocaleLang(GamePushWrapper.GetLanguageShortDescription());
+#endif
         }
         else
         {

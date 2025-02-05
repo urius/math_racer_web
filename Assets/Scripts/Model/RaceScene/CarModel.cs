@@ -20,7 +20,6 @@ namespace Model.RaceScene
         private readonly int _deceleration;
         
         private float _targetBodyRotation;
-        private float _turboTargetSpeed;
         private bool _suppressEventsFlag;
         private float _distanceToPlayerCar;
         private float _xOffsetLocal;
@@ -46,6 +45,8 @@ namespace Model.RaceScene
 
         public void Accelerate()
         {
+            if (TurboFlag.Value) return;
+            
             TargetSpeedKmph += GetAcceleration();
             if (TargetSpeedKmph > _maxSpeed)
             {
@@ -54,17 +55,14 @@ namespace Model.RaceScene
 
             UpdateTargetBodyRotation();
 
-            Dispatch(AccelerateHappened);
+            AccelerateHappened?.Invoke();
         }
 
         public void AccelerateTurbo()
         {
-            _suppressEventsFlag = true;
-            Accelerate();
-            Accelerate();
-            _suppressEventsFlag = false;
+            TargetSpeedKmph += 2 * GetAcceleration();
+            UpdateTargetBodyRotation();
 
-            _turboTargetSpeed = TargetSpeedKmph;
             TurboFlag.Value = true;
         }
 
@@ -78,7 +76,7 @@ namespace Model.RaceScene
                 TargetSpeedKmph = 0;
             }
             
-            Dispatch(DecelerateHappened);
+            DecelerateHappened?.Invoke();
         }
 
         public void Update(float deltaTime)
@@ -91,7 +89,7 @@ namespace Model.RaceScene
 
         private void StopTurbo()
         {
-            _turboTargetSpeed = 0;
+            TargetSpeedKmph = Mathf.Min(TargetSpeedKmph, _maxSpeed);
             TurboFlag.Value = false;
         }
 
@@ -133,29 +131,31 @@ namespace Model.RaceScene
         private void AdjustSpeed(float deltaTime)
         {
             var deltaSpeed = deltaTime * _acceleration;
+            var isTurbo = TurboFlag.Value;
             
             if (CurrentSpeedKmph < TargetSpeedKmph)
             {
                 var turboMult = TurboFlag.Value ? 10 : 1;
                 CurrentSpeedKmph += deltaSpeed * turboMult;
-
-                if (CurrentSpeedKmph >= _turboTargetSpeed)
-                {
-                    StopTurbo();
-                }
                 
                 if (CurrentSpeedKmph > TargetSpeedKmph)
                 {
                     CurrentSpeedKmph = TargetSpeedKmph;
                 }
             }
-            else if (CurrentSpeedKmph > TargetSpeedKmph)
+            else if (CurrentSpeedKmph > TargetSpeedKmph 
+                     && isTurbo == false)
             {
                 CurrentSpeedKmph -= deltaSpeed;
                 if (CurrentSpeedKmph < TargetSpeedKmph)
                 {
                     CurrentSpeedKmph = TargetSpeedKmph;
                 }
+            }
+
+            if (isTurbo && CurrentSpeedKmph >= TargetSpeedKmph)
+            {
+                StopTurbo();
             }
 
             UpdateTargetBodyRotation();
@@ -184,14 +184,6 @@ namespace Model.RaceScene
                 case < 0:
                     CurrentBodyRotation -= Mathf.Min(-deltaRotation, addRotationValue);
                     break;
-            }
-        }
-
-        private void Dispatch(Action action)
-        {
-            if (_suppressEventsFlag == false)
-            {
-                action?.Invoke();
             }
         }
 

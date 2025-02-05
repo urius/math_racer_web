@@ -43,6 +43,7 @@ namespace View.Presenters
         public override void Present()
         {
             _carView = Instantiate<CarView>(_carModel.CarKey.ToPrefabKey(), _targetTransform);
+            _carView.transform.localPosition = Vector3.zero;
             
             Subscribe();
         }
@@ -102,6 +103,8 @@ namespace View.Presenters
 
         private void OnTurboFlagValueChanged(bool value, bool _)
         {
+            Debug.Log("OnTurboFlagValueChanged: " + value);
+            
             if (value)
             {
                 _carView.ShowBoostVFX();

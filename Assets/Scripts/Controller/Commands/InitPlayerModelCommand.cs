@@ -57,7 +57,10 @@ namespace Controller.Commands
         {
             var decodedStr = Decode(playerDataStr);
             var dto = JsonUtility.FromJson<PlayerDataDto>(decodedStr);
-
+            
+// #if UNITY_EDITOR //debug hook
+//             dto.currentCar = (int)CarKey.Police;
+// #endif
             return dto;
         }
 
