@@ -9,10 +9,13 @@ namespace View.Gameplay.Race
     {
         [SerializeField] private Transform[] _bgTransforms;
         [SerializeField] private Camera _camera;
+        [SerializeField] private Sprite[] _additionalBgSprites;
         
         private LinkedList<Transform> _bgTransformsList;
         private float _cameraPositionX;
         private Vector3 _bgBoundsSize;
+
+        public int AdditionalBackgroundsCount => _additionalBgSprites.Length;
 
         private void Awake()
         {
@@ -20,6 +23,14 @@ namespace View.Gameplay.Race
             _bgBoundsSize = _bgTransforms[0].GetComponent<SpriteRenderer>().bounds.size;
             
             _bgTransformsList = new LinkedList<Transform>(_bgTransforms);
+        }
+
+        public void SetAdditionalBackground(int bgIndex)
+        {
+            foreach (var bgTransform in _bgTransforms)
+            {
+                bgTransform.GetComponent<SpriteRenderer>().sprite = _additionalBgSprites[bgIndex];
+            }
         }
 
         public void Move(float distance)
