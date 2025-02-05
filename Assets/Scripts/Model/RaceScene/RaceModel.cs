@@ -10,19 +10,21 @@ namespace Model.RaceScene
         public event Action<bool> IsFinishingFlagChanged; 
         public event Action<bool> IsFinishedFlagChanged; 
         
-        public readonly int DistanceMeters = 500;
+        public readonly int DistanceMeters;
         
         private readonly ComplexityData _complexityData;
         
         private float _startRaceTime;
 
         public RaceModel(
+            int raceDistanceMeters,
             CarRaceData playerCarData,
             ComplexityData complexityData,
             CarRaceData opponent1CarData,
             CarRaceData opponent2CarData = null,
             CarRaceData opponent3CarData = null)
         {
+            DistanceMeters = raceDistanceMeters;
             _complexityData = complexityData;
             QuestionsModel = new QuestionsModel(complexityData);
             PlayerCar = new CarModel(playerCarData);

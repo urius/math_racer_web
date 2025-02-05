@@ -83,6 +83,7 @@ namespace Controller.RaceScene
                     .ToArray();
 
                 _raceModel = new RaceModel(
+                    GetRaceDistance(opponentsCount),
                     new CarRaceData(_carDataProvider.GetCarData(_playerModel.CurrentCar), carPositionIndex: 0, id: 1),
                     complexityData,
                     opponentsRaceData[0],
@@ -100,18 +101,25 @@ namespace Controller.RaceScene
                     .Where(d => d != netPlayersData.LocalPlayerData)
                     .Select(ToCarRaceModelData)
                     .ToArray();
+                var opponentsCount = opponentCarDataList.Length;
 
-                Debug.Log("Opponents count:" + opponentCarDataList.Length);
+                Debug.Log("Opponents count:" + opponentsCount);
 
                 _raceModel = new NetRaceModel(
+                    GetRaceDistance(opponentsCount),
                     playerCarData,
                     complexityData,
                     opponentCarDataList[0],
-                    opponentCarDataList.Length > 1 ? opponentCarDataList[1] : null,
-                    opponentCarDataList.Length > 2 ? opponentCarDataList[2] : null);
+                    opponentsCount > 1 ? opponentCarDataList[1] : null,
+                    opponentsCount > 2 ? opponentCarDataList[2] : null);
             }
 
             _modelsHolder.SetRaceModel(_raceModel);
+        }
+
+        private static int GetRaceDistance(int opponentsCount)
+        {
+            return opponentsCount * 500;
         }
 
         private CarRaceData CreateOpponentRaceData(int opponentIndex)
