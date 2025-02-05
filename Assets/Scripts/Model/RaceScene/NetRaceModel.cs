@@ -14,11 +14,13 @@ namespace Model.RaceScene
             CarRaceData playerCarData,
             ComplexityData complexityData,
             CarRaceData opponent1CarData,
-            CarRaceData opponent2CarData = null)
+            CarRaceData opponent2CarData = null,
+            CarRaceData opponent3CarData = null)
             : base(playerCarData,
             complexityData,
             opponent1CarData,
-            opponent2CarData)
+            opponent2CarData,
+            opponent3CarData)
         {
         }
 

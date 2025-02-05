@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Data;
 using UnityEngine;
 
@@ -15,15 +16,22 @@ namespace Model.RaceScene
         
         private float _startRaceTime;
 
-        public RaceModel(CarRaceData playerCarData, ComplexityData complexityData, CarRaceData opponent1CarData, CarRaceData opponent2CarData = null)
+        public RaceModel(
+            CarRaceData playerCarData,
+            ComplexityData complexityData,
+            CarRaceData opponent1CarData,
+            CarRaceData opponent2CarData = null,
+            CarRaceData opponent3CarData = null)
         {
             _complexityData = complexityData;
             QuestionsModel = new QuestionsModel(complexityData);
             PlayerCar = new CarModel(playerCarData);
-            OpponentCarModels = opponent2CarData != null
-                ? new[] { new CarModel(opponent1CarData), new CarModel(opponent2CarData) }
-                : new[] { new CarModel(opponent1CarData) };
             RaceResultsModel = new RaceResultsModel();
+
+            var tempOpponentsList = new List<CarModel>(Constants.MaxOpponentsCount) { new CarModel(opponent1CarData) };
+            if (opponent2CarData!= null) tempOpponentsList.Add(new CarModel(opponent2CarData));
+            if (opponent3CarData!= null) tempOpponentsList.Add(new CarModel(opponent3CarData));
+            OpponentCarModels = tempOpponentsList.ToArray();
         }
 
         public virtual bool IsSinglePlayerRace => true;

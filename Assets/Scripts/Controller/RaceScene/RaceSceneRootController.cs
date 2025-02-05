@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Controller.Common;
 using Data;
@@ -29,6 +30,7 @@ namespace Controller.RaceScene
         private PlayerModel _playerModel;
         private RaceModel _raceModel;
         private SessionDataModel _sessionDataModel;
+        private IReadOnlyList<CarSettings> _unlockedCars;
 
         private bool IsMultiplayerGame =>
             (_sessionDataModel.RequestSceneParams as RequestRaceSceneParams)?.IsMultiplayer ?? false;
@@ -69,17 +71,23 @@ namespace Controller.RaceScene
         {
             _playerModel = _modelsHolder.GetPlayerModel();
             _sessionDataModel = _modelsHolder.GetSessionDataModel();
+            _unlockedCars = _carDataProvider.GetUnlockedCarsByLevel(_playerModel.Level);
             
             if (IsSinglePlayerGame)
             {
                 var complexityData = _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
-                var unlockedCars = _carDataProvider.GetUnlockedCarsByLevel(_playerModel.Level);
-                var opponentCarKey = unlockedCars[_random.Next(unlockedCars.Count)].CarKey;
+                var opponentsCount = 1 + _random.Next(Mathf.Min(_playerModel.Level, Constants.MaxOpponentsCount));
+
+                var opponentsRaceData = Enumerable.Range(0, opponentsCount)
+                    .Select(CreateOpponentRaceData)
+                    .ToArray();
 
                 _raceModel = new RaceModel(
                     new CarRaceData(_carDataProvider.GetCarData(_playerModel.CurrentCar), carPositionIndex: 0, id: 1),
                     complexityData,
-                    new CarRaceData(_carDataProvider.GetCarData(opponentCarKey), carPositionIndex: 1, id: 2));
+                    opponentsRaceData[0],
+                    opponentsRaceData.Length > 1 ? opponentsRaceData[1] : null,
+                    opponentsRaceData.Length > 2 ? opponentsRaceData[2] : null);
             }
             else
             {
@@ -93,14 +101,28 @@ namespace Controller.RaceScene
                     .Select(ToCarRaceModelData)
                     .ToArray();
 
+                Debug.Log("Opponents count:" + opponentCarDataList.Length);
+
                 _raceModel = new NetRaceModel(
                     playerCarData,
                     complexityData,
                     opponentCarDataList[0],
-                    opponentCarDataList.Length > 0 ? opponentCarDataList[1] : null);
+                    opponentCarDataList.Length > 1 ? opponentCarDataList[1] : null,
+                    opponentCarDataList.Length > 2 ? opponentCarDataList[2] : null);
             }
 
             _modelsHolder.SetRaceModel(_raceModel);
+        }
+
+        private CarRaceData CreateOpponentRaceData(int opponentIndex)
+        {
+            var opponentCarKey = _unlockedCars[_random.Next(_unlockedCars.Count)].CarKey;
+            var carSettings = _carDataProvider.GetCarData(opponentCarKey);
+            
+            return new CarRaceData(
+                carSettings,
+                carPositionIndex: opponentIndex + 1,
+                id: opponentIndex + 2);
         }
 
         private CarRaceData ToCarRaceModelData(P2PPlayerData p2pPlayerData)

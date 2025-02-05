@@ -32,6 +32,7 @@ namespace Data
         public const int PrefabCarsOffset = 1000;
         public const int MaxCarSpeedKmph = 500;
         public const int MaxCarAcceleration = 50;
+        public const int MaxOpponentsCount = 3;
 
         public const string PrefabPathExhaust = "Prefabs/vfx/PS_Exhaust";
         public const string PrefabPathTurboBooster = "Prefabs/vfx/PS_TurboBooster";
