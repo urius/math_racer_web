@@ -13,7 +13,6 @@ namespace Controller.RaceScene
         
         private readonly BgContainerView _bgContainerView;
         private readonly RoadContainerView _roadContainerView;
-        private readonly Random _random = new();
 
         private CarModel _playerCarModel;
         private RaceModel _raceModel;
@@ -36,11 +35,10 @@ namespace Controller.RaceScene
 
         private void SetupBackgroundView()
         {
-            var rnd = _random.NextDouble();
-            if ((rnd < 0.5 && _random.NextDouble() < 0.5f)
-                || (rnd >= 0.5 && _random.NextDouble() > 0.5f))
+            var tempValue = _raceModel.OpponentCarModels.Length % (1 + _bgContainerView.AdditionalBackgroundsCount);
+            if (tempValue > 0)
             {
-                var bgIndex = _random.Next(_bgContainerView.AdditionalBackgroundsCount);
+                var bgIndex = _raceModel.OpponentCarModels.Length % _bgContainerView.AdditionalBackgroundsCount;
                 _bgContainerView.SetAdditionalBackground(bgIndex);
             }
         }
