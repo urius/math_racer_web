@@ -76,7 +76,8 @@ namespace Controller.RaceScene
             if (IsSinglePlayerGame)
             {
                 var complexityData = _complexityDataProvider.GetComplexityData(_playerModel.Level, _playerModel.ComplexityLevel);
-                var opponentsCount = 1 + _random.Next(Mathf.Min(_playerModel.Level, Constants.MaxOpponentsCount));
+                var opponentsCount =
+                    1 + _random.Next(Mathf.Clamp((int)(_playerModel.Level * 0.5), 1, Constants.MaxOpponentsCount));
 
                 var opponentsRaceData = Enumerable.Range(0, opponentsCount)
                     .Select(CreateOpponentRaceData)
