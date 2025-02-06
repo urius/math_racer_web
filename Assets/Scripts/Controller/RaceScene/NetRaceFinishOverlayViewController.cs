@@ -69,7 +69,7 @@ namespace Controller.RaceScene
         private void UpdateResultViews()
         {
             var selfResultsData =
-                ResultViewItemData.FromSelfRaceResults(_socialData.SocialId, _netRaceModel.RaceResultsModel);
+                ResultViewItemData.FromSelfRaceResults(_socialData.Name, _netRaceModel.RaceResultsModel);
 
             var allResultsData =
                 _netRaceModel.NetOpponentRaceResults
