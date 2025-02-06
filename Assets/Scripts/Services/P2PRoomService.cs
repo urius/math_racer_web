@@ -177,6 +177,11 @@ namespace Services
             SendToAll(CommandFinished, commandBody.ToString());
         }
 
+        public void RemoveHostedRoom()
+        {
+            _p2pRoom.RemoveHostedRoomOnBackend().Forget();
+        }
+
         private P2PRoom CreateRoomInstance()
         {
             DestroyCurrentRoom();
@@ -526,6 +531,7 @@ namespace Services
         public void SendAccelerateTurbo();
         public void SendDecelerate();
         public void SendFinished(int playerSpeed, float raceTimeSec, int rightAnswersCount, int wrongAnswersCount);
+        public void RemoveHostedRoom();
     }
 
     public struct OpponentFinishedReceivedEventPayload

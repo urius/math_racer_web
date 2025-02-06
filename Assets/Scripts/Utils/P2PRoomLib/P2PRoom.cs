@@ -39,6 +39,7 @@ namespace Utils.P2PRoomLib
         private string AddHostChannelsUrl => _serviceUrl + $"?command=add_host_channels&room_id={RoomId}";
         private string ReserveFreeChannelUrl => _serviceUrl + $"?command=reserve_free_channel&room_id={RoomId}";
         private string ConnectToRoomUrl => _serviceUrl + $"?command=connect_to_room&room_id={RoomId}";
+        private string RemoveHostedRoomUrl => _serviceUrl + $"?command=remove_room&room_id={RoomId}";
         public bool IsDisposed => _disposeCts.IsCancellationRequested;
         public IReadOnlyList<IP2PConnection> ActiveConnections => _activeConnections;
         public bool IsJoinAllowed
@@ -158,8 +159,23 @@ namespace Utils.P2PRoomLib
 
         public void Dispose()
         {
+            RemoveHostedRoomOnBackend().Forget();
+            
             DisposeAllConnections();
             _disposeCts.Cancel();
+        }
+
+        public UniTask RemoveHostedRoomOnBackend()
+        {
+            if (IsHostRoom)
+            {
+                var channelKey = _hostedConnections.FirstOrDefault()?.ConnectionLocalDescription;
+                var url = RemoveHostedRoomUrl + $"&channel_key={channelKey}";
+                
+                return WebRequestsSender.GetAsync(url);
+            }
+
+            return UniTask.CompletedTask;
         }
 
         private async UniTask<IP2PHostSideConnection[]> PrepareMissingHostConnections(CancellationToken stopToken)

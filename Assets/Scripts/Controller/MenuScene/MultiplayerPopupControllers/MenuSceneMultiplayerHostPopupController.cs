@@ -97,6 +97,7 @@ namespace Controller.MenuScene.MultiplayerPopupControllers
         private void OnStartGameButtonClicked()
         {
             _p2pRoomService.IsJoinAllowed = false;
+            _p2pRoomService.RemoveHostedRoom();
 
             _p2pRoomService.SendStartToReadyPlayers();
 
