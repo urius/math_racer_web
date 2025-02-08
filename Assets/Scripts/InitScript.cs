@@ -83,6 +83,12 @@ public class InitScript : MonoBehaviour
                 sessionDataModel.SocialData.SetSocialId(setUserIdDto.UserId);
                 break;
             }
+            case "RequestPause":
+            {
+                var requestPauseDto = JsonUtility.FromJson<RequestPauseJsCommandDto>(message);
+                RequestPauseDelegate(requestPauseDto.NeedPause);
+                break;
+            }
         }
     }
 
@@ -188,5 +194,13 @@ public class InitScript : MonoBehaviour
         public string data;
 
         public string UserId => data;
+    }
+    
+    [Serializable]
+    private struct RequestPauseJsCommandDto
+    {
+        public bool data;
+
+        public bool NeedPause => data;
     }
 }
