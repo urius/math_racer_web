@@ -4,9 +4,12 @@ using UnityEngine;
 
 namespace Utils.JSBridge
 {
-    public class JsBridge : MonoBehaviour
+    public class JsBridge : MonoBehaviour, IJsBridge
     {
         public event Action<string> JsIncomingMessage; 
+        
+        [Space(25)]
+        [SerializeField] private string _testJsMessage;
 
         [DllImport("__Internal")]
         private static extern void SendToJs(string str);
@@ -35,6 +38,23 @@ namespace Utils.JSBridge
             var dtoStr = JsonUtility.ToJson(dto);
             SendToJs(dtoStr);
         }
+
+        public void SendCommandToJs(string command, string payload)
+        {
+            var dto = new UnityToJsSimpleCommandDto()
+            {
+                command = command,
+                payload = payload,
+            };
+            var dtoStr = JsonUtility.ToJson(dto);
+            SendToJs(dtoStr);
+        }
+
+        [ContextMenu("Imitate JsIncomingMessage")]
+        private void ImitateSend()
+        {
+            JsIncomingMessage?.Invoke(_testJsMessage);
+        }
     }
 
     [Serializable]
@@ -42,6 +62,13 @@ namespace Utils.JSBridge
     {
         public string command;
         public object payload;
+    }
+    
+    [Serializable]
+    public struct UnityToJsSimpleCommandDto
+    {
+        public string command;
+        public string payload;
     }
     
     [Serializable]

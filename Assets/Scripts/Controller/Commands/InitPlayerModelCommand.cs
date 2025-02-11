@@ -16,11 +16,23 @@ namespace Controller.Commands
 {
     public class InitPlayerModelCommand : IAsyncCommand
     {
-        public UniTask ExecuteAsync()
+        public async UniTask ExecuteAsync()
         {
             var modelsHolder = Instance.Get<IModelsHolder>();
 
-            var playerDataStrLoaded = GamePushWrapper.GetPlayerData(Constants.PlayerDataFieldKey);
+            string playerDataStrLoaded = null;
+            
+            if (GamePushWrapper.IsVKPlatform)
+            {
+                var commandExecutor = Instance.Get<ICommandExecutor>();
+                
+                playerDataStrLoaded = await commandExecutor.ExecuteAsync<VkGetUserDataCommand, string>();
+            }
+
+            if (string.IsNullOrEmpty(playerDataStrLoaded))
+            {
+                playerDataStrLoaded = GamePushWrapper.GetPlayerData(Constants.PlayerDataFieldKey);
+            }
             
             var playerDataDto = string.IsNullOrEmpty(playerDataStrLoaded) ? PlayerDataDto.FromDefault() : ConvertToDto(playerDataStrLoaded);
 
@@ -29,8 +41,6 @@ namespace Controller.Commands
             UpdateTime(playerModel);
             
             modelsHolder.SetPlayerModel(playerModel);
-            
-            return UniTask.CompletedTask;
         }
 
         private static void UpdateTime(PlayerModel playerModel)

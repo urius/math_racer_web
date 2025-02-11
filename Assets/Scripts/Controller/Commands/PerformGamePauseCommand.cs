@@ -10,16 +10,16 @@ namespace Controller.Commands
     {
         public void Execute(bool needPause)
         {
+            Debug.Log("PerformGamePauseCommand, needPause: " + needPause);
+            
             var audioPlayer = Instance.Get<IAudioPlayer>();
 
             if (needPause)
             {
                 audioPlayer.MuteBy(nameof(PerformGamePauseCommand));
-                Application.targetFrameRate = 1;
             }
             else
             {
-                Application.targetFrameRate = Constants.FPS;
                 audioPlayer.UnmuteBy(nameof(PerformGamePauseCommand));
             }
         }

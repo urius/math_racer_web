@@ -32,7 +32,6 @@ public class InitScript : MonoBehaviour
     private void Awake()
     {
         //LevelPointsHelper.TestLevelPointsHelper();
-        Subscribe();
         
         Application.targetFrameRate = Constants.FPS;
         
@@ -59,35 +58,6 @@ public class InitScript : MonoBehaviour
             {
                 var sound = _audioClipsProviderSo.GetSoundByKey((SoundKey)i);
                 _audioManager.SetupSound(i, sound);
-            }
-        }
-    }
-
-    private void OnJsIncomingMessage(string message)
-    {
-        Debug.Log("OnJsIncomingMessage, message: " + message);
-
-        var messageDto = JsonUtility.FromJson<JsToUnityCommonCommandDto>(message);
-        switch (messageDto.command)
-        {
-            case "SetHost":
-            {
-                var setHostDto = JsonUtility.FromJson<SetHostJsCommandDto>(message);
-                Urls.SetHostUrl(setHostDto.HostUrl);
-                break;
-            }
-            case "SetUserId":
-            {
-                var setUserIdDto = JsonUtility.FromJson<SetUserIdJsCommandDto>(message);
-                var sessionDataModel = Instance.Get<IModelsHolder>().GetSessionDataModel();
-                sessionDataModel.SocialData.SetSocialId(setUserIdDto.UserId);
-                break;
-            }
-            case "RequestPause":
-            {
-                var requestPauseDto = JsonUtility.FromJson<RequestPauseJsCommandDto>(message);
-                RequestPauseDelegate(requestPauseDto.NeedPause);
-                break;
             }
         }
     }
@@ -133,12 +103,14 @@ public class InitScript : MonoBehaviour
         SetupInstance.From(_localizationHolderSo).As<ILocalizationProvider>();
         SetupInstance.From(_audioManager).As<IAudioPlayer>();
         SetupInstance.From(_audioClipsProviderSo).As<IAudioClipsProvider>();
+        SetupInstance.From(_jsBridge).As<IJsBridge>();
         
         SetupNewInstance<CommandExecutor, ICommandExecutor>();
         SetupNewInstance<EventBus, IEventBus>();
         SetupNewInstance<ModelsHolder, IModelsHolder>();
         SetupNewInstance<ComplexityDataProvider, IComplexityDataProvider>();
         SetupNewInstance<P2PRoomService, IP2PRoomService>();
+        SetupNewInstance<HandleJsMessageService, IHandleJsMessageService>();
     }
     
     private void Map<TEvent, TCommand>()
@@ -169,38 +141,29 @@ public class InitScript : MonoBehaviour
 
         return instance;
     }
+    
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        Debug.Log("OnApplicationFocus, hasFocus: " + hasFocus);
+        
+        if (hasFocus)
+        {
+            RequestPauseDelegate(false);
+        }
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        Debug.Log("OnApplicationPause, pauseStatus: " + pauseStatus);
+        
+        if (pauseStatus)
+        {
+            RequestPauseDelegate(true);
+        }
+    }
 
     private static void RequestPauseDelegate(bool needPause)
     {
         Instance.Get<ICommandExecutor>().Execute<PerformGamePauseCommand, bool>(needPause);
-    }
-
-    private void Subscribe()
-    {
-        _jsBridge.JsIncomingMessage += OnJsIncomingMessage;
-    }
-    
-    [Serializable]
-    private struct SetHostJsCommandDto
-    {
-        public string data;
-
-        public string HostUrl => data;
-    }
-    
-    [Serializable]
-    private struct SetUserIdJsCommandDto
-    {
-        public string data;
-
-        public string UserId => data;
-    }
-    
-    [Serializable]
-    private struct RequestPauseJsCommandDto
-    {
-        public bool data;
-
-        public bool NeedPause => data;
     }
 }

@@ -9,26 +9,37 @@ using Providers;
 using UnityEngine;
 using Utils;
 using Utils.GamePush;
+using Utils.JSBridge;
 
 namespace Controller.Commands
 {
     public class SavePlayerDataCommand : ICommand
     {
+        private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
+        private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        private readonly IJsBridge _jsBridge = Instance.Get<IJsBridge>();
+        
         public void Execute()
         {
-            var playerModel = Instance.Get<IModelsHolder>().GetPlayerModel();
-            var eventBus = Instance.Get<IEventBus>();
+            var playerModel = _modelsHolder.GetPlayerModel();
 
             var playerDataDto = PlayerDataConverter.ToPlayerDataDto(playerModel);
 
             var playerDataJson = JsonUtility.ToJson(playerDataDto);
             var playerDataJsonB64 = Encode(playerDataJson);
 
-            GamePushWrapper.SavePlayerData(Constants.PlayerDataFieldKey, playerDataJsonB64);
+            if (GamePushWrapper.IsVKPlatform)
+            {
+                _jsBridge.SendCommandToJs("SaveData", playerDataJsonB64);
+            }
+            else
+            {
+                GamePushWrapper.SavePlayerData(Constants.PlayerDataFieldKey, playerDataJsonB64);
+            }
             
             Debug.Log("DATA SAVED");
             
-            eventBus.Dispatch(new DataSavedEvent());
+            _eventBus.Dispatch(new DataSavedEvent());
         }
         
         private static string Encode(string input)

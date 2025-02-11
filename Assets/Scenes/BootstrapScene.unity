@@ -366,6 +366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ed5720e5be7c42da9517698009ecee2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _testJsMessage: '{"command":"RequestPause","data":true}'
 --- !u!4 &608594328
 Transform:
   m_ObjectHideFlags: 0
