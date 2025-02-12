@@ -59,6 +59,11 @@ namespace View.UI.MenuScene
             _inviteButton.gameObject.SetActive(isVisible);
         }
 
+        public void SetMultiplayerButtonVisibility(bool isVisible)
+        {
+            _multiplayerButton.gameObject.SetActive(isVisible);
+        }
+
         public void SetSettingsButtonInteractable(bool isInteractable)
         {
             _settingsButton.interactable = isInteractable;

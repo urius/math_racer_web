@@ -36,6 +36,7 @@ namespace Controller.MenuScene
             _rootView = Object.FindObjectOfType<UIMenuSceneRootView>();
 
             UpdateInviteButtonView();
+            UpdateMultiplayerButtonView();
             
             InitChildControllers();
             
@@ -90,6 +91,11 @@ namespace Controller.MenuScene
         private void UpdateInviteButtonView()
         {
             _rootCanvasView.SetInviteButtonVisibility(GamePushWrapper.IsInviteAvailable());
+        }
+
+        private void UpdateMultiplayerButtonView()
+        {
+            _rootCanvasView.SetMultiplayerButtonVisibility(GamePushWrapper.IsYandexPlatform == false);
         }
 
         private void OnInviteButtonClicked()
