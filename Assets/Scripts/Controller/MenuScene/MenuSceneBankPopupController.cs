@@ -172,10 +172,17 @@ namespace Controller.MenuScene
                 var purchaseItemViewModel = (PurchaseProductItemViewModel)itemViewModel;
                 amountText = purchaseItemViewModel.NameLocalized;
                 buyButtonText =
-                    $"{purchaseItemViewModel.Price} {_localizationProvider.GetLocale(LocalizationKeys.CurrencyFormatPlural + purchaseItemViewModel.Currency.ToLower())}";
+                    $"{purchaseItemViewModel.Price} {GetCurrencyText(purchaseItemViewModel.Currency)}";
             }
 
             return (amountText, buyButtonText);
+        }
+
+        private string GetCurrencyText(string currencyName)
+        {
+            return GamePushWrapper.IsVKPlatform
+                ? _localizationProvider.GetLocale(LocalizationKeys.CurrencyFormatPlural + currencyName.ToLower())
+                : currencyName.ToUpper();
         }
 
         private int GetCounter(ProductItemViewModelBase itemViewModel)
