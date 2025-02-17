@@ -122,10 +122,18 @@ namespace View.UI.RaceScene
 
         private void AnimateShowButtonsPhase()
         {
-            _doubleRewardsButtonView.SetVisibility(true);
-            _continueButtonView.SetVisibility(true);
-
             const float delay = 0.2f;
+
+            var continueButtonTargetPos = _doubleRewardsButtonView.gameObject.activeInHierarchy
+                ? _continueButtonTargetPos
+                : (_doubleRewardsButtonTargetPos + _continueButtonTargetPos) * 0.5f;
+
+            if (_doubleRewardsButtonView.gameObject.activeInHierarchy == false)
+            {
+                _continueButtonView.RectTransform.anchoredPosition =
+                    0.5f * (_continueButtonView.RectTransform.anchoredPosition +
+                            _doubleRewardsButtonView.RectTransform.anchoredPosition);
+            }
 
             _doubleRewardsButtonView.RectTransform
                 .LeanMove((Vector3)_doubleRewardsButtonTargetPos, 0.6f)
@@ -133,7 +141,7 @@ namespace View.UI.RaceScene
                 .setEaseOutBack();
 
             _continueButtonView.RectTransform
-                .LeanMove((Vector3)_continueButtonTargetPos, 0.6f)
+                .LeanMove((Vector3)continueButtonTargetPos, 0.6f)
                 .setDelay(delay + 0.7f)
                 .setEaseOutBack()
                 .setOnComplete(_showAnimationContext.SetCompleted);

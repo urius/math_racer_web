@@ -60,6 +60,14 @@ namespace View.UI.MenuScene
             }
         }
 
+        public void SetOpenBankButtonsVisibility(bool isVisible)
+        {
+            foreach (var openBankButton in _openBankButtons)
+            {
+                openBankButton.gameObject.SetActive(isVisible);
+            }
+        }
+
         public void SetCashAmount(int cashAmount)
         {
             _currentCashAmount = cashAmount;

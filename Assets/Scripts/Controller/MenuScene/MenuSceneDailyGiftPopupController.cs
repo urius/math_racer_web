@@ -70,7 +70,8 @@ namespace Controller.MenuScene
                 itemView.SetGoldTextVisibility(vm.GoldRewardAmount > 0);
                 itemView.SetGoldAmountText($"+{vm.GoldRewardAmount} {Constants.TextSpriteCrystal}");
                 itemView.SetDoubleRewardButtonVisibility(vm.IsCurrentDay);
-                itemView.DoubleRewardButton.SetInteractable(!vm.IsDoubled && _canShowRewardedAds);
+                itemView.DoubleRewardButton.SetVisibility(_canShowRewardedAds);
+                itemView.DoubleRewardButton.SetInteractable(!vm.IsDoubled);
             }
         }
 

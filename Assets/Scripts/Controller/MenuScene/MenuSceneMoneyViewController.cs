@@ -6,6 +6,7 @@ using Infra.Instance;
 using Model;
 using Providers;
 using Utils.AudioManager;
+using Utils.GamePush;
 using View.UI.MenuScene;
 
 namespace Controller.MenuScene
@@ -35,6 +36,7 @@ namespace Controller.MenuScene
 
             SetupMoneyAmount();
             UpdateCounterViews();
+            UpdateOpenBankButtonsVisibility();
 
             Subscribe();
         }
@@ -52,6 +54,7 @@ namespace Controller.MenuScene
             _playerModel.InsufficientCash += OnInsufficientCash;
             _bankAdWatchesModel.AvailableWatchesCountUpdated += OnAvailableWatchesCountUpdated;
             _sessionDataModel.IsBankPopupOpened.ValueChanged += OnBankPopupOpenedValueChanged;
+            _sessionDataModel.BankProductsData.ValueChanged += OnBankProductsDataValueChanged;
             
             _eventBus.Subscribe<UIRequestMoneyFlyAnimationEvent>(OnRequestMoneyFlyAnimationEvent);
 
@@ -66,10 +69,25 @@ namespace Controller.MenuScene
             _playerModel.InsufficientCash -= OnInsufficientCash;
             _bankAdWatchesModel.AvailableWatchesCountUpdated -= OnAvailableWatchesCountUpdated;
             _sessionDataModel.IsBankPopupOpened.ValueChanged -= OnBankPopupOpenedValueChanged;
+            _sessionDataModel.BankProductsData.ValueChanged -= OnBankProductsDataValueChanged;
             
             _eventBus.Unsubscribe<UIRequestMoneyFlyAnimationEvent>(OnRequestMoneyFlyAnimationEvent);
             
             _moneyCanvasView.OpenBankButtonClicked -= OnOpenBankButtonClicked;
+        }
+
+        private void OnBankProductsDataValueChanged(BankProductsData newValue, BankProductsData previousValue)
+        {
+            UpdateOpenBankButtonsVisibility();
+        }
+
+        private void UpdateOpenBankButtonsVisibility()
+        {
+            var bankProductsData = _sessionDataModel.BankProductsData.Value;
+            var isVisible = GamePushWrapper.CanShowRewardedAds() || bankProductsData?.CashProducts.Count > 0 ||
+                            bankProductsData?.GoldProducts.Count > 0;
+
+            _moneyCanvasView.SetOpenBankButtonsVisibility(isVisible);
         }
 
         private void OnAvailableWatchesCountUpdated()

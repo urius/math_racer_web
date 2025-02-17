@@ -32,6 +32,7 @@ namespace Utils.GamePush
         public static bool IsRewardedAdsShowInProgress => Instance._rewardedAdsTcs != null;
         public static bool IsVKPlatform => PlatformType == Platform.VK;
         public static bool IsYandexPlatform => PlatformType == Platform.YANDEX;
+        public static bool IsRewardedAdsAvailable => CanShowRewardedAds();
 
         private static Platform PlatformType => IsGPInit ? GP_Platform.Type() : Platform.NONE;
 
