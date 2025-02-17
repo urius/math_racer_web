@@ -9,6 +9,7 @@ namespace Model
         public readonly ReactiveValue<BankProductsData> BankProductsData = new();
         public readonly PlayerSocialData SocialData = new();
         public readonly BankAdWatchesModel BankAdWatches = new();
+        public readonly MultiplayerAvailabilityData MultiplayerAvailabilityData = new();
 
         public RequestSceneParamsBase RequestSceneParams;
     }

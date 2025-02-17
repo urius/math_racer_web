@@ -1227,14 +1227,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2783019, g: 0.57041633, b: 1, a: 1}
+  m_Color: {r: 0.9056604, g: 0.72116226, b: 0.37166253, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 789671e99ad0a4132b57ebfdcf2ebc5c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6642c901a47ef426b81e975c50dd7dbb, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -3599,7 +3599,7 @@ MonoBehaviour:
   _levelCanvasView: {fileID: 1213682431}
   _settingsButton: {fileID: 1005332837}
   _dailyGiftButton: {fileID: 1293787669}
-  _inviteButton: {fileID: 2828702032323073540}
+  _leaderBoardButton: {fileID: 2828702032323073540}
 --- !u!1 &1729249312
 GameObject:
   m_ObjectHideFlags: 0
@@ -4943,7 +4943,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 0.27058825}
+  m_Color: {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
@@ -4960,33 +4960,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1.6
---- !u!114 &4567878544171788862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6371374562643115275}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79c6b512924c9479dbca8c389abbfc4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _buttonImage: {fileID: 4474019403452250302}
-  _text: {fileID: 0}
-  _button: {fileID: 2828702032323073540}
-  _orangeSkinData:
-    SkinSprite: {fileID: 0}
-    TextColor: {r: 0, g: 0, b: 0, a: 0}
-  _crimsonSkinData:
-    SkinSprite: {fileID: 0}
-    TextColor: {r: 0, g: 0, b: 0, a: 0}
-  _greenSkinData:
-    SkinSprite: {fileID: 0}
-    TextColor: {r: 0, g: 0, b: 0, a: 0}
-  _blueSkinData:
-    SkinSprite: {fileID: 0}
-    TextColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &5152185193555722395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5151,12 +5124,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3670198153616137601}
-  - component: {fileID: 4567878544171788862}
   - component: {fileID: 1356240769916177196}
   - component: {fileID: 4474019403452250302}
   - component: {fileID: 2828702032323073540}
   m_Layer: 5
-  m_Name: InviteButton
+  m_Name: LeaderBoardButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

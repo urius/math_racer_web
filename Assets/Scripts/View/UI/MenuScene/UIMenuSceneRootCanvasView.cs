@@ -27,10 +27,10 @@ namespace View.UI.MenuScene
             add => _settingsButton.onClick.AddListener(value.Invoke);
             remove => _settingsButton.onClick.RemoveListener(value.Invoke);
         }
-        public event Action InviteButtonClicked
+        public event Action LeaderBoardButtonClicked
         {
-            add => _inviteButton.onClick.AddListener(value.Invoke);
-            remove => _inviteButton.onClick.RemoveListener(value.Invoke);
+            add => _leaderBoardButton.onClick.AddListener(value.Invoke);
+            remove => _leaderBoardButton.onClick.RemoveListener(value.Invoke);
         }
 
         [SerializeField] private UITextButtonView _playButton;
@@ -41,22 +41,21 @@ namespace View.UI.MenuScene
         [SerializeField] private UIMenuSceneLevelCanvasView _levelCanvasView;
         [SerializeField] private Button _settingsButton;
         [SerializeField] private UIMenuSceneDailyGiftButtonView _dailyGiftButton;
-        [SerializeField] private Button _inviteButton;
+        [SerializeField] private Button _leaderBoardButton;
         
         public RectTransform PopupsCanvasTransform => _popupsCanvasTransform;
         public UIMenuSceneMoneyCanvasView MoneyCanvasView => _moneyCanvasView;
         public UIMenuSceneLevelCanvasView LevelCanvasView => _levelCanvasView;
         public UIMenuSceneDailyGiftButtonView DailyGiftButton => _dailyGiftButton;
-        public Button InviteButton => _inviteButton;
 
         private void OnDestroy()
         {
             _settingsButton.onClick.RemoveAllListeners();
         }
 
-        public void SetInviteButtonVisibility(bool isVisible)
+        public void SetLeaderBoardButtonVisibility(bool isVisible)
         {
-            _inviteButton.gameObject.SetActive(isVisible);
+            _leaderBoardButton.gameObject.SetActive(isVisible);
         }
 
         public void SetMultiplayerButtonVisibility(bool isVisible)
@@ -67,21 +66,6 @@ namespace View.UI.MenuScene
         public void SetSettingsButtonInteractable(bool isInteractable)
         {
             _settingsButton.interactable = isInteractable;
-        }
-
-        public void SetPlayButtonText(string text)
-        {
-            _playButton.SetText(text);
-        }
-
-        public void SetCarsButtonText(string text)
-        {
-            _carsButton.SetText(text);
-        }
-
-        public void SetDailyGiftButtonVisibility(bool isVisible)
-        {
-            _dailyGiftButton.gameObject.SetActive(isVisible);
         }
     }
 }

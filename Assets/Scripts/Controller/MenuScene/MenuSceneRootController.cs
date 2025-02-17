@@ -1,6 +1,7 @@
 using Controller.Common;
 using Controller.MenuScene.MultiplayerPopupControllers;
 using Cysharp.Threading.Tasks;
+using Data;
 using Events;
 using Extensions;
 using Infra.EventBus;
@@ -10,7 +11,7 @@ using Providers;
 using Services;
 using UnityEngine;
 using Utils.AudioManager;
-using Utils.GamePush;
+using Utils.WebRequestSender;
 using View.UI.MenuScene;
 
 namespace Controller.MenuScene
@@ -35,8 +36,8 @@ namespace Controller.MenuScene
             _rootCanvasView = Object.FindObjectOfType<UIMenuSceneRootCanvasView>();
             _rootView = Object.FindObjectOfType<UIMenuSceneRootView>();
 
-            UpdateInviteButtonView();
-            UpdateMultiplayerButtonView();
+            UpdateLeaderBoardButtonView();
+            UpdateMultiplayerButtonView().Forget();
             
             InitChildControllers();
             
@@ -66,7 +67,7 @@ namespace Controller.MenuScene
             _rootCanvasView.MultiplayerButtonClicked += OnMultiplayerButtonClicked;
             _rootCanvasView.CarsButtonClicked += OnCarsButtonClicked;
             _rootCanvasView.SettingsButtonClicked += OnSettingsButtonClicked;
-            _rootCanvasView.InviteButtonClicked += OnInviteButtonClicked;
+            _rootCanvasView.LeaderBoardButtonClicked += OnLeaderBoardButtonClicked;
             
             _eventBus.Subscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
             _eventBus.Subscribe<UISettingsPopupOpenedEvent>(OnUISettingsPopupOpenedEvent);
@@ -80,7 +81,7 @@ namespace Controller.MenuScene
             _rootCanvasView.MultiplayerButtonClicked -= OnMultiplayerButtonClicked;
             _rootCanvasView.CarsButtonClicked -= OnCarsButtonClicked;
             _rootCanvasView.SettingsButtonClicked -= OnSettingsButtonClicked;
-            _rootCanvasView.InviteButtonClicked -= OnInviteButtonClicked;
+            _rootCanvasView.LeaderBoardButtonClicked -= OnLeaderBoardButtonClicked;
             
             _eventBus.Unsubscribe<UIRequestBankPopupEvent>(OnRequestBankPopupEvent);
             _eventBus.Unsubscribe<UISettingsPopupOpenedEvent>(OnUISettingsPopupOpenedEvent);
@@ -88,19 +89,35 @@ namespace Controller.MenuScene
             _eventBus.Unsubscribe<UIRequestDailyGiftPopupEvent>(OnUiRequestDailyGiftPopupEvent);
         }
 
-        private void UpdateInviteButtonView()
+        private void UpdateLeaderBoardButtonView()
         {
-            _rootCanvasView.SetInviteButtonVisibility(GamePushWrapper.IsInviteAvailable());
+            _rootCanvasView.SetLeaderBoardButtonVisibility(PlatformSettings.IsLeaderBoardEnabled);
         }
 
-        private void UpdateMultiplayerButtonView()
+        private async UniTaskVoid UpdateMultiplayerButtonView()
         {
-            _rootCanvasView.SetMultiplayerButtonVisibility(GamePushWrapper.IsYandexPlatform == false);
+            var multiplayerAvailabilityData = _sessionDataModel.MultiplayerAvailabilityData;
+            _rootCanvasView.SetMultiplayerButtonVisibility(multiplayerAvailabilityData.IsMultiplayerAvailable);
+
+            if (multiplayerAvailabilityData.IsChecked == false)
+            {
+                var multiplayerCheckResult = await WebRequestsSender.GetAsync(Urls.P2PRoomsServiceUrl + "?command=test",
+                    customAttemptsCount: 1, suppressLogException: true);
+            
+                if (multiplayerCheckResult.IsSuccess)
+                {
+                    _rootCanvasView.SetMultiplayerButtonVisibility(true);
+                }
+                
+                multiplayerAvailabilityData.SetMultiplayerCheckResult(multiplayerCheckResult.IsSuccess);
+            }
         }
 
-        private void OnInviteButtonClicked()
+        private void OnLeaderBoardButtonClicked()
         {
-            GamePushWrapper.Invite().Forget();
+            _audioPlayer.PlayButtonSound();
+
+            _eventBus.Dispatch(new UILeaderBoardButtonClickedEvent());
         }
 
         private void OnUISettingsPopupOpenedEvent(UISettingsPopupOpenedEvent e)

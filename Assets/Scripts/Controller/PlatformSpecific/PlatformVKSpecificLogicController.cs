@@ -5,6 +5,7 @@ using Infra.EventBus;
 using Infra.Instance;
 using Model;
 using Providers;
+using Utils.JSBridge;
 using Utils.WebRequestSender;
 
 namespace Controller.PlatformSpecific
@@ -13,6 +14,7 @@ namespace Controller.PlatformSpecific
     {
         private readonly IModelsHolder _modelsHolder = Instance.Get<IModelsHolder>();
         private readonly IEventBus _eventBus = Instance.Get<IEventBus>();
+        private readonly IJsBridge _jsBridge = Instance.Get<IJsBridge>();
 
         private readonly PlayerModel _playerModel;
         private readonly SessionDataModel _sessionDataModel;
@@ -47,11 +49,18 @@ namespace Controller.PlatformSpecific
         private void Subscribe()
         {
             _eventBus.Subscribe<DataSavedEvent>(OnDataSaved);
+            _eventBus.Subscribe<UILeaderBoardButtonClickedEvent>(OnLeaderBoardButtonClickedEvent);
         }
 
         private void Unsubscribe()
         {
             _eventBus.Unsubscribe<DataSavedEvent>(OnDataSaved);
+            _eventBus.Unsubscribe<UILeaderBoardButtonClickedEvent>(OnLeaderBoardButtonClickedEvent);
+        }
+
+        private void OnLeaderBoardButtonClickedEvent(UILeaderBoardButtonClickedEvent e)
+        {
+            _jsBridge.SendCommandToJs("ShowLeaderBoard", null);
         }
 
         private void OnDataSaved(DataSavedEvent e)

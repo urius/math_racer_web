@@ -18,20 +18,22 @@ namespace Utils.WebRequestSender
             return HandleGenericResponse<T>(resultStr);
         }
 
-        public static UniTask<WebRequestResult<string>> GetAsync(string url)
+        public static UniTask<WebRequestResult<string>> GetAsync(string url, int customAttemptsCount = -1, bool suppressLogException = false)
         {
-            return SendRequestAsync(() => UnityWebRequest.Get(url));
+            return SendRequestAsync(() => UnityWebRequest.Get(url), customAttemptsCount, suppressLogException);
         }
 
-        public static async UniTask<WebRequestResult<T>> PostAsync<T>(string url, string postData)
+        public static async UniTask<WebRequestResult<T>> PostAsync<T>(string url, string postData,
+            int customAttemptsCount = -1, bool suppressLogException = false)
         {
-            var resultStr = await PostAsync(url, postData);
+            var resultStr = await PostAsync(url, postData, customAttemptsCount, suppressLogException);
             return HandleGenericResponse<T>(resultStr);
         }
 
-        public static UniTask<WebRequestResult<string>> PostAsync(string url, string postData)
+        public static UniTask<WebRequestResult<string>> PostAsync(string url, string postData,
+            int customAttemptsCount = -1, bool suppressLogException = false)
         {
-            return SendRequestAsync(Factory);
+            return SendRequestAsync(Factory, customAttemptsCount, suppressLogException);
 
             UnityWebRequest Factory()
             {
@@ -42,15 +44,17 @@ namespace Utils.WebRequestSender
             }
         }
         
-        public static async UniTask<WebRequestResult<T>> PostAsync<T>(string url, Dictionary<string, string> postData)
+        public static async UniTask<WebRequestResult<T>> PostAsync<T>(string url, Dictionary<string, string> postData, 
+            int customAttemptsCount = -1, bool suppressLogException = false)
         {
-            var resultStr = await PostAsync(url, postData);
+            var resultStr = await PostAsync(url, postData, customAttemptsCount, suppressLogException);
             return HandleGenericResponse<T>(resultStr);
         }
         
-        public static UniTask<WebRequestResult<string>> PostAsync(string url, Dictionary<string, string> postData)
+        public static UniTask<WebRequestResult<string>> PostAsync(string url, Dictionary<string, string> postData,
+            int customAttemptsCount = -1, bool suppressLogException = false)
         {
-            return SendRequestAsync(Factory);
+            return SendRequestAsync(Factory, customAttemptsCount, suppressLogException);
 
             UnityWebRequest Factory()
             {
@@ -64,11 +68,14 @@ namespace Utils.WebRequestSender
             }
         }
 
-        private static async UniTask<WebRequestResult<string>> SendRequestAsync(Func<UnityWebRequest> unityWebRequestFactory)
+        private static async UniTask<WebRequestResult<string>> SendRequestAsync(
+            Func<UnityWebRequest> unityWebRequestFactory, int customAttemptsCount, bool suppressLogException)
         {
             var retryPrefix = string.Empty;
             var lastError = string.Empty;
-            for (var i = 0; i < RetryMsArray.Length; i++)
+            var attemptsCount = customAttemptsCount <= 0 ? RetryMsArray.Length : customAttemptsCount;
+            
+            for (var i = 0; i < attemptsCount; i++)
             {
                 var unityWebRequest = unityWebRequestFactory();
                 using (unityWebRequest)
@@ -96,7 +103,14 @@ namespace Utils.WebRequestSender
                     }
                     catch (Exception e)
                     {
-                        Debug.LogException(e);
+                        if (suppressLogException)
+                        {
+                            Debug.LogWarning(e);
+                        }
+                        else
+                        {
+                            Debug.LogException(e);
+                        }
                     }
                 }
             }
